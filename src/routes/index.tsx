@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, LayoutTemplate, Menu, MonitorSmartphone, Phone, ShoppingCart, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -17,40 +17,6 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const heroRef = useRef<HTMLDivElement>(null);
-  const orbRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const stage = heroRef.current;
-    const orb = orbRef.current;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-
-    if (!stage || !orb || reducedMotion || coarsePointer) return;
-
-    const position = { x: 96, y: 96 };
-    const velocity = { x: 0.62, y: 0.42 };
-    let frame = 0;
-
-    const animate = () => {
-      const radius = orb.offsetWidth / 2;
-      const maxX = stage.clientWidth - radius;
-      const maxY = stage.clientHeight - radius;
-
-      position.x += velocity.x;
-      position.y += velocity.y;
-
-      if (position.x <= radius || position.x >= maxX) velocity.x *= -1;
-      if (position.y <= radius || position.y >= maxY) velocity.y *= -1;
-
-      orb.style.left = `${position.x}px`;
-      orb.style.top = `${position.y}px`;
-      frame = requestAnimationFrame(animate);
-    };
-
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, []);
 
   useEffect(() => {
     const services = document.querySelectorAll<HTMLElement>(".source-reveal-service");
@@ -65,7 +31,8 @@ function Index() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
+        } else {
+          entry.target.classList.remove("is-visible");
         }
       });
     }, { threshold: 0.2 });
@@ -104,11 +71,8 @@ function Index() {
         <h1>Tu éxito digital, hecho con <span>inteligencia y cariño</span></h1>
         <p>En <strong>Código Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.</p>
         <p className="source-instruction">Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.</p>
-        <div ref={heroRef} className="source-hero-image">
+        <div className="source-hero-image">
           <img src="/descarga.jpg" alt="Fuente de agua digital cristalina con reflejos celestes y corrientes limpias" />
-          <div ref={orbRef} className="source-water-cursor" aria-hidden="true">
-            <span>explora</span>
-          </div>
         </div>
       </section>
 
