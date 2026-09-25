@@ -2,9 +2,9 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
+import { addUser, listUsers, removeUser } from "@/lib/users.server";
 
-type UserRecord = { username: string; password: string };
-const USERS_KEY = "codigo-fuentes.users";
+type UserRecord = { id: number; username: string; role: string; created_at: string };
 
 export const Route = createFileRoute("/admin/usuarios")({
   head: () => ({ meta: [{ title: "Usuarios y contraseñas - Código Fuentes" }] }),
@@ -24,32 +24,24 @@ function AdminUsers() {
       return;
     }
 
-    try {
-      const saved = localStorage.getItem(USERS_KEY);
-      if (saved) setUsers(JSON.parse(saved) as UserRecord[]);
-    } catch {
-      setUsers([]);
-    }
+    listUsers()
+      .then(setUsers)
+      .catch(() => setError("No se pudo cargar la base de datos."));
   }, [navigate]);
 
-  const saveUsers = (nextUsers: UserRecord[]) => {
-    setUsers(nextUsers);
-    localStorage.setItem(USERS_KEY, JSON.stringify(nextUsers));
-  };
-
-  const addUser = (event: FormEvent<HTMLFormElement>) => {
+  const handleAddUser = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const cleanUsername = username.trim();
     if (!cleanUsername || !password) {
       setError("Completa usuario y contraseña.");
       return;
     }
-    if (users.some((user) => user.username === cleanUsername)) {
-      setError("Ese usuario ya existe.");
+    const result = await addUser({ data: { username: cleanUsername, password } });
+    if (!result.ok) {
+      setError(result.message);
       return;
     }
-
-    saveUsers([...users, { username: cleanUsername, password }]);
+    setUsers(await listUsers());
     setUsername("");
     setPassword("");
     setError("");
@@ -60,11 +52,11 @@ function AdminUsers() {
       <SiteHeader plain />
       <section className="admin-content admin-list-content">
         <Link to="/admin" className="admin-back-link">← Volver al panel</Link>
-        <span className="source-kicker">BASE DE DATOS LOCAL</span>
+        <span className="source-kicker">BASE DE DATOS D1</span>
         <h1>Usuarios y<br /><em>contraseñas.</em></h1>
-        <p className="admin-intro">Registro inicial de accesos para el proyecto. Esta versión guarda los datos en el navegador actual.</p>
+        <p className="admin-intro">Registro compartido de accesos administrado desde Cloudflare D1.</p>
 
-        <form className="admin-user-form" onSubmit={addUser}>
+        <form className="admin-user-form" onSubmit={handleAddUser}>
           <label htmlFor="new-username">Nuevo usuario</label>
           <input id="new-username" value={username} onChange={(event) => setUsername(event.target.value)} placeholder="Ej. cliente01" />
           <label htmlFor="new-password">Contraseña</label>
@@ -74,12 +66,12 @@ function AdminUsers() {
         </form>
 
         <div className="admin-user-table" aria-live="polite">
-          <div className="admin-user-table-heading"><span>Usuario</span><span>Contraseña</span><span>Acción</span></div>
+          <div className="admin-user-table-heading"><span>Usuario</span><span>Rol</span><span>Acción</span></div>
           {users.length === 0 ? <p className="admin-empty">Todavía no hay usuarios agregados.</p> : users.map((user) => (
-            <div className="admin-user-row" key={user.username}>
+            <div className="admin-user-row" key={user.id}>
               <strong>{user.username}</strong>
-              <span>{user.password}</span>
-              <button type="button" aria-label={`Eliminar usuario ${user.username}`} onClick={() => saveUsers(users.filter((item) => item.username !== user.username))}><Trash2 aria-hidden="true" /></button>
+              <span>{user.role}</span>
+              <button type="button" aria-label={`Eliminar usuario ${user.username}`} onClick={async () => { await removeUser({ data: { id: user.id } }); setUsers(await listUsers()); }}><Trash2 aria-hidden="true" /></button>
             </div>
           ))}
         </div>

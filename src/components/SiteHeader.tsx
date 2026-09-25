@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { LogIn, Menu, ShoppingCart, X } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { useCart } from "@/lib/cart";
+import { loginUser } from "@/lib/users.server";
 
 type SiteHeaderProps = {
   showCart?: boolean;
@@ -23,10 +24,18 @@ export function SiteHeader({ showCart = false, plain = false }: SiteHeaderProps)
     setLoginOpen(true);
   };
 
-  const submitLogin = (event: FormEvent<HTMLFormElement>) => {
+  const submitLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (username !== "pipaton" || password !== "popo99") {
-      setLoginError("Usuario o contraseña incorrectos.");
+    setLoginError("");
+
+    try {
+      const result = await loginUser({ data: { username, password } });
+      if (!result.ok) {
+        setLoginError(result.message);
+        return;
+      }
+    } catch {
+      setLoginError("No se pudo conectar con la base de datos.");
       return;
     }
 
