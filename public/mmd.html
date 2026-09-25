@@ -136,10 +136,16 @@
 
     .lineup-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(14px, 3vw, 28px); justify-items: center; }
     .circle-logo { position: relative; display: grid; width: clamp(130px, 18vw, 190px); aspect-ratio: 1; place-items: center; overflow: hidden; border: 5px solid #fff; border-radius: 50%; background: linear-gradient(135deg, var(--pink), var(--blue)); box-shadow: 0 0 0 4px rgb(255 207 117 / 70%), 0 0 24px rgb(255 182 193 / 70%); color: #fff; font-family: Fredoka, sans-serif; font-size: .85rem; text-align: center; transition: transform .65s cubic-bezier(.2,.8,.2,1), box-shadow .35s; }
-    .circle-logo img { position: absolute; inset: 0; width: 100%; height: 100%; padding: 9px; object-fit: contain; background: #fff; transition: transform .65s, filter .35s; }
+    .circle-logo img { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; object-fit: contain; background: #fff; transform: scale(1.15); transition: transform .65s, filter .35s; }
+    .circle-logo .logo-triplea { transform: translateY(1px) scale(1.15); }
+    .circle-logo .logo-kuroshiro { transform: translateY(4px) scale(1.15); }
+    .circle-logo .logo-gachapon { transform: translateY(1px) scale(1.15); }
     .circle-logo span { position: relative; z-index: 1; padding: 6px 10px; border-radius: 999px; background: rgb(93 64 55 / 58%); opacity: 0; transition: opacity .3s; }
     .circle-logo:hover { transform: rotate(360deg) scale(1.1); box-shadow: 0 0 0 5px #fff, 0 0 34px rgb(158 220 240 / 95%); }
-    .circle-logo:hover img { filter: saturate(1.2) brightness(1.05); transform: scale(1.08); }
+    .circle-logo:hover img { filter: saturate(1.2) brightness(1.05); transform: scale(1.25); }
+    .circle-logo:hover .logo-triplea { transform: translateY(1px) scale(1.25); }
+    .circle-logo:hover .logo-kuroshiro { transform: translateY(4px) scale(1.25); }
+    .circle-logo:hover .logo-gachapon { transform: translateY(1px) scale(1.25); }
     .circle-logo:hover span { opacity: 1; }
 
     .instagram { position: relative; overflow: hidden; border-radius: 25px; background: linear-gradient(115deg, #f9ce34, #ee2a7b 48%, #6228d7); padding: 28px; color: #fff; text-align: center; }
@@ -209,12 +215,12 @@
       <div class="section-heading"><p class="eyebrow">Invitadas y anfitrionas</p><h2>Line up</h2><p>Conoce a las agrupaciones que compartirán este escenario soñado.</p></div>
       <div class="lineup-grid">
         <div class="circle-logo"><img src="mmd-assets/nextme.png" alt="Next Me"><span>Next Me</span></div>
-        <div class="circle-logo"><img src="mmd-assets/triplea.png" alt="Triple A"><span>Triple A</span></div>
+        <div class="circle-logo"><img class="logo-triplea" src="mmd-assets/triplea.png" alt="Triple A"><span>Triple A</span></div>
         <div class="circle-logo"><img src="mmd-assets/rainbow.png" alt="Rainbow Parfait"><span>Rainbow Parfait</span></div>
-        <div class="circle-logo"><img src="mmd-assets/moremoredream.png" alt="More More Dream"><span>More More Dream</span></div>
-        <div class="circle-logo"><img src="mmd-assets/gachapon.png" alt="Gachapon"><span>Gachapon!</span></div>
-        <div class="circle-logo"><img src="mmd-assets/kuroshiro.png" alt="Kuroshiro"><span>Kuroshiro</span></div>
-        <div class="circle-logo"><img src="mmd-assets/lpm.png" alt="LPM"><span>LPM</span></div>
+        <div class="circle-logo"><img class="logo-moremoredream" src="mmd-assets/moremoredream.png" alt="More More Dream"><span>More More Dream</span></div>
+        <div class="circle-logo"><img class="logo-gachapon" src="mmd-assets/gachapon.png" alt="Gachapon"><span>Gachapon!</span></div>
+        <div class="circle-logo"><img class="logo-kuroshiro" src="mmd-assets/kuroshiro.png" alt="Kuroshiro"><span>Kuroshiro</span></div>
+        <div class="circle-logo"><img class="logo-lpm" src="mmd-assets/lpm.png" alt="LPM"><span>LPM</span></div>
         <div class="circle-logo"><img src="mmd-assets/nekoninaru.png" alt="Neko Ni Naru"><span>Neko Ni Naru</span></div>
       </div>
     </section>
