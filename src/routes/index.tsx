@@ -40,6 +40,33 @@ function Index() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const hero = document.querySelector<HTMLElement>(".source-hero-image");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!hero || reducedMotion) return;
+
+    let frame = 0;
+    const updateHero = () => {
+      const distance = Math.max(hero.offsetHeight, 1);
+      const progress = Math.min(1, Math.max(0, (window.scrollY - hero.offsetTop) / distance));
+      hero.style.setProperty("--source-hero-progress", progress.toString());
+      frame = 0;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(updateHero);
+    };
+
+    updateHero();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <main className="source-index">
       <SiteHeader />

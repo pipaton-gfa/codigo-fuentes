@@ -633,7 +633,7 @@
 .source-intro > p strong { color: var(--source-ink); }
 .source-intro .source-instruction { margin-top: 12px; color: var(--source-tide); font-size: clamp(0.95rem, 1.8vw, 1.1rem); font-weight: 700; }
 .source-hero-image { position: relative; max-width: 900px; height: 440px; margin: 40px auto 0; overflow: hidden; border: 1px solid var(--source-border); border-radius: 24px; background: var(--source-card); box-shadow: 0 22px 42px rgb(14 40 60 / 15%); }
-.source-hero-image img { width: 100%; height: 100%; object-fit: cover; }
+.source-hero-image img { width: 100%; height: 100%; object-fit: cover; filter: blur(calc(var(--source-hero-progress, 0) * 18px)); opacity: calc(1 - var(--source-hero-progress, 0)); transform: scale(calc(1 + var(--source-hero-progress, 0) * 0.06)); transform-origin: center; will-change: filter, opacity, transform; }
 .source-services { max-width: 1152px; margin: 0 auto; padding: 0 16px 80px; }
 .source-services-heading { margin-bottom: 32px; }
 .source-services-heading h2 { margin: 0; font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); }
