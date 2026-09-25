@@ -11,14 +11,18 @@ export type D1DatabaseLike = {
   };
 };
 
-type DatabaseGlobal = typeof globalThis & { __codigoFuentesDb?: D1DatabaseLike };
+type DatabaseGlobal = typeof globalThis & {
+  __codigoFuentesDb?: D1DatabaseLike;
+  __env__?: { DB?: D1DatabaseLike };
+};
 
 export function setDatabase(database: D1DatabaseLike | undefined) {
   (globalThis as DatabaseGlobal).__codigoFuentesDb = database;
 }
 
 export function getDatabase() {
-  const database = (globalThis as DatabaseGlobal).__codigoFuentesDb;
+  const runtime = globalThis as DatabaseGlobal;
+  const database = runtime.__codigoFuentesDb ?? runtime.__env__?.DB;
   if (!database) {
     throw new Error("La base D1 no está vinculada al Worker.");
   }
