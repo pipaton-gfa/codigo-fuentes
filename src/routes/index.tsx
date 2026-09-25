@@ -49,7 +49,8 @@ function Index() {
     let frame = 0;
     const updateHero = () => {
       const distance = Math.max(hero.offsetHeight, 1);
-      const progress = Math.min(1, Math.max(0, (window.scrollY - hero.offsetTop) / distance));
+      const start = Math.max(0, hero.offsetTop - window.innerHeight * 0.3);
+      const progress = Math.min(1, Math.max(0, (window.scrollY - start) / distance));
       hero.style.setProperty("--source-hero-progress", progress.toString());
       frame = 0;
     };
