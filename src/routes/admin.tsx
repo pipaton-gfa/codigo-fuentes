@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Database, LogOut, PanelsTopLeft } from "lucide-react";
+import { ArrowRight, BarChart3, Database, LogOut, PanelsTopLeft } from "lucide-react";
 import { useEffect } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -31,6 +31,11 @@ function AdminHome() {
         <h1>Bienvenido a tu<br /><em>espacio de control.</em></h1>
         <p>Desde aquí puedes revisar las páginas del proyecto y administrar los accesos registrados.</p>
         <div className="admin-link-grid">
+          <Link to="/admin/estadisticas" className="admin-link-card">
+            <BarChart3 aria-hidden="true" />
+            <span><strong>Estadísticas</strong><small>Visitas, páginas y países detectados.</small></span>
+            <ArrowRight aria-hidden="true" />
+          </Link>
           <Link to="/admin/paginas" className="admin-link-card">
             <PanelsTopLeft aria-hidden="true" />
             <span><strong>Todas las páginas</strong><small>Consulta cada ruta disponible en el proyecto.</small></span>

@@ -3,6 +3,7 @@ import {
   Outlet,
   Link,
   createRootRouteWithContext,
+  useLocation,
   useRouter,
   HeadContent,
   Scripts,
@@ -11,6 +12,8 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { CartProvider } from "../lib/cart";
+import { trackPageView } from "../lib/analytics.server";
+import { useEffect } from "react";
 
 function NotFoundComponent() {
   return (
@@ -118,6 +121,11 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useLocation();
+
+  useEffect(() => {
+    trackPageView({ data: { path: location.pathname } }).catch(() => undefined);
+  }, [location.pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>

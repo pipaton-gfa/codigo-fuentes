@@ -13,11 +13,20 @@ export type D1DatabaseLike = {
 
 type DatabaseGlobal = typeof globalThis & {
   __codigoFuentesDb?: D1DatabaseLike;
+  __codigoFuentesCountry?: string | null;
   __env__?: { DB?: D1DatabaseLike };
 };
 
 export function setDatabase(database: D1DatabaseLike | undefined) {
   (globalThis as DatabaseGlobal).__codigoFuentesDb = database;
+}
+
+export function setRequestCountry(country: string | undefined) {
+  (globalThis as DatabaseGlobal).__codigoFuentesCountry = country?.toUpperCase() || null;
+}
+
+export function getRequestCountry() {
+  return (globalThis as DatabaseGlobal).__codigoFuentesCountry ?? null;
 }
 
 export function getDatabase() {

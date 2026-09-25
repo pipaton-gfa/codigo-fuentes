@@ -2,7 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
-import { setDatabase, type D1DatabaseLike } from "./lib/database.server";
+import { setDatabase, setRequestCountry, type D1DatabaseLike } from "./lib/database.server";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -49,6 +49,7 @@ export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       setDatabase((env as { DB?: D1DatabaseLike } | undefined)?.DB);
+      setRequestCountry((request as Request & { cf?: { country?: string } }).cf?.country);
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
