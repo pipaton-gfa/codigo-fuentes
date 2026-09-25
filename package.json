@@ -7,7 +7,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "deploy": "wrangler deploy --config .output/server/wrangler.json",
+    "deploy": "wrangler deploy --config wrangler.jsonc",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."
