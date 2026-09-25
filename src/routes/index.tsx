@@ -48,8 +48,8 @@ function Index() {
 
     let frame = 0;
     const updateHero = () => {
-      const distance = Math.max(hero.offsetHeight, 1);
-      const start = Math.max(0, hero.offsetTop - window.innerHeight * 0.3);
+      const distance = Math.max(hero.offsetHeight * 0.75, 1);
+      const start = Math.max(0, hero.offsetTop - window.innerHeight * 0.45);
       const progress = Math.min(1, Math.max(0, (window.scrollY - start) / distance));
       hero.style.setProperty("--source-hero-progress", progress.toString());
       frame = 0;
@@ -77,7 +77,8 @@ function Index() {
         <p>En <strong>Código Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.</p>
         <p className="source-instruction">Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.</p>
         <div className="source-hero-image">
-          <img src="/descarga.jpg" alt="Fuente de agua digital cristalina con reflejos celestes y corrientes limpias" />
+          <img className="source-hero-water" src="/descarga.jpg" alt="Fuente de agua digital cristalina con reflejos celestes y corrientes limpias" />
+          <img className="source-hero-logo" src="/logo-cf.png" alt="Código Fuentes" />
         </div>
       </section>
 
