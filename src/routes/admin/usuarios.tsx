@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
-import { SiteHeader } from "@/components/SiteHeader";
 import { addUser, listUsers, removeUser } from "@/lib/users.server";
 
 type UserRecord = { id: number; username: string; role: string; created_at: string };
@@ -49,7 +48,6 @@ function AdminUsers() {
 
   return (
     <main className="admin-shell">
-      <SiteHeader plain />
       <section className="admin-content admin-list-content">
         <Link to="/admin" className="admin-back-link">← Volver al panel</Link>
         <span className="source-kicker">BASE DE DATOS D1</span>

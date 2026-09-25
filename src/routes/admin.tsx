@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Database, LogOut, PanelsTopLeft } from "lucide-react";
 import { useEffect } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -10,6 +10,7 @@ export const Route = createFileRoute("/admin")({
 
 function AdminHome() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (sessionStorage.getItem("codigo-fuentes.admin") !== "true") {
@@ -25,7 +26,7 @@ function AdminHome() {
   return (
     <main className="admin-shell">
       <SiteHeader plain />
-      <section className="admin-content">
+      {location.pathname === "/admin" ? <section className="admin-content">
         <span className="source-kicker">PANEL PRIVADO</span>
         <h1>Bienvenido a tu<br /><em>espacio de control.</em></h1>
         <p>Desde aquí puedes revisar las páginas del proyecto y administrar los accesos registrados.</p>
@@ -42,7 +43,7 @@ function AdminHome() {
           </Link>
         </div>
         <button type="button" className="admin-logout" onClick={logout}><LogOut aria-hidden="true" /> Cerrar sesión</button>
-      </section>
+      </section> : <Outlet />}
     </main>
   );
 }

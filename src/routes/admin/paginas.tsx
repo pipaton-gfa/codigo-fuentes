@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect } from "react";
-import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/admin/paginas")({
   head: () => ({ meta: [{ title: "Todas las páginas - Código Fuentes" }] }),
@@ -31,7 +30,6 @@ function AdminPages() {
 
   return (
     <main className="admin-shell">
-      <SiteHeader plain />
       <section className="admin-content admin-list-content">
         <Link to="/admin" className="admin-back-link">← Volver al panel</Link>
         <span className="source-kicker">MAPA DEL PROYECTO</span>
