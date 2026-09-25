@@ -747,6 +747,8 @@
 .admin-user-row button svg { width: 16px; }
 .admin-empty { margin: 0; padding: 20px 18px; color: var(--source-muted); font-size: 0.85rem; }
 .reference-event-page { padding-top: 0; }
+.mmd-route-shell { width: 100%; min-height: 100svh; background: #fff8ef; }
+.mmd-route-frame { display: block; width: 100%; min-height: 100svh; height: 100vh; border: 0; }
 
 @media (max-width: 650px) {
   .source-header-actions { gap: 7px; }

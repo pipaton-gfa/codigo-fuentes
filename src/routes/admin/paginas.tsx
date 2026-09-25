@@ -12,6 +12,7 @@ const pages = [
   { path: "/landing-pages", label: "Landing pages", description: "Selección de landing pages estratégicos." },
   { path: "/quioscos", label: "Quioscos", description: "Menú de experiencias con carrito." },
   { path: "/multipaginas", label: "Multipáginas enlazadas", description: "Espacio reservado para nuevos proyectos." },
+  { path: "/mmd-eternal-dream", label: "More More Dream · Eternal Dream", description: "Landing del evento Last Chapter." },
   { path: "/idols", label: "Donar dinero a idols", description: "Catálogo de productos y donaciones." },
   { path: "/carrito", label: "Carrito", description: "Resumen y gestión de productos." },
   { path: "/datos", label: "Datos de compra", description: "Información del comprador." },
