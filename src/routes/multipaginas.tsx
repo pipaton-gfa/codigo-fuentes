@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/multipaginas")({
   head: () => ({ meta: [{ title: "Multipáginas enlazadas - Código Fuentes" }] }),
@@ -9,10 +9,7 @@ export const Route = createFileRoute("/multipaginas")({
 function Multipaginas() {
   return (
     <main className="portfolio-shell portfolio-submenu">
-      <header className="portfolio-header">
-        <Link to="/" className="portfolio-back" aria-label="Volver al menú principal"><ArrowLeft aria-hidden="true" /> Volver</Link>
-        <span className="portfolio-mark">03 / 03</span>
-      </header>
+      <SiteHeader />
       <section className="portfolio-submenu-heading portfolio-empty-state">
         <span className="portfolio-kicker">03 / SERVICIOS</span>
         <h1>multipaginas<br /><em>enlazadas</em></h1>

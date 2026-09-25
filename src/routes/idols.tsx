@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShoppingCart } from "lucide-react";
 import { products, formatPrice, getTokenValue } from "@/lib/products";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/idols")({
   head: () => ({
@@ -18,14 +18,7 @@ export const Route = createFileRoute("/idols")({
 function IdolsPage() {
   return (
     <main className="reference-event-page idols-page">
-      <header className="reference-header">
-        <Link to="/" className="reference-brand" aria-label="Volver al inicio">
-          <img src="/total-market-banner.png" alt="Total Market" />
-        </Link>
-        <Link to="/carrito" className="reference-cart" aria-label="Abrir carrito">
-          <ShoppingCart aria-hidden="true" />
-        </Link>
-      </header>
+      <SiteHeader showCart />
 
       <section className="idols-main">
         <div className="idols-heading">

@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/landing-pages")({
   head: () => ({ meta: [{ title: "Landing pages estratégicos - Código Fuentes" }] }),
@@ -9,10 +10,7 @@ export const Route = createFileRoute("/landing-pages")({
 function LandingPages() {
   return (
     <main className="portfolio-shell portfolio-submenu">
-      <header className="portfolio-header">
-        <Link to="/" className="portfolio-back" aria-label="Volver al menú principal"><ArrowLeft aria-hidden="true" /> Volver</Link>
-        <span className="portfolio-mark">01 / 03</span>
-      </header>
+      <SiteHeader />
       <section className="portfolio-submenu-heading">
         <span className="portfolio-kicker">01 / SERVICIOS</span>
         <h1>landing pages<br /><em>estratégicos</em></h1>

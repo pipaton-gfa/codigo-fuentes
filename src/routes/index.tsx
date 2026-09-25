@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, LayoutTemplate, Menu, MonitorSmartphone, Phone, ShoppingCart, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowRight, LayoutTemplate, MonitorSmartphone, Phone, ShoppingCart } from "lucide-react";
+import { useEffect } from "react";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -16,8 +17,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   useEffect(() => {
     const services = document.querySelectorAll<HTMLElement>(".source-reveal-service");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -43,29 +42,7 @@ function Index() {
 
   return (
     <main className="source-index">
-      <header className="source-header">
-        <div className="source-header-inner">
-          <a href="#inicio" className="source-logo-link" aria-label="Código Fuentes, inicio">
-            <img src="/banner-cf.png" alt="Código Fuentes" />
-          </a>
-          <button
-            type="button"
-            className="source-menu-button"
-            aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-          </button>
-        </div>
-        {menuOpen && (
-          <nav className="source-mobile-menu" aria-label="Navegación principal">
-            <a href="#inicio" onClick={() => setMenuOpen(false)}>Inicio</a>
-            <a href="#servicios" onClick={() => setMenuOpen(false)}>Nuestros servicios</a>
-            <a href="#contacto" onClick={() => setMenuOpen(false)}>Contáctame</a>
-          </nav>
-        )}
-      </header>
+      <SiteHeader />
 
       <section id="inicio" className="source-intro">
         <h1>Tu éxito digital, hecho con <span>inteligencia y cariño</span></h1>

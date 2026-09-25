@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowUpRight, ShoppingCart } from "lucide-react";
+import { ArrowUpRight, ShoppingCart } from "lucide-react";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/quioscos")({
   head: () => ({ meta: [{ title: "Quioscos con carritos de compra - Código Fuentes" }] }),
@@ -9,10 +10,7 @@ export const Route = createFileRoute("/quioscos")({
 function Kiosks() {
   return (
     <main className="portfolio-shell portfolio-submenu">
-      <header className="portfolio-header">
-        <Link to="/" className="portfolio-back" aria-label="Volver al menú principal"><ArrowLeft aria-hidden="true" /> Volver</Link>
-        <span className="portfolio-mark">02 / 03</span>
-      </header>
+      <SiteHeader />
       <section className="portfolio-submenu-heading">
         <span className="portfolio-kicker">02 / SERVICIOS</span>
         <h1>quioscos con<br /><em>carritos de compra</em></h1>

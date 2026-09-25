@@ -1,8 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { getProduct, formatPrice, getTokenValue } from "@/lib/products";
 import { useCart } from "@/lib/cart";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/producto/$productId")({
   loader: ({ params }) => {
@@ -38,14 +38,7 @@ function ProductDetail() {
 
   return (
     <main className="reference-event-page">
-      <header className="reference-header">
-        <Link to="/" className="reference-brand" aria-label="Volver al inicio">
-          <img src="/total-market-banner.png" alt="Total Market" />
-        </Link>
-        <Link to="/carrito" className="reference-cart" aria-label="Abrir carrito">
-          <ShoppingCart aria-hidden="true" />
-        </Link>
-      </header>
+      <SiteHeader showCart />
       <section className="reference-event-main">
         <nav className="reference-event-breadcrumb"><Link to="/">Inicio</Link> / Eventos / {product.name}</nav>
         <div className="reference-event-grid">
