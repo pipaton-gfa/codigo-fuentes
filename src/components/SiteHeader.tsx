@@ -68,10 +68,6 @@ export function SiteHeader({ showCart = false, plain = false }: SiteHeaderProps)
 
         {menuOpen && !plain && (
           <nav className="source-mobile-menu" aria-label="Navegación principal">
-            <Link to="/" onClick={() => setMenuOpen(false)}>Inicio</Link>
-            <Link to="/landing-pages" onClick={() => setMenuOpen(false)}>Landing pages</Link>
-            <Link to="/quioscos" onClick={() => setMenuOpen(false)}>Quioscos con carrito</Link>
-            <Link to="/multipaginas" onClick={() => setMenuOpen(false)}>Multipáginas enlazadas</Link>
             <button type="button" onClick={openLogin}><LogIn aria-hidden="true" /> Iniciar sesión</button>
           </nav>
         )}
