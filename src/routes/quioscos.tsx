@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { EVENTS } from "@/lib/events";
 
 export const Route = createFileRoute("/quioscos")({
-  head: () => ({ meta: [{ title: "Quioscos con carritos de compra - Código Fuentes" }] }),
+  head: () => ({ meta: [{ title: "Quioscos con carritos de compra - Landing Fuentes" }] }),
   component: Kiosks,
 });
 

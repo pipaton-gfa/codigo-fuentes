@@ -5,7 +5,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 export const Route = createFileRoute("/validar")({
   head: () => ({
     meta: [
-      { title: "Validar entrada — Código Fuentes" },
+      { title: "Validar entrada — Landing Fuentes" },
       { name: "description", content: "Valida una entrada mediante su código QR." },
     ],
   }),

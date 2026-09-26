@@ -49,8 +49,8 @@ export function SiteHeader({ showCart = false, plain = false }: SiteHeaderProps)
     <>
       <header className="source-header">
         <div className="source-header-inner">
-          <Link to="/" className="source-logo-link" aria-label="Código Fuentes, inicio">
-            <img src="/banner-cf.png" alt="Código Fuentes" />
+          <Link to="/" className="source-logo-link" aria-label="Landing Fuentes, inicio">
+            <span className="source-logo-wordmark">Landing Fuentes</span>
           </Link>
 
           {!plain && (

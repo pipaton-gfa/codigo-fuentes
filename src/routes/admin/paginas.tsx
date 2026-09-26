@@ -4,12 +4,12 @@ import { useEffect } from "react";
 import { getCurrentUser } from "@/lib/users.server";
 
 export const Route = createFileRoute("/admin/paginas")({
-  head: () => ({ meta: [{ title: "Todas las páginas - Código Fuentes" }] }),
+  head: () => ({ meta: [{ title: "Todas las páginas - Landing Fuentes" }] }),
   component: AdminPages,
 });
 
 const pages = [
-  { path: "/", label: "Portada Código Fuentes", description: "Menú principal de servicios." },
+  { path: "/", label: "Portada Landing Fuentes", description: "Menú principal de servicios." },
   {
     path: "/landing-pages",
     label: "Landing pages",

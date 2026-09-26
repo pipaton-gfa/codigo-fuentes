@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/multipaginas")({
-  head: () => ({ meta: [{ title: "Multipáginas enlazadas - Código Fuentes" }] }),
+  head: () => ({ meta: [{ title: "Multipáginas enlazadas - Landing Fuentes" }] }),
   component: Multipaginas,
 });
 

@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { getCurrentUser, logoutUser } from "@/lib/users.server";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Administración - Código Fuentes" }] }),
+  head: () => ({ meta: [{ title: "Administración - Landing Fuentes" }] }),
   component: AdminHome,
 });
 

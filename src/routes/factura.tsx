@@ -8,12 +8,12 @@ import { useCart } from "@/lib/cart";
 export const Route = createFileRoute("/factura")({
   head: () => ({
     meta: [
-      { title: "Factura y entrega — Código Fuentes" },
+      { title: "Factura y entrega — Landing Fuentes" },
       {
         name: "description",
         content: "Factura de tu compra con detalle de productos, total y hora estimada de entrega.",
       },
-      { property: "og:title", content: "Factura y entrega — Código Fuentes" },
+      { property: "og:title", content: "Factura y entrega — Landing Fuentes" },
       {
         property: "og:description",
         content: "Compra autorizada: revisa tu factura y la hora estimada de entrega.",

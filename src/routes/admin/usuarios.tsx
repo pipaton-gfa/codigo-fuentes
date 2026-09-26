@@ -20,7 +20,7 @@ type UserRecord = {
 type EventRecord = { id: string; name: string; href: string };
 
 export const Route = createFileRoute("/admin/usuarios")({
-  head: () => ({ meta: [{ title: "Usuarios y contraseñas - Código Fuentes" }] }),
+  head: () => ({ meta: [{ title: "Usuarios y contraseñas - Landing Fuentes" }] }),
   component: AdminUsers,
 });
 

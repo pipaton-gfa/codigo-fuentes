@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { EVENTS } from "@/lib/events";
 
 export const Route = createFileRoute("/landing-pages")({
-  head: () => ({ meta: [{ title: "Landing pages estratégicos - Código Fuentes" }] }),
+  head: () => ({ meta: [{ title: "Landing pages estratégicos - Landing Fuentes" }] }),
   component: LandingPages,
 });
 

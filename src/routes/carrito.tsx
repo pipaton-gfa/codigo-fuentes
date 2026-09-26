@@ -6,12 +6,12 @@ import { useCart } from "@/lib/cart";
 export const Route = createFileRoute("/carrito")({
   head: () => ({
     meta: [
-      { title: "Carrito de compras — Código Fuentes" },
+      { title: "Carrito de compras — Landing Fuentes" },
       {
         name: "description",
         content: "Revisa los productos de tu carrito, ajusta cantidades y autoriza el pago.",
       },
-      { property: "og:title", content: "Carrito de compras — Código Fuentes" },
+      { property: "og:title", content: "Carrito de compras — Landing Fuentes" },
       {
         property: "og:description",
         content: "Ajusta cantidades, quita productos y autoriza tu compra en modo de prueba.",

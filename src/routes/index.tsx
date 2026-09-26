@@ -6,27 +6,27 @@ import { SiteHeader } from "@/components/SiteHeader";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Código Fuentes - Páginas web estratégicas" },
+      { title: "Landing Fuentes - Páginas web estratégicas" },
       {
         name: "description",
         content: "Landing pages, quioscos con carrito de compra y multipáginas enlazadas.",
       },
-      { property: "og:title", content: "Código Fuentes | Diseño y desarrollo web" },
+      { property: "og:title", content: "Landing Fuentes | Diseño y desarrollo web" },
       {
         property: "og:description",
         content: "Creamos sitios web modernos y estratégicos para emprendedores y empresas.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://landingfuentes.online/" },
-      { property: "og:image", content: "https://landingfuentes.online/logo-cf.png" },
-      { property: "og:image:alt", content: "Logo de Código Fuentes" },
+      { property: "og:image", content: "https://landingfuentes.online/descarga.jpg" },
+      { property: "og:image:alt", content: "Fuente de agua digital de Landing Fuentes" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Código Fuentes | Diseño y desarrollo web" },
+      { name: "twitter:title", content: "Landing Fuentes | Diseño y desarrollo web" },
       {
         name: "twitter:description",
         content: "Creamos sitios web modernos y estratégicos para emprendedores y empresas.",
       },
-      { name: "twitter:image", content: "https://landingfuentes.online/logo-cf.png" },
+      { name: "twitter:image", content: "https://landingfuentes.online/descarga.jpg" },
     ],
   }),
   component: Index,
@@ -90,11 +90,11 @@ function Index() {
 
       <section id="inicio" className="source-intro">
         <h1>Tu éxito digital, hecho con <span>inteligencia y cariño</span></h1>
-        <p>En <strong>Código Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.</p>
+        <p>En <strong>Landing Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.</p>
         <p className="source-instruction">Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.</p>
         <div className="source-hero-image">
           <img className="source-hero-water" src="/descarga.jpg" alt="Fuente de agua digital cristalina con reflejos celestes y corrientes limpias" />
-          <img className="source-hero-logo" src="/logo-cf.png" alt="Código Fuentes" />
+          <div className="source-hero-logo" role="img" aria-label="Landing Fuentes">Landing <strong>Fuentes</strong></div>
         </div>
       </section>
 
@@ -125,7 +125,7 @@ function Index() {
       <footer id="contacto" className="source-footer">
         <div className="source-footer-grid">
           <div>
-            <h3>Código Fuentes</h3>
+            <h3>Landing Fuentes</h3>
             <p>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores y empresas.</p>
             <span className="source-footer-badge">Tecnología fluida + IA + Trato personal</span>
           </div>
@@ -145,7 +145,7 @@ function Index() {
             <p><a className="source-contact" href="https://www.instagram.com/codigo_fuentes95" target="_blank" rel="noopener noreferrer">@codigo_fuentes95</a></p>
           </div>
         </div>
-        <p className="source-copyright">© 2026 Código Fuentes. Todos los derechos reservados.</p>
+        <p className="source-copyright">© 2026 Landing Fuentes. Todos los derechos reservados.</p>
       </footer>
     </main>
   );

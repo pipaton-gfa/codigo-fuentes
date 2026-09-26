@@ -9,7 +9,7 @@ type HistogramItem = { key: string; label: string; visits: number };
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export const Route = createFileRoute("/admin/estadisticas")({
-  head: () => ({ meta: [{ title: "Estadísticas - Código Fuentes" }] }),
+  head: () => ({ meta: [{ title: "Estadísticas - Landing Fuentes" }] }),
   component: AdminAnalytics,
 });
 
