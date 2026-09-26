@@ -145,10 +145,11 @@ function Histogram({
         ) : (
           items.map((item, index) => (
             <div className="analytics-bar-group" key={item.key} title={`${item.label}: ${item.visits} ${unit}`}>
+              <span className="analytics-bar-value">{item.visits}</span>
               <span
                 className="analytics-bar"
                 style={{
-                  height: drawn ? `${Math.max(6, (item.visits / maxVisits) * 100)}%` : "0%",
+                  height: drawn ? `${Math.max(10, (item.visits / maxVisits) * 100)}%` : "0%",
                   transitionDelay: `${index * 28}ms`,
                 }}
               />
