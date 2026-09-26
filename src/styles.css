@@ -617,7 +617,7 @@
 .source-header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--source-border); background: rgb(244 249 252 / 90%); backdrop-filter: blur(12px); }
 .source-header-inner { display: flex; height: 64px; max-width: 1152px; align-items: center; justify-content: space-between; margin: 0 auto; padding: 0 16px; }
 .source-logo-link { display: flex; width: 66%; height: 100%; align-items: center; overflow: hidden; }
-.source-logo-wordmark { color: var(--source-ink); font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; white-space: nowrap; }
+.source-logo-link img { display: block; width: auto; height: 100%; max-width: 100%; transform: scale(1.35); transform-origin: left center; object-fit: contain; mix-blend-mode: multiply; }
 .source-menu-button { display: grid; width: 42px; height: 42px; place-items: center; border: 0; border-radius: 12px; background: var(--source-tide); color: #fff; cursor: pointer; transition: background-color 150ms ease, transform 150ms ease; }
 .source-menu-button:hover { background: var(--source-tide-deep); }
 .source-menu-button:active { transform: scale(0.94); }
@@ -635,8 +635,7 @@
 .source-hero-image { position: relative; max-width: 900px; height: 440px; margin: 40px auto 0; overflow: hidden; border: 1px solid var(--source-border); border-radius: 24px; background: var(--source-card); box-shadow: 0 22px 42px rgb(14 40 60 / 15%); }
 .source-hero-water, .source-hero-logo { position: absolute; inset: 0; width: 100%; height: 100%; }
 .source-hero-water { object-fit: cover; filter: blur(calc(var(--source-hero-progress, 0) * 18px)); opacity: calc(1 - var(--source-hero-progress, 0)); transform: scale(calc(1 + var(--source-hero-progress, 0) * 0.06)); transform-origin: center; will-change: filter, opacity, transform; }
-.source-hero-logo { z-index: 1; display: flex; align-items: center; justify-content: center; gap: .35em; color: var(--source-ink); font-family: var(--font-display); font-size: 3.5rem; font-weight: 700; text-shadow: 0 2px 22px rgb(255 255 255 / 80%); opacity: var(--source-hero-progress, 0); transform: scale(calc(0.94 + var(--source-hero-progress, 0) * 0.06)); will-change: opacity, transform; }
-.source-hero-logo strong { color: var(--source-tide); }
+.source-hero-logo { z-index: 1; object-fit: contain; padding: clamp(28px, 8vw, 90px); opacity: var(--source-hero-progress, 0); transform: scale(calc(0.94 + var(--source-hero-progress, 0) * 0.06)); will-change: opacity, transform; }
 .source-services { max-width: 1152px; margin: 0 auto; padding: 0 16px 80px; }
 .source-services-heading { margin-bottom: 32px; }
 .source-services-heading h2 { margin: 0; font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.2rem); }

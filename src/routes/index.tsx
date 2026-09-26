@@ -94,7 +94,7 @@ function Index() {
         <p className="source-instruction">Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.</p>
         <div className="source-hero-image">
           <img className="source-hero-water" src="/descarga.jpg" alt="Fuente de agua digital cristalina con reflejos celestes y corrientes limpias" />
-          <div className="source-hero-logo" role="img" aria-label="Landing Fuentes">Landing <strong>Fuentes</strong></div>
+          <img className="source-hero-logo" src="/logo-cf.png" alt="Landing Fuentes" />
         </div>
       </section>
 

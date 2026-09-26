@@ -50,7 +50,7 @@ export function SiteHeader({ showCart = false, plain = false }: SiteHeaderProps)
       <header className="source-header">
         <div className="source-header-inner">
           <Link to="/" className="source-logo-link" aria-label="Landing Fuentes, inicio">
-            <span className="source-logo-wordmark">Landing Fuentes</span>
+            <img src="/banner-cf.png" alt="Landing Fuentes" />
           </Link>
 
           {!plain && (
