@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 export const Route = createFileRoute("/idols")({
   head: () => ({
     meta: [
-      { title: "Idols - Total Market" },
+      { title: "Idols — Código Fuentes" },
       {
         name: "description",
         content: "Selecciona una idol y entrega tokens para apoyar su evento.",

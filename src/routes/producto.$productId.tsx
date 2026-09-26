@@ -13,15 +13,15 @@ export const Route = createFileRoute("/producto/$productId")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Producto no disponible — VíaMarket" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Producto no disponible — Código Fuentes" }, { name: "robots", content: "noindex" }],
       };
     }
     const { product } = loaderData;
     return {
       meta: [
-        { title: `${product.name} — VíaMarket` },
+        { title: `${product.name} — Código Fuentes` },
         { name: "description", content: product.description },
-        { property: "og:title", content: `${product.name} — VíaMarket` },
+        { property: "og:title", content: `${product.name} — Código Fuentes` },
         { property: "og:description", content: product.description },
       ],
     };

@@ -8,7 +8,7 @@ import { createMercadoPagoPreference } from "@/lib/mercadopago.server";
 export const Route = createFileRoute("/datos")({
   head: () => ({
     meta: [
-      { title: "Datos del comprador — VíaMarket" },
+      { title: "Datos del comprador — Código Fuentes" },
       {
         name: "description",
         content: "Completa tus datos para confirmar la compra y generar la factura.",
