@@ -1,8 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAnalytics } from "@/lib/analytics.server";
 
 type Analytics = Awaited<ReturnType<typeof getAnalytics>>;
+type HistogramItem = { key: string; label: string; visits: number };
+
+const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
 
 export const Route = createFileRoute("/admin/estadisticas")({
   head: () => ({ meta: [{ title: "Estadísticas - Código Fuentes" }] }),
@@ -13,6 +17,8 @@ function AdminAnalytics() {
   const navigate = useNavigate();
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [error, setError] = useState("");
+  const [dailyUpdatedAt, setDailyUpdatedAt] = useState<Date | null>(null);
+  const [hourlyUpdatedAt, setHourlyUpdatedAt] = useState<Date | null>(null);
 
   useEffect(() => {
     if (sessionStorage.getItem("codigo-fuentes.admin") !== "true") {
@@ -20,12 +26,44 @@ function AdminAnalytics() {
       return;
     }
 
-    getAnalytics()
-      .then(setAnalytics)
-      .catch(() => setError("No se pudieron cargar las estadísticas."));
+    const load = () =>
+      getAnalytics()
+        .then((data) => {
+          setAnalytics(data);
+          setDailyUpdatedAt(new Date());
+          setHourlyUpdatedAt(new Date());
+        })
+        .catch(() => setError("No se pudieron cargar las estadísticas."));
+
+    load();
+    // El resumen general y el gráfico diario se refrescan una vez al día.
+    const dailyTimer = setInterval(load, DAY_MS);
+    // El gráfico por hora vive de un refresco más frecuente para notarse "en vivo".
+    const hourlyTimer = setInterval(() => {
+      getAnalytics()
+        .then((data) => {
+          setAnalytics((prev) => (prev ? { ...prev, hourly: data.hourly, today: data.today } : data));
+          setHourlyUpdatedAt(new Date());
+        })
+        .catch(() => undefined);
+    }, HOUR_MS);
+
+    return () => {
+      clearInterval(dailyTimer);
+      clearInterval(hourlyTimer);
+    };
   }, [navigate]);
 
-  const maxDailyVisits = Math.max(...(analytics?.daily.map((item) => item.visits) ?? [1]));
+  const dailyItems: HistogramItem[] = (analytics?.daily ?? []).map((item) => ({
+    key: item.day,
+    label: item.day.slice(5),
+    visits: item.visits,
+  }));
+  const hourlyItems: HistogramItem[] = (analytics?.hourly ?? []).map((item) => ({
+    key: item.hour,
+    label: item.hour.slice(11, 13) + "h",
+    visits: item.visits,
+  }));
 
   return (
     <section className="admin-content admin-list-content">
@@ -42,17 +80,23 @@ function AdminAnalytics() {
             <div><strong>{analytics.countriesCount}</strong><span>países detectados</span></div>
           </div>
 
-          <div className="analytics-panel">
-            <h2>Últimos 30 días</h2>
-            <div className="analytics-chart" aria-label="Visitas por día">
-              {analytics.daily.length === 0 ? <p className="admin-empty">Todavía no hay visitas registradas.</p> : analytics.daily.map((item) => (
-                <div className="analytics-bar-group" key={item.day} title={`${item.day}: ${item.visits} visitas`}>
-                  <span className="analytics-bar" style={{ height: `${Math.max(8, item.visits / maxDailyVisits * 100)}%` }} />
-                  <small>{item.day.slice(5)}</small>
-                </div>
-              ))}
-            </div>
-          </div>
+          <Histogram
+            title="Últimos 30 días"
+            emptyLabel="Todavía no hay visitas registradas."
+            items={dailyItems}
+            unit="visitas"
+            updatedAt={dailyUpdatedAt}
+            refreshLabel="cada 1 día"
+          />
+
+          <Histogram
+            title="Últimas 24 horas (por hora)"
+            emptyLabel="Todavía no hay visitas en las últimas 24 horas."
+            items={hourlyItems}
+            unit="visitas"
+            updatedAt={hourlyUpdatedAt}
+            refreshLabel="cada 1 hora"
+          />
 
           <div className="analytics-columns">
             <div className="analytics-panel"><h2>Páginas más visitadas</h2>{analytics.pages.map((item) => <div className="analytics-ranking" key={item.value}><span>{item.value}</span><strong>{item.visits}</strong></div>)}</div>
@@ -61,5 +105,58 @@ function AdminAnalytics() {
         </>
       )}
     </section>
+  );
+}
+
+function Histogram({
+  title,
+  emptyLabel,
+  items,
+  unit,
+  updatedAt,
+  refreshLabel,
+}: {
+  title: string;
+  emptyLabel: string;
+  items: HistogramItem[];
+  unit: string;
+  updatedAt: Date | null;
+  refreshLabel: string;
+}) {
+  const [drawn, setDrawn] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const maxVisits = Math.max(...items.map((item) => item.visits), 1);
+
+  useEffect(() => {
+    setDrawn(false);
+    const frame = requestAnimationFrame(() => setDrawn(true));
+    return () => cancelAnimationFrame(frame);
+  }, [items]);
+
+  return (
+    <div className="analytics-panel">
+      <div className="analytics-panel-heading">
+        <h2>{title}</h2>
+        <span className="analytics-refresh">Datos en vivo · refresco {refreshLabel}{updatedAt ? ` · última consulta ${updatedAt.toLocaleTimeString()}` : ""}</span>
+      </div>
+      <div ref={containerRef} className="analytics-chart" aria-label={title}>
+        {items.length === 0 ? (
+          <p className="admin-empty">{emptyLabel}</p>
+        ) : (
+          items.map((item, index) => (
+            <div className="analytics-bar-group" key={item.key} title={`${item.label}: ${item.visits} ${unit}`}>
+              <span
+                className="analytics-bar"
+                style={{
+                  height: drawn ? `${Math.max(6, (item.visits / maxVisits) * 100)}%` : "0%",
+                  transitionDelay: `${index * 28}ms`,
+                }}
+              />
+              <small>{item.label}</small>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
   );
 }

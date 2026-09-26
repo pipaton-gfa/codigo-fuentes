@@ -4,6 +4,7 @@ import { getDatabase, getRequestCountry } from "./database.server";
 type TrackPageViewInput = { path: string };
 
 type DailyViews = { day: string; visits: number };
+type HourlyViews = { hour: string; visits: number };
 type RankedValue = { value: string; visits: number };
 
 export const trackPageView = createServerFn({ method: "POST" })
@@ -30,6 +31,9 @@ export const getAnalytics = createServerFn({ method: "GET" }).handler(async () =
   const daily = await database
     .prepare("SELECT date(viewed_at) AS day, COUNT(*) AS visits FROM page_views WHERE viewed_at >= datetime('now', '-30 days') GROUP BY date(viewed_at) ORDER BY day")
     .all<DailyViews>();
+  const hourly = await database
+    .prepare("SELECT strftime('%Y-%m-%d %H:00', viewed_at) AS hour, COUNT(*) AS visits FROM page_views WHERE viewed_at >= datetime('now', '-24 hours') GROUP BY hour ORDER BY hour")
+    .all<HourlyViews>();
   const pages = await database
     .prepare("SELECT path AS value, COUNT(*) AS visits FROM page_views GROUP BY path ORDER BY visits DESC LIMIT 10")
     .all<RankedValue>();
@@ -42,6 +46,7 @@ export const getAnalytics = createServerFn({ method: "GET" }).handler(async () =
     countriesCount: totals?.countries ?? 0,
     today: today?.visits ?? 0,
     daily: daily.results,
+    hourly: hourly.results,
     pages: pages.results,
     countries: countries.results,
   };
