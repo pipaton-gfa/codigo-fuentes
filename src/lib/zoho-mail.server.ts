@@ -6,7 +6,6 @@ const SENDER_ADDRESS = "admin@landingfuentes.online";
 type ZohoSecrets = {
   ZOHO_CLIENT_ID?: string;
   ZOHO_CLIENT_SECRET?: string;
-  ZOHO_REFRESH_TOKEN?: string;
   ZOHO_ACCOUNT_ID?: string;
   ZOHO_ACCOUNTS_BASE_URL?: string;
   ZOHO_MAIL_BASE_URL?: string;
@@ -26,7 +25,7 @@ type ZohoApiResponse = {
 function getZohoSecrets(): Required<
   Pick<
     ZohoSecrets,
-    "ZOHO_CLIENT_ID" | "ZOHO_CLIENT_SECRET" | "ZOHO_REFRESH_TOKEN" | "ZOHO_ACCOUNT_ID"
+    "ZOHO_CLIENT_ID" | "ZOHO_CLIENT_SECRET"
   >
 > &
   ZohoSecrets {
@@ -34,8 +33,6 @@ function getZohoSecrets(): Required<
   const required = [
     secrets.ZOHO_CLIENT_ID,
     secrets.ZOHO_CLIENT_SECRET,
-    secrets.ZOHO_REFRESH_TOKEN,
-    secrets.ZOHO_ACCOUNT_ID,
   ];
   if (required.some((value) => !value)) {
     throw new Error("Zoho Mail no está configurado en el Worker.");
@@ -43,7 +40,7 @@ function getZohoSecrets(): Required<
   return secrets as Required<
     Pick<
       ZohoSecrets,
-      "ZOHO_CLIENT_ID" | "ZOHO_CLIENT_SECRET" | "ZOHO_REFRESH_TOKEN" | "ZOHO_ACCOUNT_ID"
+      "ZOHO_CLIENT_ID" | "ZOHO_CLIENT_SECRET"
     >
   > &
     ZohoSecrets;
@@ -65,10 +62,10 @@ function escapeHtml(value: string) {
 async function getAccessToken(secrets: ReturnType<typeof getZohoSecrets>) {
   const accountsBaseUrl = secrets.ZOHO_ACCOUNTS_BASE_URL ?? "https://accounts.zoho.com";
   const body = new URLSearchParams({
-    refresh_token: secrets.ZOHO_REFRESH_TOKEN,
     client_id: secrets.ZOHO_CLIENT_ID,
     client_secret: secrets.ZOHO_CLIENT_SECRET,
-    grant_type: "refresh_token",
+    grant_type: "client_credentials",
+    scope: "ZohoMail.messages.CREATE,ZohoMail.accounts.READ",
   });
   const response = await fetch(`${accountsBaseUrl}/oauth/v2/token`, {
     method: "POST",
@@ -88,6 +85,55 @@ async function parseZohoResponse(response: Response) {
     throw new Error(`Zoho Mail rechazó la solicitud (HTTP ${response.status}).`);
   }
   return payload;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function containsSenderAddress(value: unknown): boolean {
+  if (typeof value === "string") return value.toLowerCase() === SENDER_ADDRESS.toLowerCase();
+  if (Array.isArray(value)) return value.some(containsSenderAddress);
+  if (!isRecord(value)) return false;
+
+  return Object.entries(value).some(([key, entry]) =>
+    /email|alias|address/i.test(key) && containsSenderAddress(entry),
+  );
+}
+
+function findSenderAccountId(value: unknown): string | null {
+  if (Array.isArray(value)) {
+    for (const entry of value) {
+      const accountId = findSenderAccountId(entry);
+      if (accountId) return accountId;
+    }
+    return null;
+  }
+  if (!isRecord(value)) return null;
+
+  const accountId = Object.entries(value).find(([key]) => /^accountid$/i.test(key))?.[1];
+  if (accountId !== undefined && containsSenderAddress(value)) return String(accountId);
+
+  for (const entry of Object.values(value)) {
+    const nestedId = findSenderAccountId(entry);
+    if (nestedId) return nestedId;
+  }
+  return null;
+}
+
+async function getSenderAccountId(accessToken: string, mailBaseUrl: string, configuredAccountId?: string) {
+  if (configuredAccountId) return configuredAccountId;
+  const response = await fetch(`${mailBaseUrl}/api/accounts`, {
+    headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+  });
+  const payload = await parseZohoResponse(response);
+  const accountId = findSenderAccountId(payload.data);
+  if (!accountId) {
+    throw new Error(
+      "Zoho no encontró la cuenta del alias admin@landingfuentes.online. Revisa que el alias pertenezca a la cuenta autorizada.",
+    );
+  }
+  return accountId;
 }
 
 function getAttachmentDetails(payload: ZohoApiResponse): ZohoAttachment {
@@ -116,7 +162,8 @@ export async function sendPurchaseReceiptEmail(input: {
   const secrets = getZohoSecrets();
   const token = await getAccessToken(secrets);
   const mailBaseUrl = secrets.ZOHO_MAIL_BASE_URL ?? "https://mail.zoho.com";
-  const accountBaseUrl = `${mailBaseUrl}/api/accounts/${encodeURIComponent(secrets.ZOHO_ACCOUNT_ID)}`;
+  const accountId = await getSenderAccountId(token, mailBaseUrl, secrets.ZOHO_ACCOUNT_ID);
+  const accountBaseUrl = `${mailBaseUrl}/api/accounts/${encodeURIComponent(accountId)}`;
   const qrUrl = `https://landingfuentes.online/validar?codigo=${encodeURIComponent(input.qrCode)}`;
   const qrDataUrl = await QRCode.toDataURL(qrUrl, { width: 360, margin: 2 });
   const base64 = qrDataUrl.split(",")[1];
