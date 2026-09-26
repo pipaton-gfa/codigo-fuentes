@@ -39,7 +39,6 @@ export function SiteHeader({ showCart = false, plain = false }: SiteHeaderProps)
       return;
     }
 
-    sessionStorage.setItem("codigo-fuentes.admin", "true");
     setLoginOpen(false);
     setUsername("");
     setPassword("");
@@ -77,15 +76,32 @@ export function SiteHeader({ showCart = false, plain = false }: SiteHeaderProps)
 
         {menuOpen && !plain && (
           <nav className="source-mobile-menu" aria-label="Navegación principal">
-            <button type="button" onClick={openLogin}><LogIn aria-hidden="true" /> Iniciar sesión</button>
+            <button type="button" onClick={openLogin}>
+              <LogIn aria-hidden="true" /> Iniciar sesión
+            </button>
           </nav>
         )}
       </header>
 
       {loginOpen && (
-        <div className="source-login-backdrop" role="presentation" onMouseDown={() => setLoginOpen(false)}>
-          <div className="source-login-dialog" role="dialog" aria-modal="true" aria-labelledby="login-title" onMouseDown={(event) => event.stopPropagation()}>
-            <button type="button" className="source-login-close" aria-label="Cerrar inicio de sesión" onClick={() => setLoginOpen(false)}>
+        <div
+          className="source-login-backdrop"
+          role="presentation"
+          onMouseDown={() => setLoginOpen(false)}
+        >
+          <div
+            className="source-login-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="login-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="source-login-close"
+              aria-label="Cerrar inicio de sesión"
+              onClick={() => setLoginOpen(false)}
+            >
               <X aria-hidden="true" />
             </button>
             <span className="source-kicker">ACCESO PRIVADO</span>
@@ -93,11 +109,30 @@ export function SiteHeader({ showCart = false, plain = false }: SiteHeaderProps)
             <p>Ingresa tus credenciales para administrar el proyecto.</p>
             <form onSubmit={submitLogin}>
               <label htmlFor="login-username">Usuario</label>
-              <input id="login-username" value={username} onChange={(event) => setUsername(event.target.value)} autoComplete="username" required />
+              <input
+                id="login-username"
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
+                autoComplete="username"
+                required
+              />
               <label htmlFor="login-password">Contraseña</label>
-              <input id="login-password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required />
-              {loginError && <p className="source-login-error" role="alert">{loginError}</p>}
-              <button type="submit" className="source-login-submit">Iniciar sesión</button>
+              <input
+                id="login-password"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                autoComplete="current-password"
+                required
+              />
+              {loginError && (
+                <p className="source-login-error" role="alert">
+                  {loginError}
+                </p>
+              )}
+              <button type="submit" className="source-login-submit">
+                Iniciar sesión
+              </button>
             </form>
           </div>
         </div>
