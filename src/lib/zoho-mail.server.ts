@@ -34,27 +34,14 @@ async function parseJsonResponse<T>(response: Response, operation: string): Prom
   }
 }
 
-function getZohoSecrets(): Required<
-  Pick<
-    ZohoSecrets,
-    "ZOHO_CLIENT_ID" | "ZOHO_CLIENT_SECRET"
-  >
-> &
+function getZohoSecrets(): Required<Pick<ZohoSecrets, "ZOHO_CLIENT_ID" | "ZOHO_CLIENT_SECRET">> &
   ZohoSecrets {
   const secrets = process.env as ZohoSecrets;
-  const required = [
-    secrets.ZOHO_CLIENT_ID,
-    secrets.ZOHO_CLIENT_SECRET,
-  ];
+  const required = [secrets.ZOHO_CLIENT_ID, secrets.ZOHO_CLIENT_SECRET];
   if (required.some((value) => !value)) {
     throw new Error("Zoho Mail no está configurado en el Worker.");
   }
-  return secrets as Required<
-    Pick<
-      ZohoSecrets,
-      "ZOHO_CLIENT_ID" | "ZOHO_CLIENT_SECRET"
-    >
-  > &
+  return secrets as Required<Pick<ZohoSecrets, "ZOHO_CLIENT_ID" | "ZOHO_CLIENT_SECRET">> &
     ZohoSecrets;
 }
 
@@ -73,17 +60,14 @@ function escapeHtml(value: string) {
 
 async function getAccessToken(secrets: ReturnType<typeof getZohoSecrets>) {
   const accountsBaseUrl = secrets.ZOHO_ACCOUNTS_BASE_URL ?? "https://accounts.zoho.com";
-  const body = new URLSearchParams({
+  const tokenUrl = new URL(`${accountsBaseUrl}/oauth/v2/token`);
+  tokenUrl.search = new URLSearchParams({
     client_id: secrets.ZOHO_CLIENT_ID,
     client_secret: secrets.ZOHO_CLIENT_SECRET,
     grant_type: "client_credentials",
     scope: "ZohoMail.messages.CREATE,ZohoMail.accounts.READ",
-  });
-  const response = await fetch(`${accountsBaseUrl}/oauth/v2/token`, {
-    method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    body,
-  });
+  }).toString();
+  const response = await fetch(tokenUrl, { method: "POST" });
   const payload = await parseJsonResponse<{
     access_token?: string;
     error?: string;
@@ -113,8 +97,8 @@ function containsSenderAddress(value: unknown): boolean {
   if (Array.isArray(value)) return value.some(containsSenderAddress);
   if (!isRecord(value)) return false;
 
-  return Object.entries(value).some(([key, entry]) =>
-    /email|alias|address/i.test(key) && containsSenderAddress(entry),
+  return Object.entries(value).some(
+    ([key, entry]) => /email|alias|address/i.test(key) && containsSenderAddress(entry),
   );
 }
 
@@ -138,7 +122,11 @@ function findSenderAccountId(value: unknown): string | null {
   return null;
 }
 
-async function getSenderAccountId(accessToken: string, mailBaseUrl: string, configuredAccountId?: string) {
+async function getSenderAccountId(
+  accessToken: string,
+  mailBaseUrl: string,
+  configuredAccountId?: string,
+) {
   if (configuredAccountId) return configuredAccountId;
   const response = await fetch(`${mailBaseUrl}/api/accounts`, {
     headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
