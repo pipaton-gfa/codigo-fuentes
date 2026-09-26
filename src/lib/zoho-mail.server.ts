@@ -1,7 +1,7 @@
 import QRCode from "qrcode";
 import type { InvoiceData } from "./event-purchases.server";
 
-const SENDER_ADDRESS = "admin@landingfuentes.online";
+const SENDER_ADDRESS = "gabriel.fuentes@landingfuentes.online";
 
 type ZohoSecrets = {
   ZOHO_CLIENT_ID?: string;
@@ -135,7 +135,7 @@ async function getSenderAccountId(
   const accountId = findSenderAccountId(payload.data);
   if (!accountId) {
     throw new Error(
-      "Zoho no encontró la cuenta del alias admin@landingfuentes.online. Revisa que el alias pertenezca a la cuenta autorizada.",
+      "Zoho no encontró la cuenta remitente gabriel.fuentes@landingfuentes.online. Revisa que pertenezca a la cuenta autorizada.",
     );
   }
   return accountId;
