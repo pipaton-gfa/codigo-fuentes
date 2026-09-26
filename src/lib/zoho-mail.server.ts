@@ -22,6 +22,18 @@ type ZohoApiResponse = {
   data?: unknown;
 };
 
+async function parseJsonResponse<T>(response: Response, operation: string): Promise<T> {
+  const body = await response.text();
+  try {
+    return JSON.parse(body) as T;
+  } catch {
+    const contentType = response.headers.get("content-type") ?? "desconocido";
+    throw new Error(
+      `${operation} devolvió una respuesta no JSON (HTTP ${response.status}, ${contentType}). Revisa la URL regional de Zoho y la configuración OAuth.`,
+    );
+  }
+}
+
 function getZohoSecrets(): Required<
   Pick<
     ZohoSecrets,
@@ -72,15 +84,20 @@ async function getAccessToken(secrets: ReturnType<typeof getZohoSecrets>) {
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body,
   });
-  const payload = (await response.json()) as { access_token?: string };
+  const payload = await parseJsonResponse<{
+    access_token?: string;
+    error?: string;
+    error_description?: string;
+  }>(response, "La autenticación OAuth de Zoho");
   if (!response.ok || !payload.access_token) {
-    throw new Error(`Zoho OAuth no pudo renovar el token (HTTP ${response.status}).`);
+    const reason = payload.error_description ?? payload.error ?? `HTTP ${response.status}`;
+    throw new Error(`Zoho OAuth no pudo emitir el access token (${reason}).`);
   }
   return payload.access_token;
 }
 
-async function parseZohoResponse(response: Response) {
-  const payload = (await response.json()) as ZohoApiResponse;
+async function parseZohoResponse(response: Response, operation: string) {
+  const payload = await parseJsonResponse<ZohoApiResponse>(response, operation);
   if (!response.ok || (payload.status?.code !== undefined && payload.status.code >= 400)) {
     throw new Error(`Zoho Mail rechazó la solicitud (HTTP ${response.status}).`);
   }
@@ -126,7 +143,7 @@ async function getSenderAccountId(accessToken: string, mailBaseUrl: string, conf
   const response = await fetch(`${mailBaseUrl}/api/accounts`, {
     headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
   });
-  const payload = await parseZohoResponse(response);
+  const payload = await parseZohoResponse(response, "La consulta de cuentas de Zoho");
   const accountId = findSenderAccountId(payload.data);
   if (!accountId) {
     throw new Error(
@@ -185,7 +202,9 @@ export async function sendPurchaseReceiptEmail(input: {
     },
     body: qrImage,
   });
-  const attachment = getAttachmentDetails(await parseZohoResponse(uploadResponse));
+  const attachment = getAttachmentDetails(
+    await parseZohoResponse(uploadResponse, "La carga del QR a Zoho"),
+  );
 
   const lineRows = input.invoice.lines
     .map(
@@ -210,5 +229,5 @@ export async function sendPurchaseReceiptEmail(input: {
       attachments: [attachment],
     }),
   });
-  await parseZohoResponse(sendResponse);
+  await parseZohoResponse(sendResponse, "El envío del correo por Zoho");
 }
