@@ -4,6 +4,7 @@ import QRCode from "qrcode";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice, getTokenValue } from "@/lib/products";
 import { useCart } from "@/lib/cart";
+import { confirmIdolEventPayment } from "@/lib/event-purchases.server";
 
 export const Route = createFileRoute("/factura")({
   head: () => ({
@@ -32,13 +33,30 @@ const dateFormat = (iso: string) =>
 function InvoicePage() {
   const { order } = useCart();
   const [qrCode, setQrCode] = useState("");
+  const [numericQrCode, setNumericQrCode] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState<"pending" | "verifying" | "approved" | "rejected">("pending");
 
   useEffect(() => {
     if (!order) return;
-    const ticketUrl = `${window.location.origin}/validar?codigo=${encodeURIComponent(order.ticketCode)}`;
-    QRCode.toDataURL(ticketUrl, { width: 280, margin: 2 })
-      .then(setQrCode)
-      .catch(() => setQrCode(""));
+    const query = new URLSearchParams(window.location.search);
+    const paymentId = query.get("payment_id") ?? query.get("collection_id");
+    if (!paymentId) return;
+
+    setPaymentStatus("verifying");
+    confirmIdolEventPayment({ data: { paymentId, transactionNumber: order.reference } })
+      .then((result) => {
+        if (!result.approved) {
+          setPaymentStatus(result.status === "rejected" || result.status === "cancelled" ? "rejected" : "pending");
+          return;
+        }
+
+        setNumericQrCode(result.qrCode);
+        setPaymentStatus("approved");
+        localStorage.setItem("viamarket.order", JSON.stringify({ ...order, ticketCode: result.qrCode }));
+        const ticketUrl = `${window.location.origin}/validar?codigo=${encodeURIComponent(result.qrCode)}`;
+        return QRCode.toDataURL(ticketUrl, { width: 280, margin: 2 }).then(setQrCode);
+      })
+      .catch(() => setPaymentStatus("pending"));
   }, [order]);
 
   if (!order) {
@@ -68,7 +86,8 @@ function InvoicePage() {
     <SiteLayout>
       <section className="pb-8 pt-8 sm:pt-12">
         <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] text-white/70 backdrop-blur-md sm:text-xs">
-          <span className="size-1.5 rounded-full bg-accent-cyan" /> Compra autorizada
+          <span className={`size-1.5 rounded-full ${paymentStatus === "approved" ? "bg-accent-cyan" : "bg-amber-400"}`} />
+          {paymentStatus === "approved" ? "Pago aprobado" : paymentStatus === "verifying" ? "Verificando pago" : paymentStatus === "rejected" ? "Pago rechazado" : "Pago pendiente"}
         </span>
         <h1 className="mt-5 font-display text-3xl font-bold tracking-tight sm:text-4xl">Tu factura</h1>
       </section>
@@ -116,13 +135,19 @@ function InvoicePage() {
 
         <div className="rounded-3xl border border-white/20 bg-white p-6 text-center text-ink shadow-xl">
           <p className="text-xs uppercase tracking-[0.15em] text-slate-500">Entrada digital</p>
-          {qrCode ? (
+          {paymentStatus === "approved" && qrCode && numericQrCode ? (
             <img src={qrCode} alt="Código QR de entrada" className="mx-auto mt-4 size-56" />
           ) : (
-            <p className="mt-6 text-sm text-slate-500">Generando código QR...</p>
+            <p className="mt-6 text-sm text-slate-500">
+              {paymentStatus === "verifying" ? "Verificando el pago..." : "El QR estará disponible cuando Mercado Pago apruebe el pago."}
+            </p>
           )}
-          <p className="mt-3 break-all font-mono text-xs text-slate-500">{order.ticketCode}</p>
-          <p className="mt-3 text-sm text-slate-600">Presenta este código para validar tu entrada.</p>
+          {paymentStatus === "approved" && numericQrCode && (
+            <>
+              <p className="mt-3 break-all font-mono text-xs text-slate-500">{numericQrCode}</p>
+              <p className="mt-3 text-sm text-slate-600">Presenta este código para validar tu entrada.</p>
+            </>
+          )}
         </div>
 
         <div className="rounded-3xl border border-white/20 bg-gradient-to-br from-brand/30 to-accent-cyan/20 p-5 backdrop-blur-xl sm:p-7">

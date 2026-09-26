@@ -32,6 +32,8 @@ export type Order = {
   customer: CustomerData;
 };
 
+export type OrderIdentity = Pick<Order, "reference" | "createdAt" | "deliveryAt">;
+
 // Funciones y variables que el carrito comparte con toda la app[cite: 63]
 type CartContextValue = {
   lines: CartLine[];
@@ -43,7 +45,7 @@ type CartContextValue = {
   remove: (id: string) => void;
   clear: () => void;
   order: Order | null;
-  checkout: (method: string, customer?: CustomerData) => Order | null;
+  checkout: (method: string, customer?: CustomerData, identity?: OrderIdentity) => Order | null;
 };
 
 // Creación del Contexto[cite: 63]
@@ -155,7 +157,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       order,
 
       // Finalizar la compra (Generar la Orden/Factura)[cite: 63]
-      checkout: (method, customer) => {
+      checkout: (method, customer, identity) => {
         if (items.length === 0 || total <= 0) {
           return null;
         }
@@ -170,12 +172,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const delivery = new Date(now.getTime() + 60 * 60 * 1000); // Estimación de entrega a 1 hora[cite: 63]
 
         const newOrder: Order = {
-          reference: `VM-${now.getFullYear()}-${String(now.getTime()).slice(-6)}`,
-          ticketCode: crypto.randomUUID(), // Genera el código único para el QR[cite: 63]
+          reference: identity?.reference ?? `VM-${now.getFullYear()}-${String(now.getTime()).slice(-6)}`,
+          ticketCode: "",
           ticketUsed: false,
           method,
-          createdAt: now.toISOString(),
-          deliveryAt: delivery.toISOString(),
+          createdAt: identity?.createdAt ?? now.toISOString(),
+          deliveryAt: identity?.deliveryAt ?? delivery.toISOString(),
           lines: items.map((i) => ({
             id: i.product.id,
             name: i.product.name,

@@ -59,9 +59,10 @@ function BuyerDataPage() {
           })),
           customer: {
             fullName: form.fullName.trim(),
+            rut: form.rut.trim(),
             email: form.email.trim(),
           },
-          returnUrl: `${window.location.origin}/factura`,
+          returnUrl: `${window.location.origin}/factura?evento=0003`,
         },
       });
 
@@ -69,6 +70,10 @@ function BuyerDataPage() {
         fullName: form.fullName.trim(),
         rut: form.rut.trim(),
         email: form.email.trim(),
+      }, {
+        reference: preference.transactionNumber,
+        createdAt: preference.createdAt,
+        deliveryAt: preference.deliveryAt,
       });
 
       if (!order) {

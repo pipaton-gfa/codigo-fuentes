@@ -1,8 +1,10 @@
 import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, BarChart3, Database, LogOut, PanelsTopLeft } from "lucide-react";
-import { useEffect } from "react";
+import { ArrowRight, BarChart3, Database, LogOut, PanelsTopLeft, Ticket } from "lucide-react";
+import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getCurrentUser, logoutUser } from "@/lib/users.server";
+
+type CurrentUser = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>;
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Administración - Landing Fuentes" }] }),
@@ -12,14 +14,23 @@ export const Route = createFileRoute("/admin")({
 function AdminHome() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
 
   useEffect(() => {
     getCurrentUser()
       .then((user) => {
-        if (!user || user.role === "user") navigate({ to: "/" });
+        if (!user || (user.role === "user" && !user.eventIds.includes("0003"))) {
+          navigate({ to: "/" });
+          return;
+        }
+        setCurrentUser(user);
       })
       .catch(() => navigate({ to: "/" }));
   }, [navigate]);
+
+  const canViewIdolPurchases =
+    currentUser?.role === "super_admin" || currentUser?.eventIds.includes("0003") === true;
+  const canManageAdministration = currentUser?.role === "admin" || currentUser?.role === "super_admin";
 
   const logout = async () => {
     await logoutUser();
@@ -42,6 +53,8 @@ function AdminHome() {
             registrados.
           </p>
           <div className="admin-link-grid">
+            {canManageAdministration && (
+              <>
             <Link to="/admin/estadisticas" className="admin-link-card">
               <BarChart3 aria-hidden="true" />
               <span>
@@ -66,6 +79,18 @@ function AdminHome() {
               </span>
               <ArrowRight aria-hidden="true" />
             </Link>
+              </>
+            )}
+            {canViewIdolPurchases && (
+              <Link to="/admin/compras-idols" className="admin-link-card">
+                <Ticket aria-hidden="true" />
+                <span>
+                  <strong>Compras de idols</strong>
+                  <small>Evento 0003 · facturas y códigos QR.</small>
+                </span>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            )}
           </div>
           <button type="button" className="admin-logout" onClick={logout}>
             <LogOut aria-hidden="true" /> Cerrar sesión

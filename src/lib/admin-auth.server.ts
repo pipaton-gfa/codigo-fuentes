@@ -33,3 +33,22 @@ export async function requireAdmin() {
   }
   return user;
 }
+
+export async function requireEventAccess(eventId: string) {
+  const user = await getAuthenticatedUser();
+  if (!user) throw new Error("Se requiere una sesión autenticada.");
+  if (user.role === "super_admin") return user;
+
+  const event = await getDatabase()
+    .prepare("SELECT id FROM events WHERE printf('%04d', id) = ?1")
+    .bind(eventId)
+    .first<{ id: number }>();
+  if (!event) throw new Error("El evento no existe.");
+
+  const assignment = await getDatabase()
+    .prepare("SELECT 1 AS allowed FROM user_events WHERE user_id = ?1 AND event_id = ?2")
+    .bind(user.id, event.id)
+    .first<{ allowed: number }>();
+  if (!assignment) throw new Error("No tienes acceso a este evento.");
+  return user;
+}

@@ -64,7 +64,19 @@ export const loginUser = createServerFn({ method: "POST" })
 
 export const getCurrentUser = createServerFn({ method: "GET" }).handler(async () => {
   const user = await getAuthenticatedUser();
-  return user ? { id: user.id, username: user.username, role: user.role } : null;
+  if (!user) return null;
+  const events = await getDatabase()
+    .prepare(
+      "SELECT printf('%04d', events.id) AS id FROM user_events JOIN events ON events.id = user_events.event_id WHERE user_events.user_id = ?1 ORDER BY events.id",
+    )
+    .bind(user.id)
+    .all<{ id: string }>();
+  return {
+    id: user.id,
+    username: user.username,
+    role: user.role,
+    eventIds: events.results.map((event) => event.id),
+  };
 });
 
 export const logoutUser = createServerFn({ method: "POST" }).handler(async () => {
