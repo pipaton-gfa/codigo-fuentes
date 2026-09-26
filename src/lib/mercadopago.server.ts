@@ -100,9 +100,22 @@ export const createMercadoPagoPreference = createServerFn({ method: "POST" }).ha
       response = await preference.create({
         body: preferenceBody,
       });
-    } catch {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message.slice(0, 400) : "Error desconocido";
+      const statusMatch = errorMessage.match(/\b(400|401|403|422|429|5\d{2})\b/);
+      const status = statusMatch?.[1];
+      console.error("Mercado Pago preference creation failed", {
+        status: status ?? "unknown",
+        message: errorMessage,
+      });
+
+      if (status === "401") {
+        throw new Error("Mercado Pago rechazó el Access Token. Revisa que sea de producción y pertenezca a la integración activa.");
+      }
       throw new Error(
-        "Mercado Pago rechazó las credenciales. Revisa el access token configurado en .env.",
+        status
+          ? `Mercado Pago rechazó la preferencia (HTTP ${status}). Revisa los datos del checkout; el detalle está en los logs del Worker.`
+          : "Mercado Pago no pudo crear el checkout. El detalle está en los logs del Worker.",
       );
     }
 
