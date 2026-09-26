@@ -34,7 +34,10 @@ function InvoicePage() {
   const { order } = useCart();
   const [qrCode, setQrCode] = useState("");
   const [numericQrCode, setNumericQrCode] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState<"pending" | "verifying" | "approved" | "rejected">("pending");
+  const [paymentStatus, setPaymentStatus] = useState<
+    "pending" | "verifying" | "approved" | "rejected"
+  >("pending");
+  const [emailStatus, setEmailStatus] = useState("");
 
   useEffect(() => {
     if (!order) return;
@@ -46,13 +49,19 @@ function InvoicePage() {
     confirmIdolEventPayment({ data: { paymentId, transactionNumber: order.reference } })
       .then((result) => {
         if (!result.approved) {
-          setPaymentStatus(result.status === "rejected" || result.status === "cancelled" ? "rejected" : "pending");
+          setPaymentStatus(
+            result.status === "rejected" || result.status === "cancelled" ? "rejected" : "pending",
+          );
           return;
         }
 
         setNumericQrCode(result.qrCode);
         setPaymentStatus("approved");
-        localStorage.setItem("viamarket.order", JSON.stringify({ ...order, ticketCode: result.qrCode }));
+        setEmailStatus(result.emailStatus);
+        localStorage.setItem(
+          "viamarket.order",
+          JSON.stringify({ ...order, ticketCode: result.qrCode }),
+        );
         const ticketUrl = `${window.location.origin}/validar?codigo=${encodeURIComponent(result.qrCode)}`;
         return QRCode.toDataURL(ticketUrl, { width: 280, margin: 2 }).then(setQrCode);
       })
@@ -86,10 +95,20 @@ function InvoicePage() {
     <SiteLayout>
       <section className="pb-8 pt-8 sm:pt-12">
         <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] text-white/70 backdrop-blur-md sm:text-xs">
-          <span className={`size-1.5 rounded-full ${paymentStatus === "approved" ? "bg-accent-cyan" : "bg-amber-400"}`} />
-          {paymentStatus === "approved" ? "Pago aprobado" : paymentStatus === "verifying" ? "Verificando pago" : paymentStatus === "rejected" ? "Pago rechazado" : "Pago pendiente"}
+          <span
+            className={`size-1.5 rounded-full ${paymentStatus === "approved" ? "bg-accent-cyan" : "bg-amber-400"}`}
+          />
+          {paymentStatus === "approved"
+            ? "Pago aprobado"
+            : paymentStatus === "verifying"
+              ? "Verificando pago"
+              : paymentStatus === "rejected"
+                ? "Pago rechazado"
+                : "Pago pendiente"}
         </span>
-        <h1 className="mt-5 font-display text-3xl font-bold tracking-tight sm:text-4xl">Tu factura</h1>
+        <h1 className="mt-5 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+          Tu factura
+        </h1>
       </section>
 
       <div className="grid items-start gap-6 lg:grid-cols-[1.4fr_1fr]">
@@ -122,7 +141,9 @@ function InvoicePage() {
                 <span className="text-white/70">
                   {line.name} × {line.quantity}
                 </span>
-                <span className="font-medium">{formatPrice(getTokenValue(line) * line.quantity)}</span>
+                <span className="font-medium">
+                  {formatPrice(getTokenValue(line) * line.quantity)}
+                </span>
               </div>
             ))}
           </div>
@@ -139,13 +160,22 @@ function InvoicePage() {
             <img src={qrCode} alt="Código QR de entrada" className="mx-auto mt-4 size-56" />
           ) : (
             <p className="mt-6 text-sm text-slate-500">
-              {paymentStatus === "verifying" ? "Verificando el pago..." : "El QR estará disponible cuando Mercado Pago apruebe el pago."}
+              {paymentStatus === "verifying"
+                ? "Verificando el pago..."
+                : "El QR estará disponible cuando Mercado Pago apruebe el pago."}
             </p>
           )}
           {paymentStatus === "approved" && numericQrCode && (
             <>
               <p className="mt-3 break-all font-mono text-xs text-slate-500">{numericQrCode}</p>
-              <p className="mt-3 text-sm text-slate-600">Presenta este código para validar tu entrada.</p>
+              <p className="mt-3 text-sm text-slate-600">
+                Presenta este código para validar tu entrada.
+              </p>
+              <p className="mt-3 text-sm text-slate-600">
+                {emailStatus === "sent"
+                  ? `Comprobante y QR enviados a ${order.customer.email}.`
+                  : "Tu pago está aprobado. El correo con el comprobante y QR está pendiente de envío."}
+              </p>
             </>
           )}
         </div>
@@ -156,7 +186,8 @@ function InvoicePage() {
             {timeFormat(order.deliveryAt)}
           </p>
           <p className="mt-2 text-sm text-white/70 sm:text-base">
-            Una hora después de tu compra de las {timeFormat(order.createdAt)} · {dateFormat(order.deliveryAt)}
+            Una hora después de tu compra de las {timeFormat(order.createdAt)} ·{" "}
+            {dateFormat(order.deliveryAt)}
           </p>
           <Link
             to="/"

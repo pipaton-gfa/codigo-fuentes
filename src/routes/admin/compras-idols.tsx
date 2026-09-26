@@ -35,11 +35,23 @@ function IdolPurchasesPage() {
 
   return (
     <section className="admin-content admin-purchases-content">
-      <Link to="/admin" className="admin-back-link">← Volver al panel</Link>
+      <Link to="/admin" className="admin-back-link">
+        ← Volver al panel
+      </Link>
       <span className="source-kicker">EVENTO 0003 · DONACIONES A IDOLS</span>
-      <h1>Compras<br /><em>registradas.</em></h1>
-      {error && <p className="source-login-error" role="alert">{error}</p>}
-      {loading ? <p className="admin-intro">Cargando compras...</p> : (
+      <h1>
+        Compras
+        <br />
+        <em>registradas.</em>
+      </h1>
+      {error && (
+        <p className="source-login-error" role="alert">
+          {error}
+        </p>
+      )}
+      {loading ? (
+        <p className="admin-intro">Cargando compras...</p>
+      ) : (
         <div className="admin-purchases-table-wrap">
           <table className="admin-purchases-table">
             <thead>
@@ -49,6 +61,7 @@ function IdolPurchasesPage() {
                 <th>Código QR</th>
                 <th>Factura</th>
                 <th>Pago</th>
+                <th>Correo</th>
               </tr>
             </thead>
             <tbody>
@@ -71,16 +84,31 @@ function IdolPurchasesPage() {
                   <td>
                     <ul className="admin-purchase-lines">
                       {purchase.invoice.lines.map((line) => (
-                        <li key={line.id}>{line.name} × {line.quantity}</li>
+                        <li key={line.id}>
+                          {line.name} × {line.quantity}
+                        </li>
                       ))}
                     </ul>
                     <strong>{formatPrice(purchase.total_clp)}</strong>
                   </td>
                   <td>{purchase.status === "approved" ? "Aprobado" : "Iniciado"}</td>
+                  <td>
+                    {purchase.email_status === "sent"
+                      ? "Enviado"
+                      : purchase.email_status === "failed"
+                        ? "Pendiente de reintento"
+                        : purchase.email_status === "sending"
+                          ? "Enviando"
+                          : "Pendiente"}
+                  </td>
                 </tr>
               ))}
               {purchases.length === 0 && (
-                <tr><td colSpan={5} className="admin-purchases-empty">Todavía no hay compras para este evento.</td></tr>
+                <tr>
+                  <td colSpan={6} className="admin-purchases-empty">
+                    Todavía no hay compras para este evento.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
