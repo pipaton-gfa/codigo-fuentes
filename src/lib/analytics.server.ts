@@ -4,7 +4,7 @@ import { getDatabase, getRequestCountry } from "./database.server";
 type TrackPageViewInput = { path: string };
 
 type DailyViews = { day: string; visits: number };
-type HourlyViews = { hour: string; visits: number };
+type MinutelyViews = { minute: string; visits: number };
 type RankedValue = { value: string; visits: number };
 
 export const trackPageView = createServerFn({ method: "POST" })
@@ -31,9 +31,10 @@ export const getAnalytics = createServerFn({ method: "GET" }).handler(async () =
   const daily = await database
     .prepare("SELECT date(viewed_at) AS day, COUNT(*) AS visits FROM page_views WHERE viewed_at >= datetime('now', '-30 days') GROUP BY date(viewed_at) ORDER BY day")
     .all<DailyViews>();
-  const hourly = await database
-    .prepare("SELECT strftime('%Y-%m-%d %H:00', viewed_at) AS hour, COUNT(*) AS visits FROM page_views WHERE viewed_at >= datetime('now', '-24 hours') GROUP BY hour ORDER BY hour")
-    .all<HourlyViews>();
+  const minutelyRows = await database
+    .prepare("SELECT strftime('%Y-%m-%d %H:%M:00', viewed_at) AS minute, COUNT(*) AS visits FROM page_views WHERE viewed_at >= datetime('now', '-60 minutes') GROUP BY minute")
+    .all<MinutelyViews>();
+  const minutely = fillLastHourMinutes(minutelyRows.results);
   const pages = await database
     .prepare("SELECT path AS value, COUNT(*) AS visits FROM page_views GROUP BY path ORDER BY visits DESC LIMIT 10")
     .all<RankedValue>();
@@ -46,8 +47,23 @@ export const getAnalytics = createServerFn({ method: "GET" }).handler(async () =
     countriesCount: totals?.countries ?? 0,
     today: today?.visits ?? 0,
     daily: daily.results,
-    hourly: hourly.results,
+    minutely,
     pages: pages.results,
     countries: countries.results,
   };
 });
+
+// SQLite guarda viewed_at en UTC (CURRENT_TIMESTAMP), por eso el relleno usa Date en UTC.
+function fillLastHourMinutes(rows: MinutelyViews[]): MinutelyViews[] {
+  const visitsByMinute = new Map(rows.map((row) => [row.minute, row.visits]));
+  const now = new Date();
+  const minutes: MinutelyViews[] = [];
+
+  for (let offset = 59; offset >= 0; offset -= 1) {
+    const bucket = new Date(now.getTime() - offset * 60_000);
+    const minute = bucket.toISOString().slice(0, 16).replace("T", " ") + ":00";
+    minutes.push({ minute, visits: visitsByMinute.get(minute) ?? 0 });
+  }
+
+  return minutes;
+}
