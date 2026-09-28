@@ -94,7 +94,7 @@ function Index() {
         <p className="source-instruction">Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.</p>
         <div className="source-hero-image">
           <img className="source-hero-water" src="/descarga.jpg" alt="Fuente de agua digital cristalina con reflejos celestes y corrientes limpias" />
-          <img className="source-hero-logo" src="/logo-cf.png" alt="Landing Fuentes" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          <img className="source-hero-logo" src="/logo-cf.png" alt="Landing Fuentes" style={{ width: "100%", height: "100%", maxWidth: "none", maxHeight: "none" }} />
         </div>
       </section>
 
@@ -126,7 +126,7 @@ function Index() {
         <div className="source-footer-grid">
           <div>
             <h3>Landing Fuentes</h3>
-            <p>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernos para emprendedores y empresas.</p>
+            <p>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores y empresas.</p>
             <span className="source-footer-badge">Tecnología fluida + IA + Trato personal</span>
           </div>
           <div>
