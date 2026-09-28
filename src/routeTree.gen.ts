@@ -10,19 +10,30 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CarritoRouteImport } from './routes/carrito'
 import { Route as DatosRouteImport } from './routes/datos'
 import { Route as FacturaRouteImport } from './routes/factura'
 import { Route as IdolsRouteImport } from './routes/idols'
 import { Route as LandingPagesRouteImport } from './routes/landing-pages'
+import { Route as MmdEternalDreamRouteImport } from './routes/mmd-eternal-dream'
 import { Route as MultipaginasRouteImport } from './routes/multipaginas'
 import { Route as QuioscosRouteImport } from './routes/quioscos'
 import { Route as ValidarRouteImport } from './routes/validar'
+import { Route as AdminComprasIdolsRouteImport } from './routes/admin/compras-idols'
+import { Route as AdminEstadisticasRouteImport } from './routes/admin/estadisticas'
+import { Route as AdminPaginasRouteImport } from './routes/admin/paginas'
+import { Route as AdminUsuariosRouteImport } from './routes/admin/usuarios'
 import { Route as ProductoProductIdRouteImport } from './routes/producto.$productId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CarritoRoute = CarritoRouteImport.update({
@@ -50,6 +61,11 @@ const LandingPagesRoute = LandingPagesRouteImport.update({
   path: '/landing-pages',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MmdEternalDreamRoute = MmdEternalDreamRouteImport.update({
+  id: '/mmd-eternal-dream',
+  path: '/mmd-eternal-dream',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MultipaginasRoute = MultipaginasRouteImport.update({
   id: '/multipaginas',
   path: '/multipaginas',
@@ -65,6 +81,26 @@ const ValidarRoute = ValidarRouteImport.update({
   path: '/validar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminComprasIdolsRoute = AdminComprasIdolsRouteImport.update({
+  id: '/compras-idols',
+  path: '/compras-idols',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEstadisticasRoute = AdminEstadisticasRouteImport.update({
+  id: '/estadisticas',
+  path: '/estadisticas',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaginasRoute = AdminPaginasRouteImport.update({
+  id: '/paginas',
+  path: '/paginas',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ProductoProductIdRoute = ProductoProductIdRouteImport.update({
   id: '/producto/$productId',
   path: '/producto/$productId',
@@ -73,87 +109,125 @@ const ProductoProductIdRoute = ProductoProductIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/carrito': typeof CarritoRoute
   '/datos': typeof DatosRoute
   '/factura': typeof FacturaRoute
   '/idols': typeof IdolsRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/mmd-eternal-dream': typeof MmdEternalDreamRoute
   '/multipaginas': typeof MultipaginasRoute
   '/quioscos': typeof QuioscosRoute
   '/validar': typeof ValidarRoute
+  '/admin/compras-idols': typeof AdminComprasIdolsRoute
+  '/admin/estadisticas': typeof AdminEstadisticasRoute
+  '/admin/paginas': typeof AdminPaginasRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/producto/$productId': typeof ProductoProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/carrito': typeof CarritoRoute
   '/datos': typeof DatosRoute
   '/factura': typeof FacturaRoute
   '/idols': typeof IdolsRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/mmd-eternal-dream': typeof MmdEternalDreamRoute
   '/multipaginas': typeof MultipaginasRoute
   '/quioscos': typeof QuioscosRoute
   '/validar': typeof ValidarRoute
+  '/admin/compras-idols': typeof AdminComprasIdolsRoute
+  '/admin/estadisticas': typeof AdminEstadisticasRoute
+  '/admin/paginas': typeof AdminPaginasRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/producto/$productId': typeof ProductoProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/carrito': typeof CarritoRoute
   '/datos': typeof DatosRoute
   '/factura': typeof FacturaRoute
   '/idols': typeof IdolsRoute
   '/landing-pages': typeof LandingPagesRoute
+  '/mmd-eternal-dream': typeof MmdEternalDreamRoute
   '/multipaginas': typeof MultipaginasRoute
   '/quioscos': typeof QuioscosRoute
   '/validar': typeof ValidarRoute
+  '/admin/compras-idols': typeof AdminComprasIdolsRoute
+  '/admin/estadisticas': typeof AdminEstadisticasRoute
+  '/admin/paginas': typeof AdminPaginasRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/producto/$productId': typeof ProductoProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/carrito'
     | '/datos'
     | '/factura'
     | '/idols'
     | '/landing-pages'
+    | '/mmd-eternal-dream'
     | '/multipaginas'
     | '/quioscos'
     | '/validar'
+    | '/admin/compras-idols'
+    | '/admin/estadisticas'
+    | '/admin/paginas'
+    | '/admin/usuarios'
     | '/producto/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/carrito'
     | '/datos'
     | '/factura'
     | '/idols'
     | '/landing-pages'
+    | '/mmd-eternal-dream'
     | '/multipaginas'
     | '/quioscos'
     | '/validar'
+    | '/admin/compras-idols'
+    | '/admin/estadisticas'
+    | '/admin/paginas'
+    | '/admin/usuarios'
     | '/producto/$productId'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/carrito'
     | '/datos'
     | '/factura'
     | '/idols'
     | '/landing-pages'
+    | '/mmd-eternal-dream'
     | '/multipaginas'
     | '/quioscos'
     | '/validar'
+    | '/admin/compras-idols'
+    | '/admin/estadisticas'
+    | '/admin/paginas'
+    | '/admin/usuarios'
     | '/producto/$productId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CarritoRoute: typeof CarritoRoute
   DatosRoute: typeof DatosRoute
   FacturaRoute: typeof FacturaRoute
   IdolsRoute: typeof IdolsRoute
   LandingPagesRoute: typeof LandingPagesRoute
+  MmdEternalDreamRoute: typeof MmdEternalDreamRoute
   MultipaginasRoute: typeof MultipaginasRoute
   QuioscosRoute: typeof QuioscosRoute
   ValidarRoute: typeof ValidarRoute
@@ -167,6 +241,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/carrito': {
@@ -204,6 +285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LandingPagesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mmd-eternal-dream': {
+      id: '/mmd-eternal-dream'
+      path: '/mmd-eternal-dream'
+      fullPath: '/mmd-eternal-dream'
+      preLoaderRoute: typeof MmdEternalDreamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/multipaginas': {
       id: '/multipaginas'
       path: '/multipaginas'
@@ -225,6 +313,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ValidarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/compras-idols': {
+      id: '/admin/compras-idols'
+      path: '/compras-idols'
+      fullPath: '/admin/compras-idols'
+      preLoaderRoute: typeof AdminComprasIdolsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/estadisticas': {
+      id: '/admin/estadisticas'
+      path: '/estadisticas'
+      fullPath: '/admin/estadisticas'
+      preLoaderRoute: typeof AdminEstadisticasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/paginas': {
+      id: '/admin/paginas'
+      path: '/paginas'
+      fullPath: '/admin/paginas'
+      preLoaderRoute: typeof AdminPaginasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/usuarios': {
+      id: '/admin/usuarios'
+      path: '/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AdminUsuariosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/producto/$productId': {
       id: '/producto/$productId'
       path: '/producto/$productId'
@@ -235,13 +351,31 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminComprasIdolsRoute: typeof AdminComprasIdolsRoute
+  AdminEstadisticasRoute: typeof AdminEstadisticasRoute
+  AdminPaginasRoute: typeof AdminPaginasRoute
+  AdminUsuariosRoute: typeof AdminUsuariosRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminComprasIdolsRoute: AdminComprasIdolsRoute,
+  AdminEstadisticasRoute: AdminEstadisticasRoute,
+  AdminPaginasRoute: AdminPaginasRoute,
+  AdminUsuariosRoute: AdminUsuariosRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   CarritoRoute: CarritoRoute,
   DatosRoute: DatosRoute,
   FacturaRoute: FacturaRoute,
   IdolsRoute: IdolsRoute,
   LandingPagesRoute: LandingPagesRoute,
+  MmdEternalDreamRoute: MmdEternalDreamRoute,
   MultipaginasRoute: MultipaginasRoute,
   QuioscosRoute: QuioscosRoute,
   ValidarRoute: ValidarRoute,
