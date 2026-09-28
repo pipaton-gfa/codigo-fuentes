@@ -101,7 +101,7 @@ function Index() {
       <section id="servicios" className="source-services">
         <div className="source-services-heading">
           <h2>Nuestros servicios</h2>
-          <p>Elige una barra para ver ejemplos y cotizar directamente.</p>
+          <p>Elige una barra para ver nuestros trabajos.</p>
         </div>
         <div className="source-service-list">
           <Link to="/landing-pages" className="source-service source-service-short source-reveal-service">
@@ -111,12 +111,12 @@ function Index() {
           </Link>
           <Link to="/quioscos" className="source-service source-service-medium source-reveal-service">
             <span className="source-service-icon"><ShoppingCart aria-hidden="true" /></span>
-            <span className="source-service-copy"><strong>Quioscos con carritos de compra</strong><small>Ventas en línea con pagos integrados con Mercado Pago</small></span>
+            <span className="source-service-copy"><strong>tiendas con carritos de compra</strong><small>Ventas en línea con pagos integrados con Mercado Pago</small></span>
             <ArrowRight aria-hidden="true" />
           </Link>
           <Link to="/multipaginas" className="source-service source-service-long source-reveal-service">
             <span className="source-service-icon"><LayoutTemplate aria-hidden="true" /></span>
-            <span className="source-service-copy"><strong>Multipáginas enlazadas</strong><small>Sitios corporativos completos con múltiples secciones conectadas</small></span>
+            <span className="source-service-copy"><strong>proximamente</strong><small>proximamente</small></span>
             <ArrowRight aria-hidden="true" />
           </Link>
         </div>
@@ -142,7 +142,7 @@ function Index() {
             <h4>Contáctame</h4>
             <p><a className="source-contact" href="mailto:gabriel.fer.fuentes@gmail.com">gabriel.fer.fuentes@gmail.com</a></p>
             <p><a className="source-contact" href="tel:+56952128607"><Phone aria-hidden="true" /> +56 9 5212 8607</a></p>
-            <p><a className="source-contact" href="https://www.instagram.com/codigo_fuentes95" target="_blank" rel="noopener noreferrer">@codigo_fuentes95</a></p>
+            <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer">@landing_fuentes</a></p>
           </div>
         </div>
         <p className="source-copyright">© 2026 Landing Fuentes. Todos los derechos reservados.</p>
