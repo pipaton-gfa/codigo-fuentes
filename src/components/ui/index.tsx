@@ -135,12 +135,12 @@ function Index() {
           </div>
           <div>
             <h4>Información legal</h4>
-            <p><a href="mailto:gabriel.fer.fuentes@gmail.com?subject=Términos%20de%20privacidad">Términos de privacidad</a></p>
-            <p><a href="mailto:gabriel.fer.fuentes@gmail.com?subject=Términos%20de%20uso">Términos de uso</a></p>
+            <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20privacidad">Términos de privacidad</a></p>
+            <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20uso">Términos de uso</a></p>
           </div>
           <div>
             <h4>Contáctame</h4>
-            <p><a className="source-contact" href="mailto:gabriel.fer.fuentes@gmail.com">gabriel.fuentes@landingfuentes.online</a></p>
+            <p><a className="source-contact" href="mailto:gabriel.fuentes@landingfuentes.online">gabriel.fuentes@landingfuentes.online</a></p>
             <p><a className="source-contact" href="tel:+56952128607"><Phone aria-hidden="true" /> +56 9 5212 8607</a></p>
             <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer">@landing_fuentes</a></p>
           </div>
