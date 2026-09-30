@@ -146,6 +146,7 @@ function Index() {
           z-index: 0;
         }
 
+        /* Las cintas quedan por debajo del contenido principal pero por encima del fondo del footer */
         .page-wave-svg {
           position: fixed;
           top: 0;
@@ -168,11 +169,11 @@ function Index() {
           }
         }
 
-        /* Capa de contenido por encima de las cintas (z-index 10) */
+        /* Contenedor general de contenido siempre por encima de las cintas */
         .content-layer {
           position: relative;
           z-index: 10;
-          background: rgba(0, 5, 15, 0.4);
+          background: transparent;
           min-height: 100vh;
         }
 
@@ -352,6 +353,8 @@ function Index() {
             id="contacto" 
             className="source-footer scroll-reveal"
             style={{
+              position: "relative",
+              zIndex: 1,
               backgroundImage: "linear-gradient(to bottom, rgba(0, 10, 20, 0.95) 0%, rgba(0, 70, 120, 0.7) 40%, rgba(150, 230, 255, 0.9) 85%, rgba(255, 255, 255, 1) 100%)",
               backgroundBlendMode: "normal",
               padding: "4rem 2rem 2rem 2rem",
@@ -360,7 +363,7 @@ function Index() {
               borderTop: "1px solid rgba(0, 229, 255, 0.3)"
             }}
           >
-            <div className="source-footer-grid" style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "2rem" }}>
+            <div className="source-footer-grid" style={{ position: "relative", zIndex: 10, maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "2rem" }}>
               <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
                 <h3 style={{ color: "#00e5ff" }}>Landing Fuentes</h3>
                 <p>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores, empresas y productores de eventos.</p>
@@ -382,7 +385,7 @@ function Index() {
                 <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer" style={{ color: "#fff", textDecoration: "none" }}>@landing_fuentes</a></p>
               </div>
             </div>
-            <p className="source-copyright" style={{ textAlign: "center", marginTop: "2rem", fontWeight: "bold", color: "#000" }}>© 2026 Landing Fuentes. Todos los derechos reservados.</p>
+            <p className="source-copyright" style={{ position: "relative", zIndex: 10, textAlign: "center", marginTop: "2rem", fontWeight: "bold", color: "#000" }}>© 2026 Landing Fuentes. Todos los derechos reservados.</p>
           </footer>
         </main>
       </div>
