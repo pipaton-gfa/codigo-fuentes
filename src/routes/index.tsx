@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, LayoutTemplate, MonitorSmartphone, Phone, ShoppingCart, Instagram, ExternalLink } from "lucide-react";
+import { ArrowRight, LayoutTemplate, MonitorSmartphone, Phone, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -87,6 +87,35 @@ function FlowRibbons({ side }: { side: "left" | "right" }) {
         />
       </g>
     </svg>
+  );
+}
+
+{/* COMPONENTE WIDGET LIGHTWIDGET DE INSTAGRAM */}
+function ExternalInstagramWidget() {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.lightwidget.com/widgets/lightwidget.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <section id="instagram-feed" style={{ padding: "0 1rem 2rem 1rem", maxWidth: "1000px", margin: "0 auto" }}>
+      <div className="glass-panel scroll-reveal" style={{ padding: "1.5rem", overflow: "hidden" }}>
+        <iframe 
+          src="//lightwidget.com/widgets/8ddfd1eccf795c11ab27f31ad7a4f002.html" 
+          scrolling="no" 
+          allowTransparency="true" 
+          className="lightwidget-widget" 
+          style={{ width: "100%", border: 0, overflow: "hidden" }}
+          title="Feed de Instagram de Landing Fuentes"
+        ></iframe>
+      </div>
+    </section>
   );
 }
 
@@ -258,30 +287,6 @@ function Index() {
           .neon-3d-title { animation: none; transform: none; }
           .scroll-reveal { transition: none; opacity: 1; transform: none; }
         }
-
-        /* Estilos para el scroll del widget de Instagram */
-        .instagram-scroll::-webkit-scrollbar {
-          width: 8px;
-        }
-        .instagram-scroll::-webkit-scrollbar-track {
-          background: rgba(0, 15, 30, 0.5);
-          border-radius: 4px;
-        }
-        .instagram-scroll::-webkit-scrollbar-thumb {
-          background: rgba(0, 229, 255, 0.4);
-          border-radius: 4px;
-        }
-        .instagram-scroll::-webkit-scrollbar-thumb:hover {
-          background: rgba(0, 229, 255, 0.7);
-        }
-        
-        .ig-post-item {
-          transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-        .ig-post-item:hover {
-          transform: scale(0.98);
-          opacity: 0.8;
-        }
       `}</style>
 
       <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
@@ -371,67 +376,8 @@ function Index() {
             </div>
           </section>
 
-          {/* INSTAGRAM FEED CONTAINER */}
-          <section id="instagram-feed" style={{ padding: "0 1rem 2rem 1rem", maxWidth: "1000px", margin: "0 auto" }}>
-            <div className="glass-panel scroll-reveal" style={{ padding: "1.5rem", display: "flex", flexDirection: "column" }}>
-              
-              {/* Widget Header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(0, 229, 255, 0.2)", paddingBottom: "1rem", marginBottom: "1rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <Instagram size={24} color="#00e5ff" />
-                  <span style={{ fontSize: "1.1rem", fontWeight: "bold" }}>Instagram</span>
-                </div>
-                <a href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer" style={{ color: "#00e5ff", transition: "color 0.2s" }} aria-label="Abrir Instagram">
-                  <ExternalLink size={20} />
-                </a>
-              </div>
-
-              {/* Scrollable Content */}
-              <div className="instagram-scroll" style={{ overflowY: "auto", maxHeight: "380px", paddingRight: "0.75rem" }}>
-                
-                {/* Profile Info */}
-                <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "2rem" }}>
-                  <div style={{ width: "80px", height: "80px", borderRadius: "50%", border: "2px solid #00e5ff", padding: "2px", flexShrink: 0, overflow: "hidden", background: "#fff" }}>
-                    <img src="/logo-cf.png" alt="Landing Fuentes" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
-                  </div>
-                  <div>
-                    <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.2rem", fontWeight: "bold", color: "#fff" }}>landing_fuentes</h3>
-                    <h4 style={{ margin: "0 0 0.5rem 0", fontSize: "0.95rem", color: "#a0c4e0", fontWeight: "normal" }}>Landing Fuentes</h4>
-                    <div style={{ display: "flex", gap: "1rem", fontSize: "0.9rem", color: "#e0f2fe" }}>
-                      <span><strong>Nuevas</strong> publicaciones</span>
-                      <span>Soporte <strong>activo</strong></span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Posts Grid Simulation */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "4px" }}>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
-                    <a 
-                      key={item} 
-                      href="https://www.instagram.com/landing_fuentes/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="ig-post-item"
-                      style={{ 
-                        display: "block", 
-                        aspectRatio: "1/1", 
-                        background: `linear-gradient(135deg, rgba(0, 25, 45, 0.9), rgba(0, 100, 150, 0.${item + 2}))`, 
-                        borderRadius: "4px",
-                        position: "relative",
-                        overflow: "hidden",
-                        border: "1px solid rgba(0, 229, 255, 0.1)"
-                      }}
-                    >
-                      <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.6 }}>
-                        <Instagram size={28} color="#00e5ff" />
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
+          {/* WIDGET DE INSTAGRAM (LIGHTWIDGET) */}
+          <ExternalInstagramWidget />
 
           <footer 
             id="contacto" 
