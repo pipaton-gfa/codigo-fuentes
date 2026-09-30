@@ -59,17 +59,31 @@ function FlowRibbons({ side }: { side: "left" | "right" }) {
         <path
           d="M-60 -60 C 120 140, -20 340, 110 560 C 230 760, -10 940, 120 1160 C 240 1360, 10 1500, 90 1660 L -60 1660 Z"
           fill={`url(#fw-blue-${side})`}
-          opacity="0.45"
+          opacity="0.55"
         />
         <path
           d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660 L -60 1660 Z"
           fill={`url(#fw-cyan-${side})`}
-          opacity="0.6"
+          opacity="0.7"
         />
         <path
           d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660 L -60 1660 Z"
           fill={`url(#fw-orange-${side})`}
-          opacity="0.7"
+          opacity="0.8"
+        />
+        <path
+          d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660"
+          fill="none"
+          stroke="oklch(0.92 0.1 200)"
+          strokeWidth="6"
+          opacity="0.8"
+        />
+        <path
+          d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660"
+          fill="none"
+          stroke="oklch(0.88 0.16 65)"
+          strokeWidth="5"
+          opacity="0.85"
         />
       </g>
     </svg>
@@ -121,13 +135,14 @@ function Index() {
   return (
     <div style={{ width: "100%", minHeight: "100vh", overflowX: "hidden", position: "relative", backgroundColor: "#ffffff", color: "#1e293b" }}>
       <style>{`
+        /* Las cintas se ubican justo sobre el fondo blanco (z-index: 2) */
         .page-wave-svg {
           position: fixed;
           top: 0;
           bottom: 0;
           height: 100vh;
           width: 250px;
-          z-index: 5;
+          z-index: 2;
           pointer-events: none;
         }
         .page-wave-svg-left {
@@ -139,10 +154,11 @@ function Index() {
         @media (max-width: 768px) {
           .page-wave-svg {
             width: 120px;
-            opacity: 0.35;
+            opacity: 0.6;
           }
         }
 
+        /* Contenido por encima de las cintas (z-index: 10) */
         .content-layer {
           position: relative;
           z-index: 10;
@@ -156,14 +172,14 @@ function Index() {
         }
 
         .glass-panel {
-          background: rgba(255, 255, 255, 0.85);
+          background: rgba(255, 255, 255, 0.92);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(0, 150, 220, 0.2);
+          border: 1px solid rgba(0, 150, 220, 0.25);
           border-radius: 16px;
           padding: 2rem;
           margin-bottom: 2rem;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.9);
           color: #0f172a;
         }
 
@@ -183,8 +199,8 @@ function Index() {
         .source-service-list > *:nth-child(3) { transition-delay: 0.3s; }
 
         .marketing-card {
-          background: rgba(248, 250, 252, 0.9);
-          border: 1px solid rgba(0, 150, 220, 0.2);
+          background: rgba(245, 248, 252, 0.95);
+          border: 1px solid rgba(0, 150, 220, 0.25);
           border-radius: 12px;
           transition: all 0.4s ease;
           position: relative;
