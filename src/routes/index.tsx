@@ -35,6 +35,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [heroTransform, setHeroTransform] = useState("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
   const [isHoveringHero, setIsHoveringHero] = useState(false);
+  const [titleTransform, setTitleTransform] = useState("perspective(1000px) translateY(0px) rotateX(0deg)");
 
   useEffect(() => {
     const services = document.querySelectorAll<HTMLElement>(".source-reveal-service");
@@ -89,6 +90,27 @@ function Index() {
   }, []);
   */
 
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) return;
+
+    let frame = 0;
+    const animateTitle = () => {
+      const time = Date.now() / 400; 
+      const bounce = Math.abs(Math.sin(time));
+      const y = -bounce * 10; // Efecto de rebote hacia arriba
+      const rotateX = bounce * 15; // Efecto 3D de inclinación al rebotar
+      
+      setTitleTransform(`perspective(1000px) translateY(${y}px) rotateX(${rotateX}deg)`);
+      frame = requestAnimationFrame(animateTitle);
+    };
+
+    animateTitle();
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
   const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - left) / width - 0.5;
@@ -111,7 +133,15 @@ function Index() {
       <SiteHeader />
 
       <section id="inicio" className="source-intro">
-        <h1>Tu éxito digital, hecho con <span>inteligencia y cariño</span></h1>
+        <h1 style={{
+          color: "#00e5ff",
+          textShadow: "0 0 10px rgba(0, 229, 255, 0.8), 0 0 20px rgba(0, 229, 255, 0.6), 0 0 30px rgba(0, 229, 255, 0.4), 0px 10px 15px rgba(0, 0, 0, 0.9)",
+          transform: titleTransform,
+          willChange: "transform",
+          display: "block"
+        }}>
+          Tu éxito digital, hecho con <span style={{ color: "#00e5ff", textShadow: "inherit" }}>inteligencia y cariño</span>
+        </h1>
         <p>En <strong>Landing Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.</p>
         <p className="source-instruction">Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.</p>
         <div 
