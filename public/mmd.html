@@ -134,6 +134,29 @@
     .ticket-price { display: block; margin-top: 14px; color: #e45c95; font-family: Fredoka, sans-serif; font-size: 2rem; }
     .ticket-note { color: #db8e65; font-size: .85rem; font-weight: 700; }
 
+    /* ESTILOS NUEVOS PARA ENTRADA AGOTADA */
+    .sold-out-wrapper { position: relative; margin-bottom: 20px; }
+    .sold-out-content { text-decoration: line-through; opacity: 0.55; }
+    .sold-out-stamp { 
+      position: absolute; 
+      top: 40%; 
+      left: 45%; 
+      transform: translate(-50%, -50%) rotate(-12deg); 
+      color: #d94263; 
+      border: 4px solid #d94263; 
+      border-radius: 12px; 
+      padding: 4px 18px; 
+      font-family: Fredoka, sans-serif; 
+      font-size: 2.2rem; 
+      font-weight: 700; 
+      text-transform: uppercase; 
+      letter-spacing: 2px; 
+      background: rgb(255 255 255 / 90%); 
+      box-shadow: 0 8px 20px rgb(217 66 99 / 20%); 
+      pointer-events: none; 
+      z-index: 2; 
+    }
+
     .lineup-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(14px, 3vw, 28px); justify-items: center; }
     .circle-logo { position: relative; display: grid; width: clamp(130px, 18vw, 190px); aspect-ratio: 1; place-items: center; overflow: hidden; border: 5px solid #fff; border-radius: 50%; background: linear-gradient(135deg, var(--pink), var(--blue)); box-shadow: 0 0 0 4px rgb(255 207 117 / 70%), 0 0 24px rgb(255 182 193 / 70%); color: #fff; font-family: Fredoka, sans-serif; font-size: .85rem; text-align: center; transition: transform .65s cubic-bezier(.2,.8,.2,1), box-shadow .35s; }
     .circle-logo img { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; object-fit: contain; background: #fff; transform: scale(1.15); transition: transform .65s, filter .35s; }
@@ -230,7 +253,22 @@
       <div class="event-grid">
         <article class="card event-card-full">
           <div><h3>📍 Coordenadas</h3><p><strong>CREAROCK</strong><br>Carmen 973, Santiago</p><p><strong>Domingo 8 de Noviembre</strong><br>Open: 12:00 · Start: 12:15</p></div>
-          <div><h3>🎟️ Entradas</h3><p><strong>Eternal Dream</strong> <span class="ticket-note">POCAS UNIDADES</span><br>Ticket + lugar preferencial + mini póster + DecoCheki.</p><strong class="ticket-price">$6.000</strong><p><strong>Dreamer</strong><br>Ticket general para acompañar este cierre.</p><strong class="ticket-price">$4.500</strong></div>
+          <div>
+            <h3>🎟️ Entradas</h3>
+            
+            <!-- CONTENEDOR DE ENTRADA AGOTADA -->
+            <div class="sold-out-wrapper">
+              <div class="sold-out-content">
+                <p><strong>Eternal Dream</strong> <span class="ticket-note" style="color: #d94263;">AGOTADAS</span><br>Ticket + lugar preferencial + mini póster + DecoCheki.</p>
+                <strong class="ticket-price">$6.000</strong>
+              </div>
+              <span class="sold-out-stamp">Agotado</span>
+            </div>
+            <!-- FIN CONTENEDOR AGOTADO -->
+
+            <p><strong>Dreamer</strong><br>Ticket general para acompañar este cierre.</p>
+            <strong class="ticket-price">$4.500</strong>
+          </div>
           <a class="button button-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSea6TL7rLzQl5xdq9lvbmo-U162bxToAVe1C197Kt1MX2qwQA/viewform" target="_blank" rel="noopener noreferrer">Compra aquí</a>
         </article>
         <figure class="event-flyer"><img src="mmd-assets/flyer-evento.jpeg" alt="Flyer de Last Chapter: Eternal Dream"></figure>
