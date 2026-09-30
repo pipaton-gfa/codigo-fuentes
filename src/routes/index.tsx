@@ -146,7 +146,6 @@ function Index() {
           z-index: 0;
         }
 
-        /* Las cintas quedan por debajo del contenido principal pero por encima del fondo del footer */
         .page-wave-svg {
           position: fixed;
           top: 0;
@@ -169,12 +168,17 @@ function Index() {
           }
         }
 
-        /* Contenedor general de contenido siempre por encima de las cintas */
         .content-layer {
           position: relative;
           z-index: 10;
           background: transparent;
           min-height: 100vh;
+        }
+
+        /* Forzamos que la cabecera flote con prioridad alta y fondo transparente o integrado */
+        header {
+          position: relative;
+          z-index: 20;
         }
 
         .glass-panel {
