@@ -32,12 +32,74 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+function FlowRibbons({ side }: { side: "left" | "right" }) {
+  const flip = side === "right";
+  return (
+    <svg
+      aria-hidden="true"
+      className={`page-wave-svg ${flip ? "page-wave-svg-right" : "page-wave-svg-left"}`}
+      viewBox="0 0 320 1600"
+      preserveAspectRatio="none"
+    >
+      <defs>
+        <linearGradient id={`fw-orange-${side}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="oklch(0.78 0.2 55)" />
+          <stop offset="100%" stopColor="oklch(0.66 0.19 40)" />
+        </linearGradient>
+        <linearGradient id={`fw-cyan-${side}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="oklch(0.85 0.14 205)" />
+          <stop offset="100%" stopColor="oklch(0.7 0.15 220)" />
+        </linearGradient>
+        <linearGradient id={`fw-blue-${side}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="oklch(0.62 0.16 240)" />
+          <stop offset="100%" stopColor="oklch(0.5 0.15 250)" />
+        </linearGradient>
+      </defs>
+      <g transform={flip ? "translate(320 0) scale(-1 1)" : undefined}>
+        {/* cinta azul: serpenteo amplio pegado al borde */}
+        <path
+          d="M-60 -60 C 120 140, -20 340, 110 560 C 230 760, -10 940, 120 1160 C 240 1360, 10 1500, 90 1660 L -60 1660 Z"
+          fill={`url(#fw-blue-${side})`}
+          opacity="0.55"
+        />
+        {/* cinta cian: onda media que cruza la azul */}
+        <path
+          d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660 L -60 1660 Z"
+          fill={`url(#fw-cyan-${side})`}
+          opacity="0.7"
+        />
+        {/* cinta naranja: onda fina y brillante por encima */}
+        <path
+          d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660 L -60 1660 Z"
+          fill={`url(#fw-orange-${side})`}
+          opacity="0.8"
+        />
+        {/* filo de luz cian */}
+        <path
+          d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660"
+          fill="none"
+          stroke="oklch(0.92 0.1 200)"
+          strokeWidth="6"
+          opacity="0.8"
+        />
+        {/* filo de luz naranja */}
+        <path
+          d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660"
+          fill="none"
+          stroke="oklch(0.88 0.16 65)"
+          strokeWidth="5"
+          opacity="0.85"
+        />
+      </g>
+    </svg>
+  );
+}
+
 function Index() {
   const [heroTransform, setHeroTransform] = useState("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
   const [isHoveringHero, setIsHoveringHero] = useState(false);
 
   useEffect(() => {
-    // Actualizamos el observer para que tome todos los elementos con la clase "scroll-reveal"
     const revealElements = document.querySelectorAll<HTMLElement>(".scroll-reveal");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -51,7 +113,6 @@ function Index() {
         if (entry.isIntersecting) {
           entry.target.classList.add("is-visible");
         } else {
-          // Opcional: remover para que vuelva a animarse si el usuario sube
           entry.target.classList.remove("is-visible");
         }
       });
@@ -96,7 +157,6 @@ function Index() {
     const x = (e.clientX - left) / width - 0.5;
     const y = (e.clientY - top) / height - 0.5;
     
-    // Movimiento notorio con efecto 3D del heroe (intacto)
     const rotateY = x * 40; 
     const rotateX = y * -40;
     setHeroTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`);
@@ -119,8 +179,32 @@ function Index() {
           height: 120%;
           background: linear-gradient(135deg, #010a15, #002845, #001225);
           filter: url(#water-filter);
-          z-index: -1;
+          z-index: -2;
         }
+
+        /* Estilos de las cintas laterales */
+        .page-wave-svg {
+          position: fixed;
+          top: 0;
+          bottom: 0;
+          height: 100vh;
+          width: 250px;
+          z-index: -1;
+          pointer-events: none;
+        }
+        .page-wave-svg-left {
+          left: 0;
+        }
+        .page-wave-svg-right {
+          right: 0;
+        }
+        @media (max-width: 768px) {
+          .page-wave-svg {
+            width: 120px;
+            opacity: 0.4;
+          }
+        }
+
         .content-layer {
           position: relative;
           z-index: 1;
@@ -128,7 +212,6 @@ function Index() {
           min-height: 100vh;
         }
 
-        /* Contenedores Glassmorphism (Psicología de marketing: orden, claridad y confianza) */
         .glass-panel {
           background: rgba(0, 15, 30, 0.6);
           backdrop-filter: blur(12px);
@@ -140,7 +223,6 @@ function Index() {
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
-        /* Transiciones de revelado mejoradas (más flotantes y premium) */
         .scroll-reveal {
           opacity: 0;
           transform: translateY(40px) scale(0.98);
@@ -151,12 +233,10 @@ function Index() {
           transform: translateY(0) scale(1);
         }
         
-        /* Retraso en escalera para los servicios */
         .source-service-list > *:nth-child(1) { transition-delay: 0.1s; }
         .source-service-list > *:nth-child(2) { transition-delay: 0.2s; }
         .source-service-list > *:nth-child(3) { transition-delay: 0.3s; }
 
-        /* Tarjetas de servicios interactivas */
         .marketing-card {
           background: rgba(0, 25, 45, 0.7);
           border: 1px solid rgba(0, 229, 255, 0.2);
@@ -184,7 +264,6 @@ function Index() {
           left: 150%;
         }
 
-        /* Animación 3D rebote con neón (Intacta) */
         .neon-3d-title {
           color: #00e5ff !important;
           display: inline-block;
@@ -217,7 +296,6 @@ function Index() {
         }
       `}</style>
 
-      {/* Filtro SVG para el efecto de agua de fondo */}
       <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
         <filter id="water-filter">
           <feTurbulence type="fractalNoise" baseFrequency="0.005 0.01" numOctaves="2" result="noise">
@@ -228,13 +306,16 @@ function Index() {
       </svg>
 
       <div className="react-water-background" />
+      
+      {/* Cintas decorativas */}
+      <FlowRibbons side="left" />
+      <FlowRibbons side="right" />
 
       <div className="content-layer">
         <main className="source-index">
           <SiteHeader />
 
           <section id="inicio" className="source-intro" style={{ padding: "4rem 1rem" }}>
-            {/* Contenedor tipo panel para el texto introductorio */}
             <div className="glass-panel scroll-reveal" style={{ maxWidth: "800px", margin: "0 auto 3rem auto", textAlign: "center" }}>
               <h1 className="neon-3d-title">
                 Tu éxito digital, hecho con <span>inteligencia y cariño</span>
@@ -247,7 +328,6 @@ function Index() {
               </p>
             </div>
 
-            {/* Imagen del héroe con la animación intacta */}
             <div 
               className="source-hero-image scroll-reveal"
               onMouseMove={handleHeroMouseMove}
@@ -308,12 +388,11 @@ function Index() {
             id="contacto" 
             className="source-footer scroll-reveal"
             style={{
-              // Barrido más fuerte aclarando hacia abajo: inicia oscuro y rompe agresivamente a un cian brillante/blanco en la base
               backgroundImage: "linear-gradient(to bottom, rgba(0, 10, 20, 0.95) 0%, rgba(0, 70, 120, 0.7) 40%, rgba(150, 230, 255, 0.9) 85%, rgba(255, 255, 255, 1) 100%)",
               backgroundBlendMode: "normal",
               padding: "4rem 2rem 2rem 2rem",
               marginTop: "2rem",
-              color: "#001225", // Texto se oscurece para contrastar con la base brillante
+              color: "#001225",
               borderTop: "1px solid rgba(0, 229, 255, 0.3)"
             }}
           >
