@@ -59,30 +59,16 @@ function FlowRibbons({ side }: { side: "left" | "right" }) {
         <path
           d="M-60 -60 C 120 140, -20 340, 110 560 C 230 760, -10 940, 120 1160 C 240 1360, 10 1500, 90 1660 L -60 1660 Z"
           fill={`url(#fw-blue-${side})`}
-          opacity="0.55"
+          opacity="0.65"
         />
         <path
           d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660 L -60 1660 Z"
           fill={`url(#fw-cyan-${side})`}
-          opacity="0.7"
+          opacity="0.75"
         />
         <path
           d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660 L -60 1660 Z"
           fill={`url(#fw-orange-${side})`}
-          opacity="0.8"
-        />
-        <path
-          d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660"
-          fill="none"
-          stroke="oklch(0.92 0.1 200)"
-          strokeWidth="6"
-          opacity="0.8"
-        />
-        <path
-          d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660"
-          fill="none"
-          stroke="oklch(0.88 0.16 65)"
-          strokeWidth="5"
           opacity="0.85"
         />
       </g>
@@ -135,14 +121,16 @@ function Index() {
   return (
     <div style={{ width: "100%", minHeight: "100vh", overflowX: "hidden", position: "relative", backgroundColor: "#ffffff", color: "#1e293b" }}>
       <style>{`
-        /* Las cintas se ubican justo sobre el fondo blanco (z-index: 2) */
+        /* Contenedor raíz (Fondo blanco general): z-index por defecto (0) */
+
+        /* Las cintas quedan por encima del fondo blanco pero por debajo del contenido (z-index: 5) */
         .page-wave-svg {
           position: fixed;
           top: 0;
           bottom: 0;
           height: 100vh;
           width: 250px;
-          z-index: 2;
+          z-index: 5;
           pointer-events: none;
         }
         .page-wave-svg-left {
@@ -154,11 +142,11 @@ function Index() {
         @media (max-width: 768px) {
           .page-wave-svg {
             width: 120px;
-            opacity: 0.6;
+            opacity: 0.7;
           }
         }
 
-        /* Contenido por encima de las cintas (z-index: 10) */
+        /* Capa de contenido general (z-index: 10) */
         .content-layer {
           position: relative;
           z-index: 10;
@@ -171,15 +159,14 @@ function Index() {
           z-index: 20;
         }
 
+        /* Paneles sólidos para que tapen las cintas por donde pasan */
         .glass-panel {
-          background: rgba(255, 255, 255, 0.92);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(0, 150, 220, 0.25);
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
           border-radius: 16px;
           padding: 2rem;
           margin-bottom: 2rem;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
           color: #0f172a;
         }
 
@@ -199,8 +186,8 @@ function Index() {
         .source-service-list > *:nth-child(3) { transition-delay: 0.3s; }
 
         .marketing-card {
-          background: rgba(245, 248, 252, 0.95);
-          border: 1px solid rgba(0, 150, 220, 0.25);
+          background: #f8fafc;
+          border: 1px solid #cbd5e1;
           border-radius: 12px;
           transition: all 0.4s ease;
           position: relative;
@@ -209,16 +196,16 @@ function Index() {
         }
         .marketing-card:hover {
           transform: translateY(-8px) scale(1.02);
-          background: rgba(255, 255, 255, 1);
+          background: #ffffff;
           border-color: #0284c7;
-          box-shadow: 0 15px 35px rgba(2, 132, 199, 0.15), 0 0 15px rgba(2, 132, 199, 0.05) inset;
+          box-shadow: 0 15px 35px rgba(2, 132, 199, 0.12);
         }
         .marketing-card::before {
           content: '';
           position: absolute;
           top: 0; left: -100%;
           width: 50%; height: 100%;
-          background: linear-gradient(to right, transparent, rgba(2, 132, 199, 0.1), transparent);
+          background: linear-gradient(to right, transparent, rgba(2, 132, 199, 0.08), transparent);
           transform: skewX(-25deg);
           transition: 0.5s;
         }
@@ -239,15 +226,13 @@ function Index() {
         @keyframes float-3d-bounce {
           0%, 100% {
             transform: perspective(1000px) translateY(0) rotateX(0deg) scale(1);
-            text-shadow: 0 2px 5px rgba(2, 132, 199, 0.3), 
-                         0 5px 15px rgba(2, 132, 199, 0.2), 
-                         0 10px 20px rgba(0, 0, 0, 0.1);
+            text-shadow: 0 2px 5px rgba(2, 132, 199, 0.2), 
+                         0 5px 15px rgba(2, 132, 199, 0.15);
           }
           50% {
             transform: perspective(1000px) translateY(-15px) rotateX(15deg) scale(1.03);
-            text-shadow: 0 4px 8px rgba(2, 132, 199, 0.4), 
-                         0 8px 20px rgba(2, 132, 199, 0.3), 
-                         0 15px 25px rgba(0, 0, 0, 0.15);
+            text-shadow: 0 4px 8px rgba(2, 132, 199, 0.3), 
+                         0 8px 20px rgba(2, 132, 199, 0.2);
           }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -256,6 +241,7 @@ function Index() {
         }
       `}</style>
 
+      {/* Las cintas quedan entre el fondo blanco (raíz) y el contenido */}
       <FlowRibbons side="left" />
       <FlowRibbons side="right" />
 
@@ -284,8 +270,8 @@ function Index() {
               style={{
                 transform: heroTransform,
                 transition: isHoveringHero ? "transform 0.1s ease-out" : "transform 0.5s ease-out",
-                border: "3px solid rgba(255, 255, 255, 0.9)",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.15), 0 0 15px rgba(2, 132, 199, 0.3)",
+                border: "3px solid #ffffff",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.12), 0 0 15px rgba(2, 132, 199, 0.25)",
                 borderRadius: "16px",
                 zIndex: 10,
                 margin: "0 auto",
@@ -300,7 +286,7 @@ function Index() {
           <section id="servicios" className="source-services" style={{ padding: "4rem 1rem", maxWidth: "1000px", margin: "0 auto" }}>
             <div className="glass-panel scroll-reveal">
               <div className="source-services-heading" style={{ textAlign: "center", marginBottom: "2rem" }}>
-                <h2 style={{ color: "#0f172a", textShadow: "0 1px 2px rgba(255,255,255,0.8)" }}>Nuestros servicios</h2>
+                <h2 style={{ color: "#0f172a" }}>Nuestros servicios</h2>
                 <p style={{ color: "#475569" }}>Elige una barra para ver nuestros trabajos.</p>
               </div>
               <div className="source-service-list" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -342,7 +328,7 @@ function Index() {
               padding: "4rem 2rem 2rem 2rem",
               marginTop: "2rem",
               color: "#0f172a",
-              borderTop: "1px solid rgba(2, 132, 199, 0.2)"
+              borderTop: "1px solid #e2e8f0"
             }}
           >
             <div className="source-footer-grid" style={{ position: "relative", zIndex: 10, maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "2rem" }}>
