@@ -168,9 +168,10 @@ function Index() {
           }
         }
 
+        /* Capa de contenido con z-index superior a las cintas (5) para que todo pase por encima */
         .content-layer {
           position: relative;
-          z-index: 1;
+          z-index: 10;
           background: rgba(0, 5, 15, 0.4);
           min-height: 100vh;
         }
