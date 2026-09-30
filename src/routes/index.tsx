@@ -35,7 +35,6 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [heroTransform, setHeroTransform] = useState("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
   const [isHoveringHero, setIsHoveringHero] = useState(false);
-  const [titleTransform, setTitleTransform] = useState("perspective(1000px) translateY(0px) rotateX(0deg)");
 
   useEffect(() => {
     const services = document.querySelectorAll<HTMLElement>(".source-reveal-service");
@@ -90,27 +89,6 @@ function Index() {
   }, []);
   */
 
-  useEffect(() => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) return;
-
-    let frame = 0;
-    const animateTitle = () => {
-      const time = Date.now() / 400; 
-      const bounce = Math.abs(Math.sin(time));
-      const y = -bounce * 10; // Efecto de rebote hacia arriba
-      const rotateX = bounce * 15; // Efecto 3D de inclinación al rebotar
-      
-      setTitleTransform(`perspective(1000px) translateY(${y}px) rotateX(${rotateX}deg)`);
-      frame = requestAnimationFrame(animateTitle);
-    };
-
-    animateTitle();
-    return () => {
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, []);
-
   const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - left) / width - 0.5;
@@ -130,7 +108,6 @@ function Index() {
 
   return (
     <div style={{ width: "100%", minHeight: "100vh", overflowX: "hidden", position: "relative" }}>
-      {/* Estilos inyectados para el contenedor de agua */}
       <style>{`
         .react-water-background {
           position: fixed;
@@ -145,12 +122,42 @@ function Index() {
         .content-layer {
           position: relative;
           z-index: 1;
-          background: rgba(0, 0, 0, 0.25); /* Ligero oscurecimiento para mayor legibilidad */
+          background: rgba(0, 0, 0, 0.25);
           min-height: 100vh;
+        }
+        /* Animación 3D rebote con neón */
+        .neon-3d-title {
+          color: #00e5ff !important;
+          display: inline-block;
+          animation: float-3d-bounce 3s ease-in-out infinite;
+          transform-style: preserve-3d;
+          margin-bottom: 20px;
+        }
+        .neon-3d-title span {
+          color: #00e5ff !important;
+        }
+        @keyframes float-3d-bounce {
+          0%, 100% {
+            transform: perspective(1000px) translateY(0) rotateX(0deg) scale(1);
+            text-shadow: 0 0 5px rgba(0, 229, 255, 0.8), 
+                         0 0 15px rgba(0, 229, 255, 0.6), 
+                         0 0 30px rgba(0, 229, 255, 0.4), 
+                         0 10px 10px rgba(0, 0, 0, 0.9);
+          }
+          50% {
+            transform: perspective(1000px) translateY(-15px) rotateX(15deg) scale(1.03);
+            text-shadow: 0 0 10px rgba(0, 229, 255, 1), 
+                         0 0 25px rgba(0, 229, 255, 0.8), 
+                         0 0 45px rgba(0, 229, 255, 0.6), 
+                         0 25px 20px rgba(0, 0, 0, 0.5); /* Sombra más alejada dando ilusión de altura */
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .neon-3d-title { animation: none; transform: none; }
         }
       `}</style>
 
-      {/* Filtro SVG para el efecto de agua */}
+      {/* Filtro SVG para el efecto de agua de fondo */}
       <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
         <filter id="water-filter">
           <feTurbulence type="fractalNoise" baseFrequency="0.005 0.01" numOctaves="2" result="noise">
@@ -160,23 +167,16 @@ function Index() {
         </filter>
       </svg>
 
-      {/* Capa de fondo animado */}
       <div className="react-water-background" />
 
-      {/* Capa de contenido principal */}
       <div className="content-layer">
         <main className="source-index">
           <SiteHeader />
 
           <section id="inicio" className="source-intro">
-            <h1 style={{
-              color: "#00e5ff",
-              textShadow: "0 0 10px rgba(0, 229, 255, 0.8), 0 0 20px rgba(0, 229, 255, 0.6), 0 0 30px rgba(0, 229, 255, 0.4), 0px 10px 15px rgba(0, 0, 0, 0.9)",
-              transform: titleTransform,
-              willChange: "transform",
-              display: "block"
-            }}>
-              Tu éxito digital, hecho con <span style={{ color: "#00e5ff", textShadow: "inherit" }}>inteligencia y cariño</span>
+            {/* Título modificado con la clase neon-3d-title */}
+            <h1 className="neon-3d-title">
+              Tu éxito digital, hecho con <span>inteligencia y cariño</span>
             </h1>
             <p>En <strong>Landing Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.</p>
             <p className="source-instruction">Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.</p>
