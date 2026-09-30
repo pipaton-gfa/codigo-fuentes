@@ -37,11 +37,12 @@ function Index() {
   const [isHoveringHero, setIsHoveringHero] = useState(false);
 
   useEffect(() => {
-    const services = document.querySelectorAll<HTMLElement>(".source-reveal-service");
+    // Actualizamos el observer para que tome todos los elementos con la clase "scroll-reveal"
+    const revealElements = document.querySelectorAll<HTMLElement>(".scroll-reveal");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reducedMotion) {
-      services.forEach((service) => service.classList.add("is-visible"));
+      revealElements.forEach((el) => el.classList.add("is-visible"));
       return;
     }
 
@@ -50,12 +51,13 @@ function Index() {
         if (entry.isIntersecting) {
           entry.target.classList.add("is-visible");
         } else {
+          // Opcional: remover para que vuelva a animarse si el usuario sube
           entry.target.classList.remove("is-visible");
         }
       });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
 
-    services.forEach((service) => observer.observe(service));
+    revealElements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
@@ -94,7 +96,7 @@ function Index() {
     const x = (e.clientX - left) / width - 0.5;
     const y = (e.clientY - top) / height - 0.5;
     
-    // Movimiento notorio con efecto 3D
+    // Movimiento notorio con efecto 3D del heroe (intacto)
     const rotateY = x * 40; 
     const rotateX = y * -40;
     setHeroTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`);
@@ -107,7 +109,7 @@ function Index() {
   };
 
   return (
-    <div style={{ width: "100%", minHeight: "100vh", overflowX: "hidden", position: "relative" }}>
+    <div style={{ width: "100%", minHeight: "100vh", overflowX: "hidden", position: "relative", color: "#f0f8ff" }}>
       <style>{`
         .react-water-background {
           position: fixed;
@@ -122,10 +124,67 @@ function Index() {
         .content-layer {
           position: relative;
           z-index: 1;
-          background: rgba(0, 0, 0, 0.25);
+          background: rgba(0, 5, 15, 0.4);
           min-height: 100vh;
         }
-        /* Animación 3D rebote con neón */
+
+        /* Contenedores Glassmorphism (Psicología de marketing: orden, claridad y confianza) */
+        .glass-panel {
+          background: rgba(0, 15, 30, 0.6);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(0, 229, 255, 0.15);
+          border-radius: 16px;
+          padding: 2rem;
+          margin-bottom: 2rem;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        /* Transiciones de revelado mejoradas (más flotantes y premium) */
+        .scroll-reveal {
+          opacity: 0;
+          transform: translateY(40px) scale(0.98);
+          transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .scroll-reveal.is-visible {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+        
+        /* Retraso en escalera para los servicios */
+        .source-service-list > *:nth-child(1) { transition-delay: 0.1s; }
+        .source-service-list > *:nth-child(2) { transition-delay: 0.2s; }
+        .source-service-list > *:nth-child(3) { transition-delay: 0.3s; }
+
+        /* Tarjetas de servicios interactivas */
+        .marketing-card {
+          background: rgba(0, 25, 45, 0.7);
+          border: 1px solid rgba(0, 229, 255, 0.2);
+          border-radius: 12px;
+          transition: all 0.4s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        .marketing-card:hover {
+          transform: translateY(-8px) scale(1.02);
+          background: rgba(0, 40, 70, 0.85);
+          border-color: #00e5ff;
+          box-shadow: 0 15px 35px rgba(0, 229, 255, 0.25), 0 0 15px rgba(0, 229, 255, 0.1) inset;
+        }
+        .marketing-card::before {
+          content: '';
+          position: absolute;
+          top: 0; left: -100%;
+          width: 50%; height: 100%;
+          background: linear-gradient(to right, transparent, rgba(0, 229, 255, 0.1), transparent);
+          transform: skewX(-25deg);
+          transition: 0.5s;
+        }
+        .marketing-card:hover::before {
+          left: 150%;
+        }
+
+        /* Animación 3D rebote con neón (Intacta) */
         .neon-3d-title {
           color: #00e5ff !important;
           display: inline-block;
@@ -149,11 +208,12 @@ function Index() {
             text-shadow: 0 0 10px rgba(0, 229, 255, 1), 
                          0 0 25px rgba(0, 229, 255, 0.8), 
                          0 0 45px rgba(0, 229, 255, 0.6), 
-                         0 25px 20px rgba(0, 0, 0, 0.5); /* Sombra más alejada dando ilusión de altura */
+                         0 25px 20px rgba(0, 0, 0, 0.5);
           }
         }
         @media (prefers-reduced-motion: reduce) {
           .neon-3d-title { animation: none; transform: none; }
+          .scroll-reveal { transition: none; opacity: 1; transform: none; }
         }
       `}</style>
 
@@ -173,15 +233,23 @@ function Index() {
         <main className="source-index">
           <SiteHeader />
 
-          <section id="inicio" className="source-intro">
-            {/* Título modificado con la clase neon-3d-title */}
-            <h1 className="neon-3d-title">
-              Tu éxito digital, hecho con <span>inteligencia y cariño</span>
-            </h1>
-            <p>En <strong>Landing Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.</p>
-            <p className="source-instruction">Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.</p>
+          <section id="inicio" className="source-intro" style={{ padding: "4rem 1rem" }}>
+            {/* Contenedor tipo panel para el texto introductorio */}
+            <div className="glass-panel scroll-reveal" style={{ maxWidth: "800px", margin: "0 auto 3rem auto", textAlign: "center" }}>
+              <h1 className="neon-3d-title">
+                Tu éxito digital, hecho con <span>inteligencia y cariño</span>
+              </h1>
+              <p style={{ fontSize: "1.15rem", lineHeight: "1.6", color: "#e0f2fe", marginBottom: "1rem" }}>
+                En <strong>Landing Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.
+              </p>
+              <p className="source-instruction" style={{ color: "#00e5ff", fontWeight: "bold", letterSpacing: "0.5px" }}>
+                Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.
+              </p>
+            </div>
+
+            {/* Imagen del héroe con la animación intacta */}
             <div 
-              className="source-hero-image"
+              className="source-hero-image scroll-reveal"
               onMouseMove={handleHeroMouseMove}
               onMouseEnter={handleHeroMouseEnter}
               onMouseLeave={handleHeroMouseLeave}
@@ -191,7 +259,9 @@ function Index() {
                 border: "3px solid rgba(255, 255, 255, 0.8)",
                 boxShadow: "0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.7), 0 0 15px rgba(0, 180, 255, 0.8)",
                 borderRadius: "16px",
-                zIndex: 10
+                zIndex: 10,
+                margin: "0 auto",
+                display: "block"
               }}
             >
               <img className="source-hero-water" src="/descarga.gif" alt="Fuente de agua digital cristalina con reflejos celestes y corrientes limpias" />
@@ -199,61 +269,77 @@ function Index() {
             </div>
           </section>
 
-          <section id="servicios" className="source-services">
-            <div className="source-services-heading">
-              <h2>Nuestros servicios</h2>
-              <p>Elige una barra para ver nuestros trabajos.</p>
-            </div>
-            <div className="source-service-list">
-              <Link to="/landing-pages" className="source-service source-service-short source-reveal-service">
-                <span className="source-service-icon"><MonitorSmartphone aria-hidden="true" /></span>
-                <span className="source-service-copy"><strong>Landing pages</strong><small>Página directa y atractiva para captar clientes</small></span>
-                <ArrowRight aria-hidden="true" />
-              </Link>
-              <Link to="/quioscos" className="source-service source-service-medium source-reveal-service">
-                <span className="source-service-icon"><ShoppingCart aria-hidden="true" /></span>
-                <span className="source-service-copy"><strong>tiendas con carritos de compra</strong><small>Ventas en línea con pagos integrados con Mercado Pago</small></span>
-                <ArrowRight aria-hidden="true" />
-              </Link>
-              <Link to="/multipaginas" className="source-service source-service-long source-reveal-service">
-                <span className="source-service-icon"><LayoutTemplate aria-hidden="true" /></span>
-                <span className="source-service-copy"><strong>proximamente</strong><small>proximamente</small></span>
-                <ArrowRight aria-hidden="true" />
-              </Link>
+          <section id="servicios" className="source-services" style={{ padding: "4rem 1rem", maxWidth: "1000px", margin: "0 auto" }}>
+            <div className="glass-panel scroll-reveal">
+              <div className="source-services-heading" style={{ textAlign: "center", marginBottom: "2rem" }}>
+                <h2 style={{ color: "#ffffff", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>Nuestros servicios</h2>
+                <p style={{ color: "#b0d4ff" }}>Elige una barra para ver nuestros trabajos.</p>
+              </div>
+              <div className="source-service-list" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                <Link to="/landing-pages" className="source-service source-service-short scroll-reveal marketing-card" style={{ padding: "1.5rem", display: "flex", alignItems: "center", color: "#fff", textDecoration: "none" }}>
+                  <span className="source-service-icon" style={{ marginRight: "1rem", color: "#00e5ff" }}><MonitorSmartphone aria-hidden="true" size={32} /></span>
+                  <span className="source-service-copy" style={{ flexGrow: 1 }}>
+                    <strong style={{ display: "block", fontSize: "1.2rem", marginBottom: "0.25rem" }}>Landing pages</strong>
+                    <small style={{ color: "#a0c4e0", fontSize: "0.9rem" }}>Página directa y atractiva para captar clientes</small>
+                  </span>
+                  <ArrowRight aria-hidden="true" style={{ color: "#00e5ff" }} />
+                </Link>
+                <Link to="/quioscos" className="source-service source-service-medium scroll-reveal marketing-card" style={{ padding: "1.5rem", display: "flex", alignItems: "center", color: "#fff", textDecoration: "none" }}>
+                  <span className="source-service-icon" style={{ marginRight: "1rem", color: "#00e5ff" }}><ShoppingCart aria-hidden="true" size={32} /></span>
+                  <span className="source-service-copy" style={{ flexGrow: 1 }}>
+                    <strong style={{ display: "block", fontSize: "1.2rem", marginBottom: "0.25rem" }}>Tiendas con carritos de compra</strong>
+                    <small style={{ color: "#a0c4e0", fontSize: "0.9rem" }}>Ventas en línea con pagos integrados con Mercado Pago</small>
+                  </span>
+                  <ArrowRight aria-hidden="true" style={{ color: "#00e5ff" }} />
+                </Link>
+                <Link to="/multipaginas" className="source-service source-service-long scroll-reveal marketing-card" style={{ padding: "1.5rem", display: "flex", alignItems: "center", color: "#fff", textDecoration: "none" }}>
+                  <span className="source-service-icon" style={{ marginRight: "1rem", color: "#00e5ff" }}><LayoutTemplate aria-hidden="true" size={32} /></span>
+                  <span className="source-service-copy" style={{ flexGrow: 1 }}>
+                    <strong style={{ display: "block", fontSize: "1.2rem", marginBottom: "0.25rem" }}>Próximamente</strong>
+                    <small style={{ color: "#a0c4e0", fontSize: "0.9rem" }}>Multipáginas enlazadas</small>
+                  </span>
+                  <ArrowRight aria-hidden="true" style={{ color: "#00e5ff" }} />
+                </Link>
+              </div>
             </div>
           </section>
 
           <footer 
             id="contacto" 
-            className="source-footer"
+            className="source-footer scroll-reveal"
             style={{
-              backgroundImage: "linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(255,255,255,0.3) 100%)",
-              backgroundBlendMode: "overlay"
+              // Barrido más fuerte aclarando hacia abajo: inicia oscuro y rompe agresivamente a un cian brillante/blanco en la base
+              backgroundImage: "linear-gradient(to bottom, rgba(0, 10, 20, 0.95) 0%, rgba(0, 70, 120, 0.7) 40%, rgba(150, 230, 255, 0.9) 85%, rgba(255, 255, 255, 1) 100%)",
+              backgroundBlendMode: "normal",
+              padding: "4rem 2rem 2rem 2rem",
+              marginTop: "2rem",
+              color: "#001225", // Texto se oscurece para contrastar con la base brillante
+              borderTop: "1px solid rgba(0, 229, 255, 0.3)"
             }}
           >
-            <div className="source-footer-grid">
-              <div>
-                <h3>Landing Fuentes</h3>
+            <div className="source-footer-grid" style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "2rem" }}>
+              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
+                <h3 style={{ color: "#00e5ff" }}>Landing Fuentes</h3>
                 <p>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores y empresas.</p>
-                <span className="source-footer-badge">Tecnología fluida + IA + Trato personal</span>
+                <span className="source-footer-badge" style={{ display: "inline-block", background: "#00e5ff", color: "#001225", padding: "0.25rem 0.75rem", borderRadius: "999px", fontSize: "0.85rem", fontWeight: "bold", marginTop: "1rem" }}>Tecnología fluida + IA + Trato personal</span>
               </div>
-              <div>
-                <h4>Quiénes somos</h4>
+              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
+                <h4 style={{ color: "#00e5ff" }}>Quiénes somos</h4>
                 <p>Somos un emprendimiento chileno especializado en crear páginas web profesionales con apoyo de inteligencia artificial. Entregas ágiles, costos accesibles y soporte cercano.</p>
               </div>
-              <div>
-                <h4>Información legal</h4>
-                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20privacidad">Términos de privacidad</a></p>
-                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20uso">Términos de uso</a></p>
+              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
+                <h4 style={{ color: "#00e5ff" }}>Información legal</h4>
+                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20privacidad" style={{ color: "#fff", textDecoration: "underline" }}>Términos de privacidad</a></p>
+                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20uso" style={{ color: "#fff", textDecoration: "underline" }}>Términos de uso</a></p>
               </div>
-              <div>
-                <h4>Contáctame</h4>
-                <p><a className="source-contact" href="mailto:gabriel.fuentes@landingfuentes.online">gabriel.fuentes@landingfuentes.online</a></p>
-                <p><a className="source-contact" href="tel:+56952128607"><Phone aria-hidden="true" /> +56 9 5212 8607</a></p>
-                <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer">@landing_fuentes</a></p>
+              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
+                <h4 style={{ color: "#00e5ff" }}>Contáctame</h4>
+                <p><a className="source-contact" href="mailto:gabriel.fuentes@landingfuentes.online" style={{ color: "#fff", textDecoration: "none" }}>gabriel.fuentes@landingfuentes.online</a></p>
+                <p><a className="source-contact" href="tel:+56952128607" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem" }}><Phone aria-hidden="true" size={16} /> +56 9 5212 8607</a></p>
+                <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer" style={{ color: "#fff", textDecoration: "none" }}>@landing_fuentes</a></p>
               </div>
             </div>
-            <p className="source-copyright">© 2026 Landing Fuentes. Todos los derechos reservados.</p>
+            <p className="source-copyright" style={{ textAlign: "center", marginTop: "2rem", fontWeight: "bold", color: "#000" }}>© 2026 Landing Fuentes. Todos los derechos reservados.</p>
           </footer>
         </main>
       </div>
