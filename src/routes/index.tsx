@@ -112,11 +112,11 @@ function Index() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("is-visible");
-        } else {
-          entry.target.classList.remove("is-visible");
+          // Dejamos de observar una vez que aparece para evitar parpadeos al hacer scroll hacia abajo
+          observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+    }, { threshold: 0.1, rootMargin: "0px 0px -20px 0px" });
 
     revealElements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
@@ -182,7 +182,6 @@ function Index() {
           z-index: 0;
         }
 
-        /* Estilos de las cintas laterales corregidos (Z-index superior para estar por encima del fondo blanco) */
         .page-wave-svg {
           position: fixed;
           top: 0;
@@ -227,6 +226,7 @@ function Index() {
           opacity: 0;
           transform: translateY(40px) scale(0.98);
           transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+          will-change: opacity, transform;
         }
         .scroll-reveal.is-visible {
           opacity: 1;
@@ -307,7 +307,6 @@ function Index() {
 
       <div className="react-water-background" />
       
-      {/* Cintas decorativas ahora al frente del lienzo */}
       <FlowRibbons side="left" />
       <FlowRibbons side="right" />
 
