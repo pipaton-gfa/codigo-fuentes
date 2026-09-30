@@ -93,7 +93,7 @@ function Index() {
         <p>En <strong>Landing Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.</p>
         <p className="source-instruction">Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.</p>
         <div className="source-hero-image">
-          <img className="source-hero-water" src="/descarga.jpg" alt="Fuente de agua digital cristalina con reflejos celestes y corrientes limpias" />
+          <img className="source-hero-water" src="/descarga.gif" alt="Fuente de agua digital cristalina con reflejos celestes y corrientes limpias" />
           <img className="source-hero-logo" src="/logo-cf.png" alt="Landing Fuentes" style={{ width: "100%", height: "100%", maxWidth: "none", maxHeight: "none" }} />
         </div>
       </section>
