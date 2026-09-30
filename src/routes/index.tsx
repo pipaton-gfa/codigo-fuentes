@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, LayoutTemplate, MonitorSmartphone, Phone, ShoppingCart } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/")({
@@ -33,6 +33,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [heroTransform, setHeroTransform] = useState("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
+  const [isHoveringHero, setIsHoveringHero] = useState(false);
+
   useEffect(() => {
     const services = document.querySelectorAll<HTMLElement>(".source-reveal-service");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -56,6 +59,7 @@ function Index() {
     return () => observer.disconnect();
   }, []);
 
+  /* 
   useEffect(() => {
     const hero = document.querySelector<HTMLElement>(".source-hero-image");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -83,6 +87,24 @@ function Index() {
       if (frame) cancelAnimationFrame(frame);
     };
   }, []);
+  */
+
+  const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - left) / width - 0.5;
+    const y = (e.clientY - top) / height - 0.5;
+    
+    // Movimiento notorio con efecto 3D
+    const rotateY = x * 40; 
+    const rotateX = y * -40;
+    setHeroTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`);
+  };
+
+  const handleHeroMouseEnter = () => setIsHoveringHero(true);
+  const handleHeroMouseLeave = () => {
+    setIsHoveringHero(false);
+    setHeroTransform("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
+  };
 
   return (
     <main className="source-index">
@@ -92,7 +114,20 @@ function Index() {
         <h1>Tu éxito digital, hecho con <span>inteligencia y cariño</span></h1>
         <p>En <strong>Landing Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.</p>
         <p className="source-instruction">Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.</p>
-        <div className="source-hero-image">
+        <div 
+          className="source-hero-image"
+          onMouseMove={handleHeroMouseMove}
+          onMouseEnter={handleHeroMouseEnter}
+          onMouseLeave={handleHeroMouseLeave}
+          style={{
+            transform: heroTransform,
+            transition: isHoveringHero ? "transform 0.1s ease-out" : "transform 0.5s ease-out",
+            border: "3px solid rgba(255, 255, 255, 0.8)",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.7), 0 0 15px rgba(0, 180, 255, 0.8)",
+            borderRadius: "16px",
+            zIndex: 10
+          }}
+        >
           <img className="source-hero-water" src="/descarga.gif" alt="Fuente de agua digital cristalina con reflejos celestes y corrientes limpias" />
           <img className="source-hero-logo" src="/logo-cf.png" alt="Landing Fuentes" style={{ width: "100%", height: "100%", maxWidth: "none", maxHeight: "none" }} />
         </div>
@@ -122,7 +157,14 @@ function Index() {
         </div>
       </section>
 
-      <footer id="contacto" className="source-footer">
+      <footer 
+        id="contacto" 
+        className="source-footer"
+        style={{
+          backgroundImage: "linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(255,255,255,0.3) 100%)",
+          backgroundBlendMode: "overlay"
+        }}
+      >
         <div className="source-footer-grid">
           <div>
             <h3>Landing Fuentes</h3>
