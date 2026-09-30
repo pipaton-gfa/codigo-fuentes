@@ -56,25 +56,21 @@ function FlowRibbons({ side }: { side: "left" | "right" }) {
         </linearGradient>
       </defs>
       <g transform={flip ? "translate(320 0) scale(-1 1)" : undefined}>
-        {/* cinta azul: serpenteo amplio pegado al borde */}
         <path
           d="M-60 -60 C 120 140, -20 340, 110 560 C 230 760, -10 940, 120 1160 C 240 1360, 10 1500, 90 1660 L -60 1660 Z"
           fill={`url(#fw-blue-${side})`}
           opacity="0.55"
         />
-        {/* cinta cian: onda media que cruza la azul */}
         <path
           d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660 L -60 1660 Z"
           fill={`url(#fw-cyan-${side})`}
           opacity="0.7"
         />
-        {/* cinta naranja: onda fina y brillante por encima */}
         <path
           d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660 L -60 1660 Z"
           fill={`url(#fw-orange-${side})`}
           opacity="0.8"
         />
-        {/* filo de luz cian */}
         <path
           d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660"
           fill="none"
@@ -82,7 +78,6 @@ function FlowRibbons({ side }: { side: "left" | "right" }) {
           strokeWidth="6"
           opacity="0.8"
         />
-        {/* filo de luz naranja */}
         <path
           d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660"
           fill="none"
@@ -112,7 +107,6 @@ function Index() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("is-visible");
-          // Dejamos de observar una vez que aparece para evitar parpadeos al hacer scroll hacia abajo
           observer.unobserve(entry.target);
         }
       });
@@ -121,36 +115,6 @@ function Index() {
     revealElements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
-
-  /* 
-  useEffect(() => {
-    const hero = document.querySelector<HTMLElement>(".source-hero-image");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (!hero || reducedMotion) return;
-
-    let frame = 0;
-    const updateHero = () => {
-      const distance = Math.max(hero.offsetHeight * 0.75, 1);
-      const start = Math.max(0, hero.offsetTop - window.innerHeight * 0.45);
-      const progress = Math.min(1, Math.max(0, (window.scrollY - start) / distance));
-      hero.style.setProperty("--source-hero-progress", progress.toString());
-      frame = 0;
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(updateHero);
-    };
-
-    updateHero();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, []);
-  */
 
   const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -211,7 +175,10 @@ function Index() {
           min-height: 100vh;
         }
 
+        /* Contenedores claros por debajo de la cinta (z-index 1 implícito) */
         .glass-panel {
+          position: relative;
+          z-index: 1;
           background: rgba(0, 15, 30, 0.6);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
@@ -237,12 +204,14 @@ function Index() {
         .source-service-list > *:nth-child(2) { transition-delay: 0.2s; }
         .source-service-list > *:nth-child(3) { transition-delay: 0.3s; }
 
+        /* Contenedores oscuros interiores por ENCIMA de las cintas (z-index 10) */
         .marketing-card {
+          position: relative;
+          z-index: 10;
           background: rgba(0, 25, 45, 0.7);
           border: 1px solid rgba(0, 229, 255, 0.2);
           border-radius: 12px;
           transition: all 0.4s ease;
-          position: relative;
           overflow: hidden;
         }
         .marketing-card:hover {
@@ -396,25 +365,33 @@ function Index() {
             }}
           >
             <div className="source-footer-grid" style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "2rem" }}>
-              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
-                <h3 style={{ color: "#00e5ff" }}>Landing Fuentes</h3>
-                <p>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores, empresas y productores de eventos.</p>
-                <span className="source-footer-badge" style={{ display: "inline-block", background: "#00e5ff", color: "#001225", padding: "0.25rem 0.75rem", borderRadius: "999px", fontSize: "0.85rem", fontWeight: "bold", marginTop: "1rem" }}>Tecnología fluida + IA + Trato personal</span>
+              <div className="glass-panel" style={{ color: "#fff" }}>
+                <div className="marketing-card" style={{ padding: "1.5rem", background: "rgba(0, 25, 45, 0.75)" }}>
+                  <h3 style={{ color: "#00e5ff", marginBottom: "0.75rem" }}>Landing Fuentes</h3>
+                  <p style={{ marginBottom: "1rem", color: "#e0f2fe" }}>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores, empresas y productores de eventos.</p>
+                  <span className="source-footer-badge" style={{ display: "inline-block", background: "#00e5ff", color: "#001225", padding: "0.25rem 0.75rem", borderRadius: "999px", fontSize: "0.85rem", fontWeight: "bold" }}>Tecnología fluida + IA + Trato personal</span>
+                </div>
               </div>
-              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
-                <h4 style={{ color: "#00e5ff" }}>Quiénes somos</h4>
-                <p>Somos un emprendimiento chileno especializado en crear páginas web profesionales con apoyo de inteligencia artificial. Entregas ágiles, costos accesibles y soporte cercano.</p>
+              <div className="glass-panel" style={{ color: "#fff" }}>
+                <div className="marketing-card" style={{ padding: "1.5rem", background: "rgba(0, 25, 45, 0.75)" }}>
+                  <h4 style={{ color: "#00e5ff", marginBottom: "0.75rem" }}>Quiénes somos</h4>
+                  <p style={{ color: "#e0f2fe" }}>Somos un emprendimiento chileno especializado en crear páginas web profesionales con apoyo de inteligencia artificial. Entregas ágiles, costos accesibles y soporte cercano.</p>
+                </div>
               </div>
-              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
-                <h4 style={{ color: "#00e5ff" }}>Información legal</h4>
-                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20privacidad" style={{ color: "#fff", textDecoration: "underline" }}>Términos de privacidad</a></p>
-                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20uso" style={{ color: "#fff", textDecoration: "underline" }}>Términos de uso</a></p>
+              <div className="glass-panel" style={{ color: "#fff" }}>
+                <div className="marketing-card" style={{ padding: "1.5rem", background: "rgba(0, 25, 45, 0.75)" }}>
+                  <h4 style={{ color: "#00e5ff", marginBottom: "0.75rem" }}>Información legal</h4>
+                  <p style={{ marginBottom: "0.5rem" }}><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20privacidad" style={{ color: "#fff", textDecoration: "underline" }}>Términos de privacidad</a></p>
+                  <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20uso" style={{ color: "#fff", textDecoration: "underline" }}>Términos de uso</a></p>
+                </div>
               </div>
-              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
-                <h4 style={{ color: "#00e5ff" }}>Contáctame</h4>
-                <p><a className="source-contact" href="mailto:gabriel.fuentes@landingfuentes.online" style={{ color: "#fff", textDecoration: "none" }}>gabriel.fuentes@landingfuentes.online</a></p>
-                <p><a className="source-contact" href="tel:+56952128607" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem" }}><Phone aria-hidden="true" size={16} /> +56 9 5212 8607</a></p>
-                <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer" style={{ color: "#fff", textDecoration: "none" }}>@landing_fuentes</a></p>
+              <div className="glass-panel" style={{ color: "#fff" }}>
+                <div className="marketing-card" style={{ padding: "1.5rem", background: "rgba(0, 25, 45, 0.75)" }}>
+                  <h4 style={{ color: "#00e5ff", marginBottom: "0.75rem" }}>Contáctame</h4>
+                  <p style={{ marginBottom: "0.5rem" }}><a className="source-contact" href="mailto:gabriel.fuentes@landingfuentes.online" style={{ color: "#fff", textDecoration: "none" }}>gabriel.fuentes@landingfuentes.online</a></p>
+                  <p style={{ marginBottom: "0.5rem" }}><a className="source-contact" href="tel:+56952128607" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem" }}><Phone aria-hidden="true" size={16} /> +56 9 5212 8607</a></p>
+                  <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer" style={{ color: "#fff", textDecoration: "none" }}>@landing_fuentes</a></p>
+                </div>
               </div>
             </div>
             <p className="source-copyright" style={{ textAlign: "center", marginTop: "2rem", fontWeight: "bold", color: "#000" }}>© 2026 Landing Fuentes. Todos los derechos reservados.</p>
