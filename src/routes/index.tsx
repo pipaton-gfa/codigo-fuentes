@@ -32,64 +32,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function FlowRibbons({ side }: { side: "left" | "right" }) {
-  const flip = side === "right";
-  return (
-    <svg
-      aria-hidden="true"
-      className={`page-wave-svg ${flip ? "page-wave-svg-right" : "page-wave-svg-left"}`}
-      viewBox="0 0 320 1600"
-      preserveAspectRatio="none"
-    >
-      <defs>
-        <linearGradient id={`fw-orange-${side}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.78 0.2 55)" />
-          <stop offset="100%" stopColor="oklch(0.66 0.19 40)" />
-        </linearGradient>
-        <linearGradient id={`fw-cyan-${side}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.85 0.14 205)" />
-          <stop offset="100%" stopColor="oklch(0.7 0.15 220)" />
-        </linearGradient>
-        <linearGradient id={`fw-blue-${side}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="oklch(0.62 0.16 240)" />
-          <stop offset="100%" stopColor="oklch(0.5 0.15 250)" />
-        </linearGradient>
-      </defs>
-      <g transform={flip ? "translate(320 0) scale(-1 1)" : undefined}>
-        <path
-          d="M-60 -60 C 120 140, -20 340, 110 560 C 230 760, -10 940, 120 1160 C 240 1360, 10 1500, 90 1660 L -60 1660 Z"
-          fill={`url(#fw-blue-${side})`}
-          opacity="0.55"
-        />
-        <path
-          d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660 L -60 1660 Z"
-          fill={`url(#fw-cyan-${side})`}
-          opacity="0.7"
-        />
-        <path
-          d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660 L -60 1660 Z"
-          fill={`url(#fw-orange-${side})`}
-          opacity="0.8"
-        />
-        <path
-          d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660"
-          fill="none"
-          stroke="oklch(0.92 0.1 200)"
-          strokeWidth="6"
-          opacity="0.8"
-        />
-        <path
-          d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660"
-          fill="none"
-          stroke="oklch(0.88 0.16 65)"
-          strokeWidth="5"
-          opacity="0.85"
-        />
-      </g>
-    </svg>
-  );
-}
-
 function Index() {
   const [heroTransform, setHeroTransform] = useState("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
   const [isHoveringHero, setIsHoveringHero] = useState(false);
@@ -135,47 +77,13 @@ function Index() {
   return (
     <div style={{ width: "100%", minHeight: "100vh", overflowX: "hidden", position: "relative", color: "#f0f8ff" }}>
       <style>{`
-        .react-water-background {
-          position: fixed;
-          top: -10%;
-          left: -10%;
-          width: 120%;
-          height: 120%;
-          background: linear-gradient(135deg, #010a15, #002845, #001225);
-          filter: url(#water-filter);
-          z-index: 0;
-        }
-
-        .page-wave-svg {
-          position: fixed;
-          top: 0;
-          bottom: 0;
-          height: 100vh;
-          width: 250px;
-          z-index: 2;
-          pointer-events: none;
-        }
-        .page-wave-svg-left {
-          left: 0;
-        }
-        .page-wave-svg-right {
-          right: 0;
-        }
-        @media (max-width: 768px) {
-          .page-wave-svg {
-            width: 120px;
-            opacity: 0.4;
-          }
-        }
-
         .content-layer {
           position: relative;
           z-index: 10;
-          background: transparent;
+          background: linear-gradient(135deg, #010a15, #002845, #001225);
           min-height: 100vh;
         }
 
-        /* Forzamos que la cabecera flote con prioridad alta y fondo transparente o integrado */
         header {
           position: relative;
           z-index: 20;
@@ -265,20 +173,6 @@ function Index() {
           .scroll-reveal { transition: none; opacity: 1; transform: none; }
         }
       `}</style>
-
-      <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
-        <filter id="water-filter">
-          <feTurbulence type="fractalNoise" baseFrequency="0.005 0.01" numOctaves="2" result="noise">
-            <animate attributeName="baseFrequency" values="0.005 0.01; 0.008 0.015; 0.005 0.01" dur="20s" repeatCount="indefinite" />
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="40" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </svg>
-
-      <div className="react-water-background" />
-      
-      <FlowRibbons side="left" />
-      <FlowRibbons side="right" />
 
       <div className="content-layer">
         <main className="source-index">
