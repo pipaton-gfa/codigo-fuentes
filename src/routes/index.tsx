@@ -133,19 +133,8 @@ function Index() {
   };
 
   return (
-    <div style={{ width: "100%", minHeight: "100vh", overflowX: "hidden", position: "relative", color: "#f0f8ff" }}>
+    <div style={{ width: "100%", minHeight: "100vh", overflowX: "hidden", position: "relative", backgroundColor: "#ffffff", color: "#1e293b" }}>
       <style>{`
-        .react-water-background {
-          position: fixed;
-          top: -10%;
-          left: -10%;
-          width: 120%;
-          height: 120%;
-          background: linear-gradient(135deg, #010a15, #002845, #001225);
-          filter: url(#water-filter);
-          z-index: 0;
-        }
-
         .page-wave-svg {
           position: fixed;
           top: 0;
@@ -164,26 +153,25 @@ function Index() {
         @media (max-width: 768px) {
           .page-wave-svg {
             width: 120px;
-            opacity: 0.4;
+            opacity: 0.5;
           }
         }
 
         .content-layer {
           position: relative;
-          z-index: 1;
-          background: rgba(0, 5, 15, 0.4);
+          z-index: 10;
+          background: transparent;
           min-height: 100vh;
         }
 
         .glass-panel {
-          background: rgba(0, 15, 30, 0.6);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(0, 229, 255, 0.15);
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
           border-radius: 16px;
           padding: 2rem;
           margin-bottom: 2rem;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+          color: #0f172a;
         }
 
         .scroll-reveal {
@@ -202,25 +190,26 @@ function Index() {
         .source-service-list > *:nth-child(3) { transition-delay: 0.3s; }
 
         .marketing-card {
-          background: rgba(0, 25, 45, 0.7);
-          border: 1px solid rgba(0, 229, 255, 0.2);
+          background: #f8fafc;
+          border: 1px solid #cbd5e1;
           border-radius: 12px;
           transition: all 0.4s ease;
           position: relative;
           overflow: hidden;
+          color: #0f172a;
         }
         .marketing-card:hover {
           transform: translateY(-8px) scale(1.02);
-          background: rgba(0, 40, 70, 0.85);
-          border-color: #00e5ff;
-          box-shadow: 0 15px 35px rgba(0, 229, 255, 0.25), 0 0 15px rgba(0, 229, 255, 0.1) inset;
+          background: #ffffff;
+          border-color: #0284c7;
+          box-shadow: 0 15px 35px rgba(2, 132, 199, 0.12), 0 0 15px rgba(2, 132, 199, 0.05) inset;
         }
         .marketing-card::before {
           content: '';
           position: absolute;
           top: 0; left: -100%;
           width: 50%; height: 100%;
-          background: linear-gradient(to right, transparent, rgba(0, 229, 255, 0.1), transparent);
+          background: linear-gradient(to right, transparent, rgba(2, 132, 199, 0.08), transparent);
           transform: skewX(-25deg);
           transition: 0.5s;
         }
@@ -229,29 +218,25 @@ function Index() {
         }
 
         .neon-3d-title {
-          color: #00e5ff !important;
+          color: #0284c7 !important;
           display: inline-block;
           animation: float-3d-bounce 3s ease-in-out infinite;
           transform-style: preserve-3d;
           margin-bottom: 20px;
         }
         .neon-3d-title span {
-          color: #00e5ff !important;
+          color: #0284c7 !important;
         }
         @keyframes float-3d-bounce {
           0%, 100% {
             transform: perspective(1000px) translateY(0) rotateX(0deg) scale(1);
-            text-shadow: 0 0 5px rgba(0, 229, 255, 0.8), 
-                         0 0 15px rgba(0, 229, 255, 0.6), 
-                         0 0 30px rgba(0, 229, 255, 0.4), 
-                         0 10px 10px rgba(0, 0, 0, 0.9);
+            text-shadow: 0 2px 5px rgba(2, 132, 199, 0.2), 
+                         0 5px 15px rgba(2, 132, 199, 0.15);
           }
           50% {
             transform: perspective(1000px) translateY(-15px) rotateX(15deg) scale(1.03);
-            text-shadow: 0 0 10px rgba(0, 229, 255, 1), 
-                         0 0 25px rgba(0, 229, 255, 0.8), 
-                         0 0 45px rgba(0, 229, 255, 0.6), 
-                         0 25px 20px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 4px 8px rgba(2, 132, 199, 0.3), 
+                         0 8px 20px rgba(2, 132, 199, 0.2);
           }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -260,17 +245,6 @@ function Index() {
         }
       `}</style>
 
-      <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
-        <filter id="water-filter">
-          <feTurbulence type="fractalNoise" baseFrequency="0.005 0.01" numOctaves="2" result="noise">
-            <animate attributeName="baseFrequency" values="0.005 0.01; 0.008 0.015; 0.005 0.01" dur="20s" repeatCount="indefinite" />
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="40" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </svg>
-
-      <div className="react-water-background" />
-      
       <FlowRibbons side="left" />
       <FlowRibbons side="right" />
 
@@ -283,10 +257,10 @@ function Index() {
               <h1 className="neon-3d-title">
                 Tu éxito digital, hecho con <span>inteligencia y cariño</span>
               </h1>
-              <p style={{ fontSize: "1.15rem", lineHeight: "1.6", color: "#e0f2fe", marginBottom: "1rem" }}>
+              <p style={{ fontSize: "1.15rem", lineHeight: "1.6", color: "#334155", marginBottom: "1rem" }}>
                 En <strong>Landing Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio, ideales para emprendedores, empresas y productores de eventos y fiestas.
               </p>
-              <p className="source-instruction" style={{ color: "#00e5ff", fontWeight: "bold", letterSpacing: "0.5px" }}>
+              <p className="source-instruction" style={{ color: "#0284c7", fontWeight: "bold", letterSpacing: "0.5px" }}>
                 Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.
               </p>
             </div>
@@ -299,8 +273,8 @@ function Index() {
               style={{
                 transform: heroTransform,
                 transition: isHoveringHero ? "transform 0.1s ease-out" : "transform 0.5s ease-out",
-                border: "3px solid rgba(255, 255, 255, 0.8)",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.7), 0 0 15px rgba(0, 180, 255, 0.8)",
+                border: "3px solid #ffffff",
+                boxShadow: "0 20px 40px rgba(0,0,0,0.12), 0 0 15px rgba(2, 132, 199, 0.2)",
                 borderRadius: "16px",
                 zIndex: 10,
                 margin: "0 auto",
@@ -315,33 +289,33 @@ function Index() {
           <section id="servicios" className="source-services" style={{ padding: "4rem 1rem", maxWidth: "1000px", margin: "0 auto" }}>
             <div className="glass-panel scroll-reveal">
               <div className="source-services-heading" style={{ textAlign: "center", marginBottom: "2rem" }}>
-                <h2 style={{ color: "#ffffff", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>Nuestros servicios</h2>
-                <p style={{ color: "#b0d4ff" }}>Elige una barra para ver nuestros trabajos.</p>
+                <h2 style={{ color: "#0f172a" }}>Nuestros servicios</h2>
+                <p style={{ color: "#475569" }}>Elige una barra para ver nuestros trabajos.</p>
               </div>
               <div className="source-service-list" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <Link to="/landing-pages" className="source-service source-service-short scroll-reveal marketing-card" style={{ padding: "1.5rem", display: "flex", alignItems: "center", color: "#fff", textDecoration: "none" }}>
-                  <span className="source-service-icon" style={{ marginRight: "1rem", color: "#00e5ff" }}><MonitorSmartphone aria-hidden="true" size={32} /></span>
+                <Link to="/landing-pages" className="source-service source-service-short scroll-reveal marketing-card" style={{ padding: "1.5rem", display: "flex", alignItems: "center", color: "#0f172a", textDecoration: "none" }}>
+                  <span className="source-service-icon" style={{ marginRight: "1rem", color: "#0284c7" }}><MonitorSmartphone aria-hidden="true" size={32} /></span>
                   <span className="source-service-copy" style={{ flexGrow: 1 }}>
-                    <strong style={{ display: "block", fontSize: "1.2rem", marginBottom: "0.25rem" }}>Landing pages</strong>
-                    <small style={{ color: "#a0c4e0", fontSize: "0.9rem" }}>Página directa y atractiva para captar clientes</small>
+                    <strong style={{ display: "block", fontSize: "1.2rem", marginBottom: "0.25rem", color: "#0f172a" }}>Landing pages</strong>
+                    <small style={{ color: "#475569", fontSize: "0.9rem" }}>Página directa y atractiva para captar clientes</small>
                   </span>
-                  <ArrowRight aria-hidden="true" style={{ color: "#00e5ff" }} />
+                  <ArrowRight aria-hidden="true" style={{ color: "#0284c7" }} />
                 </Link>
-                <Link to="/quioscos" className="source-service source-service-medium scroll-reveal marketing-card" style={{ padding: "1.5rem", display: "flex", alignItems: "center", color: "#fff", textDecoration: "none" }}>
-                  <span className="source-service-icon" style={{ marginRight: "1rem", color: "#00e5ff" }}><ShoppingCart aria-hidden="true" size={32} /></span>
+                <Link to="/quioscos" className="source-service source-service-medium scroll-reveal marketing-card" style={{ padding: "1.5rem", display: "flex", alignItems: "center", color: "#0f172a", textDecoration: "none" }}>
+                  <span className="source-service-icon" style={{ marginRight: "1rem", color: "#0284c7" }}><ShoppingCart aria-hidden="true" size={32} /></span>
                   <span className="source-service-copy" style={{ flexGrow: 1 }}>
-                    <strong style={{ display: "block", fontSize: "1.2rem", marginBottom: "0.25rem" }}>Tiendas con carritos de compra</strong>
-                    <small style={{ color: "#a0c4e0", fontSize: "0.9rem" }}>Ventas en línea con pagos integrados con Mercado Pago</small>
+                    <strong style={{ display: "block", fontSize: "1.2rem", marginBottom: "0.25rem", color: "#0f172a" }}>Tiendas con carritos de compra</strong>
+                    <small style={{ color: "#475569", fontSize: "0.9rem" }}>Ventas en línea con pagos integrados con Mercado Pago</small>
                   </span>
-                  <ArrowRight aria-hidden="true" style={{ color: "#00e5ff" }} />
+                  <ArrowRight aria-hidden="true" style={{ color: "#0284c7" }} />
                 </Link>
-                <Link to="/multipaginas" className="source-service source-service-long scroll-reveal marketing-card" style={{ padding: "1.5rem", display: "flex", alignItems: "center", color: "#fff", textDecoration: "none" }}>
-                  <span className="source-service-icon" style={{ marginRight: "1rem", color: "#00e5ff" }}><LayoutTemplate aria-hidden="true" size={32} /></span>
+                <Link to="/multipaginas" className="source-service source-service-long scroll-reveal marketing-card" style={{ padding: "1.5rem", display: "flex", alignItems: "center", color: "#0f172a", textDecoration: "none" }}>
+                  <span className="source-service-icon" style={{ marginRight: "1rem", color: "#0284c7" }}><LayoutTemplate aria-hidden="true" size={32} /></span>
                   <span className="source-service-copy" style={{ flexGrow: 1 }}>
-                    <strong style={{ display: "block", fontSize: "1.2rem", marginBottom: "0.25rem" }}>Próximamente</strong>
-                    <small style={{ color: "#a0c4e0", fontSize: "0.9rem" }}>Multipáginas enlazadas</small>
+                    <strong style={{ display: "block", fontSize: "1.2rem", marginBottom: "0.25rem", color: "#0f172a" }}>Próximamente</strong>
+                    <small style={{ color: "#475569", fontSize: "0.9rem" }}>Multipáginas enlazadas</small>
                   </span>
-                  <ArrowRight aria-hidden="true" style={{ color: "#00e5ff" }} />
+                  <ArrowRight aria-hidden="true" style={{ color: "#0284c7" }} />
                 </Link>
               </div>
             </div>
@@ -351,37 +325,36 @@ function Index() {
             id="contacto" 
             className="source-footer scroll-reveal"
             style={{
-              backgroundImage: "linear-gradient(to bottom, rgba(0, 10, 20, 0.95) 0%, rgba(0, 70, 120, 0.7) 40%, rgba(150, 230, 255, 0.9) 85%, rgba(255, 255, 255, 1) 100%)",
-              backgroundBlendMode: "normal",
+              backgroundColor: "#ffffff",
               padding: "4rem 2rem 2rem 2rem",
               marginTop: "2rem",
-              color: "#001225",
-              borderTop: "1px solid rgba(0, 229, 255, 0.3)"
+              color: "#0f172a",
+              borderTop: "1px solid #e2e8f0"
             }}
           >
             <div className="source-footer-grid" style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "2rem" }}>
-              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
-                <h3 style={{ color: "#00e5ff" }}>Landing Fuentes</h3>
-                <p>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores, empresas y productores de eventos.</p>
-                <span className="source-footer-badge" style={{ display: "inline-block", background: "#00e5ff", color: "#001225", padding: "0.25rem 0.75rem", borderRadius: "999px", fontSize: "0.85rem", fontWeight: "bold", marginTop: "1rem" }}>Tecnología fluida + IA + Trato personal</span>
+              <div className="glass-panel">
+                <h3 style={{ color: "#0284c7" }}>Landing Fuentes</h3>
+                <p style={{ color: "#334155" }}>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores, empresas y productores de eventos.</p>
+                <span className="source-footer-badge" style={{ display: "inline-block", background: "#0284c7", color: "#ffffff", padding: "0.25rem 0.75rem", borderRadius: "999px", fontSize: "0.85rem", fontWeight: "bold", marginTop: "1rem" }}>Tecnología fluida + IA + Trato personal</span>
               </div>
-              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
-                <h4 style={{ color: "#00e5ff" }}>Quiénes somos</h4>
-                <p>Somos un emprendimiento chileno especializado en crear páginas web profesionales con apoyo de inteligencia artificial. Entregas ágiles, costos accesibles y soporte cercano.</p>
+              <div className="glass-panel">
+                <h4 style={{ color: "#0284c7" }}>Quiénes somos</h4>
+                <p style={{ color: "#334155" }}>Somos un emprendimiento chileno especializado en crear páginas web profesionales con apoyo de inteligencia artificial. Entregas ágiles, costos accesibles y soporte cercano.</p>
               </div>
-              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
-                <h4 style={{ color: "#00e5ff" }}>Información legal</h4>
-                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20privacidad" style={{ color: "#fff", textDecoration: "underline" }}>Términos de privacidad</a></p>
-                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20uso" style={{ color: "#fff", textDecoration: "underline" }}>Términos de uso</a></p>
+              <div className="glass-panel">
+                <h4 style={{ color: "#0284c7" }}>Información legal</h4>
+                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20privacidad" style={{ color: "#0284c7", textDecoration: "underline" }}>Términos de privacidad</a></p>
+                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20uso" style={{ color: "#0284c7", textDecoration: "underline" }}>Términos de uso</a></p>
               </div>
-              <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
-                <h4 style={{ color: "#00e5ff" }}>Contáctame</h4>
-                <p><a className="source-contact" href="mailto:gabriel.fuentes@landingfuentes.online" style={{ color: "#fff", textDecoration: "none" }}>gabriel.fuentes@landingfuentes.online</a></p>
-                <p><a className="source-contact" href="tel:+56952128607" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem" }}><Phone aria-hidden="true" size={16} /> +56 9 5212 8607</a></p>
-                <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer" style={{ color: "#fff", textDecoration: "none" }}>@landing_fuentes</a></p>
+              <div className="glass-panel">
+                <h4 style={{ color: "#0284c7" }}>Contáctame</h4>
+                <p><a className="source-contact" href="mailto:gabriel.fuentes@landingfuentes.online" style={{ color: "#0f172a", textDecoration: "none" }}>gabriel.fuentes@landingfuentes.online</a></p>
+                <p><a className="source-contact" href="tel:+56952128607" style={{ color: "#0f172a", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem" }}><Phone aria-hidden="true" size={16} /> +56 9 5212 8607</a></p>
+                <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer" style={{ color: "#0f172a", textDecoration: "none" }}>@landing_fuentes</a></p>
               </div>
             </div>
-            <p className="source-copyright" style={{ textAlign: "center", marginTop: "2rem", fontWeight: "bold", color: "#000" }}>© 2026 Landing Fuentes. Todos los derechos reservados.</p>
+            <p className="source-copyright" style={{ textAlign: "center", marginTop: "2rem", fontWeight: "bold", color: "#0f172a" }}>© 2026 Landing Fuentes. Todos los derechos reservados.</p>
           </footer>
         </main>
       </div>
