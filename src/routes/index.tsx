@@ -14,7 +14,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Landing Fuentes | Diseño y desarrollo web" },
       {
         property: "og:description",
-        content: "Creamos sitios web modernos y estratégicos para emprendedores y empresas.",
+        content: "Creamos sitios web modernos y estratégicos para emprendedores, empresas y productores de eventos.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://landingfuentes.online/" },
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
       { name: "twitter:title", content: "Landing Fuentes | Diseño y desarrollo web" },
       {
         name: "twitter:description",
-        content: "Creamos sitios web modernos y estratégicos para emprendedores y empresas.",
+        content: "Creamos sitios web modernos y estratégicos para emprendedores, empresas y productores de eventos.",
       },
       { name: "twitter:image", content: "https://landingfuentes.online/descarga.jpg" },
     ],
@@ -179,17 +179,17 @@ function Index() {
           height: 120%;
           background: linear-gradient(135deg, #010a15, #002845, #001225);
           filter: url(#water-filter);
-          z-index: -2;
+          z-index: 0;
         }
 
-        /* Estilos de las cintas laterales */
+        /* Estilos de las cintas laterales corregidos (Z-index superior para estar por encima del fondo blanco) */
         .page-wave-svg {
           position: fixed;
           top: 0;
           bottom: 0;
           height: 100vh;
           width: 250px;
-          z-index: -1;
+          z-index: 5;
           pointer-events: none;
         }
         .page-wave-svg-left {
@@ -307,7 +307,7 @@ function Index() {
 
       <div className="react-water-background" />
       
-      {/* Cintas decorativas */}
+      {/* Cintas decorativas ahora al frente del lienzo */}
       <FlowRibbons side="left" />
       <FlowRibbons side="right" />
 
@@ -321,7 +321,7 @@ function Index() {
                 Tu éxito digital, hecho con <span>inteligencia y cariño</span>
               </h1>
               <p style={{ fontSize: "1.15rem", lineHeight: "1.6", color: "#e0f2fe", marginBottom: "1rem" }}>
-                En <strong>Landing Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio.
+                En <strong>Landing Fuentes</strong> hacemos que tu presencia en internet fluya con naturalidad, claridad y velocidad. Sitios modernos, estables y listos para hacer crecer tu negocio, ideales para emprendedores, empresas y productores de eventos y fiestas.
               </p>
               <p className="source-instruction" style={{ color: "#00e5ff", fontWeight: "bold", letterSpacing: "0.5px" }}>
                 Haz clic en una de las opciones de abajo para ver ejemplos de nuestros proyectos.
@@ -399,7 +399,7 @@ function Index() {
             <div className="source-footer-grid" style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "2rem" }}>
               <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
                 <h3 style={{ color: "#00e5ff" }}>Landing Fuentes</h3>
-                <p>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores y empresas.</p>
+                <p>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores, empresas y productores de eventos.</p>
                 <span className="source-footer-badge" style={{ display: "inline-block", background: "#00e5ff", color: "#001225", padding: "0.25rem 0.75rem", borderRadius: "999px", fontSize: "0.85rem", fontWeight: "bold", marginTop: "1rem" }}>Tecnología fluida + IA + Trato personal</span>
               </div>
               <div className="glass-panel" style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(0,0,0,0.1)", color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
