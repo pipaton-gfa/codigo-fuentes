@@ -175,7 +175,6 @@ function Index() {
           min-height: 100vh;
         }
 
-        /* Contenedores en tono Crema / Marfil Corporativo translúcido */
         .glass-panel {
           background: rgba(247, 245, 240, 0.92);
           backdrop-filter: blur(12px);
@@ -360,32 +359,33 @@ function Index() {
               marginTop: "2rem",
               color: "#001225",
               borderTop: "1px solid rgba(0, 229, 255, 0.3)"
-          }}
-        >
-          <div className="source-footer-grid" style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "2rem" }}>
-            <div className="glass-panel" style={{ color: "#0f172a" }}>
-              <h3 style={{ color: "#0284c7" }}>Landing Fuentes</h3>
-              <p style={{ color: "#334155" }}>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores, empresas y productores de eventos.</p>
-              <span className="source-footer-badge" style={{ display: "inline-block", background: "#0284c7", color: "#ffffff", padding: "0.25rem 0.75rem", borderRadius: "999px", fontSize: "0.85rem", fontWeight: "bold", marginTop: "1rem" }}>Tecnología fluida + IA + Trato personal</span>
+            }}
+          >
+            <div className="source-footer-grid" style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "2rem" }}>
+              <div className="glass-panel" style={{ color: "#0f172a" }}>
+                <h3 style={{ color: "#0284c7" }}>Landing Fuentes</h3>
+                <p style={{ color: "#334155" }}>Tu éxito digital, hecho con inteligencia y cariño. Creamos soluciones web modernas para emprendedores, empresas y productores de eventos.</p>
+                <span className="source-footer-badge" style={{ display: "inline-block", background: "#0284c7", color: "#ffffff", padding: "0.25rem 0.75rem", borderRadius: "999px", fontSize: "0.85rem", fontWeight: "bold", marginTop: "1rem" }}>Tecnología fluida + IA + Trato personal</span>
+              </div>
+              <div className="glass-panel" style={{ color: "#0f172a" }}>
+                <h4 style={{ color: "#0284c7" }}>Quiénes somos</h4>
+                <p style={{ color: "#334155" }}>Somos un emprendimiento chileno especializado en crear páginas web profesionales con apoyo de inteligencia artificial. Entregas ágiles, costos accesibles y soporte cercano.</p>
+              </div>
+              <div className="glass-panel" style={{ color: "#0f172a" }}>
+                <h4 style={{ color: "#0284c7" }}>Información legal</h4>
+                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20privacidad" style={{ color: "#0284c7", textDecoration: "underline" }}>Términos de privacidad</a></p>
+                <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20uso" style={{ color: "#0284c7", textDecoration: "underline" }}>Términos de uso</a></p>
+              </div>
+              <div className="glass-panel" style={{ color: "#0f172a" }}>
+                <h4 style={{ color: "#0284c7" }}>Contáctame</h4>
+                <p><a className="source-contact" href="mailto:gabriel.fuentes@landingfuentes.online" style={{ color: "#0f172a", textDecoration: "none" }}>gabriel.fuentes@landingfuentes.online</a></p>
+                <p><a className="source-contact" href="tel:+56952128607" style={{ color: "#0f172a", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem" }}><Phone aria-hidden="true" size={16} /> +56 9 5212 8607</a></p>
+                <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer" style={{ color: "#0f172a", textDecoration: "none" }}>@landing_fuentes</a></p>
+              </div>
             </div>
-            <div className="glass-panel" style={{ color: "#0f172a" }}>
-              <h4 style={{ color: "#0284c7" }}>Quiénes somos</h4>
-              <p style={{ color: "#334155" }}>Somos un emprendimiento chileno especializado en crear páginas web profesionales con apoyo de inteligencia artificial. Entregas ágiles, costos accesibles y soporte cercano.</p>
-            </div>
-            <div className="glass-panel" style={{ color: "#0f172a" }}>
-              <h4 style={{ color: "#0284c7" }}>Información legal</h4>
-              <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20privacidad" style={{ color: "#0284c7", textDecoration: "underline" }}>Términos de privacidad</a></p>
-              <p><a href="mailto:gabriel.fuentes@landingfuentes.online?subject=Términos%20de%20uso" style={{ color: "#0284c7", textDecoration: "underline" }}>Términos de uso</a></p>
-            </div>
-            <div className="glass-panel" style={{ color: "#0f172a" }}>
-              <h4 style={{ color: "#0284c7" }}>Contáctame</h4>
-              <p><a className="source-contact" href="mailto:gabriel.fuentes@landingfuentes.online" style={{ color: "#0f172a", textDecoration: "none" }}>gabriel.fuentes@landingfuentes.online</a></p>
-              <p><a className="source-contact" href="tel:+56952128607" style={{ color: "#0f172a", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem" }}><Phone aria-hidden="true" size={16} /> +56 9 5212 8607</a></p>
-              <p><a className="source-contact" href="https://www.instagram.com/landing_fuentes/" target="_blank" rel="noopener noreferrer" style={{ color: "#0f172a", textDecoration: "none" }}>@landing_fuentes</a></p>
-            </div>
-          </div>
-          <p className="source-copyright" style={{ textAlign: "center", marginTop: "2rem", fontWeight: "bold", color: "#000" }}>© 2026 Landing Fuentes. Todos los derechos reservados.</p>
-        </footer>
+            <p className="source-copyright" style={{ textAlign: "center", marginTop: "2rem", fontWeight: "bold", color: "#000" }}>© 2026 Landing Fuentes. Todos los derechos reservados.</p>
+          </footer>
+        </main>
       </div>
     </div>
   );
