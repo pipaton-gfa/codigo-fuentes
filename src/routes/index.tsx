@@ -152,7 +152,7 @@ function Index() {
           bottom: 0;
           height: 100vh;
           width: 250px;
-          z-index: 5;
+          z-index: 2;
           pointer-events: none;
         }
         .page-wave-svg-left {
@@ -168,9 +168,10 @@ function Index() {
           }
         }
 
+        /* Capa de contenido por encima de las cintas (z-index 10) */
         .content-layer {
           position: relative;
-          z-index: 1;
+          z-index: 10;
           background: rgba(0, 5, 15, 0.4);
           min-height: 100vh;
         }
