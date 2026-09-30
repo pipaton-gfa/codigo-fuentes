@@ -59,31 +59,31 @@ function FlowRibbons({ side }: { side: "left" | "right" }) {
         <path
           d="M-60 -60 C 120 140, -20 340, 110 560 C 230 760, -10 940, 120 1160 C 240 1360, 10 1500, 90 1660 L -60 1660 Z"
           fill={`url(#fw-blue-${side})`}
-          opacity="0.55"
+          opacity="0.65"
         />
         <path
           d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660 L -60 1660 Z"
           fill={`url(#fw-cyan-${side})`}
-          opacity="0.7"
+          opacity="0.8"
         />
         <path
           d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660 L -60 1660 Z"
           fill={`url(#fw-orange-${side})`}
-          opacity="0.8"
+          opacity="0.9"
         />
         <path
           d="M-60 120 C 90 260, 150 420, 60 620 C -20 800, 160 960, 70 1180 C -10 1380, 140 1500, 60 1660"
           fill="none"
           stroke="oklch(0.92 0.1 200)"
           strokeWidth="6"
-          opacity="0.8"
+          opacity="0.9"
         />
         <path
           d="M-60 -60 C 60 100, 130 300, 40 500 C -40 680, 120 860, 30 1080 C -50 1280, 100 1420, 20 1660"
           fill="none"
           stroke="oklch(0.88 0.16 65)"
           strokeWidth="5"
-          opacity="0.85"
+          opacity="0.95"
         />
       </g>
     </svg>
@@ -146,12 +146,13 @@ function Index() {
           z-index: 0;
         }
 
+        /* Las cintas se quedan en un plano visible sobre el fondo y debajo del contenido clave */
         .page-wave-svg {
           position: fixed;
           top: 0;
           bottom: 0;
           height: 100vh;
-          width: 250px;
+          width: 280px;
           z-index: 5;
           pointer-events: none;
         }
@@ -163,24 +164,24 @@ function Index() {
         }
         @media (max-width: 768px) {
           .page-wave-svg {
-            width: 120px;
-            opacity: 0.4;
+            width: 130px;
+            opacity: 0.7;
           }
         }
 
-        /* Capa de contenido con z-index superior a las cintas (5) para que todo pase por encima */
+        /* Contenido transparente para que las cintas crucen libremente por detrás y los bloques pasen por encima */
         .content-layer {
           position: relative;
           z-index: 10;
-          background: rgba(0, 5, 15, 0.4);
+          background: transparent;
           min-height: 100vh;
         }
 
         .glass-panel {
-          background: rgba(0, 15, 30, 0.6);
+          background: rgba(0, 15, 30, 0.65);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(0, 229, 255, 0.15);
+          border: 1px solid rgba(0, 229, 255, 0.2);
           border-radius: 16px;
           padding: 2rem;
           margin-bottom: 2rem;
@@ -203,8 +204,8 @@ function Index() {
         .source-service-list > *:nth-child(3) { transition-delay: 0.3s; }
 
         .marketing-card {
-          background: rgba(0, 25, 45, 0.7);
-          border: 1px solid rgba(0, 229, 255, 0.2);
+          background: rgba(0, 25, 45, 0.75);
+          border: 1px solid rgba(0, 229, 255, 0.25);
           border-radius: 12px;
           transition: all 0.4s ease;
           position: relative;
@@ -212,7 +213,7 @@ function Index() {
         }
         .marketing-card:hover {
           transform: translateY(-8px) scale(1.02);
-          background: rgba(0, 40, 70, 0.85);
+          background: rgba(0, 40, 70, 0.9);
           border-color: #00e5ff;
           box-shadow: 0 15px 35px rgba(0, 229, 255, 0.25), 0 0 15px rgba(0, 229, 255, 0.1) inset;
         }
