@@ -26,9 +26,24 @@ export type NewMachineInput = {
   localityId: string | null;
 };
 
+// Entrada del historial de movimientos. Por ahora vive solo en memoria
+// (variable de estado de React) y se reinicia al recargar la página;
+// está pensado para migrarse más adelante a una tabla en D1 y así quedar
+// guardado de forma permanente.
+export type LogEntry = {
+  id: string;
+  timestamp: number;
+  machineLabel: string;
+  action: "added" | "moved" | "removed";
+  fromLocality: string | null;
+  toLocality: string | null;
+  message: string;
+};
+
 type TrackingContextValue = {
   localities: Locality[];
   machines: Machine[];
+  logs: LogEntry[];
   addLocality: (name: string) => { ok: true } | { ok: false; message: string };
   removeLocality: (id: string) => { ok: true } | { ok: false; message: string };
   addMachine: (input: NewMachineInput) => { ok: true } | { ok: false; message: string };
@@ -51,6 +66,9 @@ function makeId() {
 export function TrackingProvider({ children }: { children: ReactNode }) {
   const [localities, setLocalities] = useState<Locality[]>([]);
   const [machines, setMachines] = useState<Machine[]>([]);
+  // Historial de movimientos: por ahora solo en memoria (ver nota en el
+  // tipo LogEntry más arriba). No se lee ni se escribe en localStorage.
+  const [logs, setLogs] = useState<LogEntry[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
   // Cargar datos guardados al montar.
@@ -87,9 +105,17 @@ export function TrackingProvider({ children }: { children: ReactNode }) {
   }, [machines, hydrated]);
 
   const value = useMemo<TrackingContextValue>(() => {
+    const localityName = (id: string | null) =>
+      id ? (localities.find((l) => l.id === id)?.name ?? "Desconocida") : null;
+
+    const pushLog = (entry: Omit<LogEntry, "id" | "timestamp">) => {
+      setLogs((prev) => [...prev, { ...entry, id: makeId(), timestamp: Date.now() }]);
+    };
+
     return {
       localities,
       machines,
+      logs,
 
       addLocality: (name) => {
         const trimmed = name.trim();
@@ -129,17 +155,54 @@ export function TrackingProvider({ children }: { children: ReactNode }) {
             localityId: input.localityId,
           },
         ]);
+        const toLocality = localityName(input.localityId);
+        const machineLabel = `N° ${machineNumber} (Serie ${serialNumber})`;
+        pushLog({
+          machineLabel,
+          action: "added",
+          fromLocality: null,
+          toLocality,
+          message: `Máquina ${machineLabel} agregada${toLocality ? ` en ${toLocality}` : " sin asignar"}.`,
+        });
         return { ok: true };
       },
 
-      removeMachine: (id) => setMachines((prev) => prev.filter((m) => m.id !== id)),
+      removeMachine: (id) => {
+        const machine = machines.find((m) => m.id === id);
+        setMachines((prev) => prev.filter((m) => m.id !== id));
+        if (machine) {
+          const fromLocality = localityName(machine.localityId);
+          const machineLabel = `N° ${machine.machineNumber} (Serie ${machine.serialNumber})`;
+          pushLog({
+            machineLabel,
+            action: "removed",
+            fromLocality,
+            toLocality: null,
+            message: `Máquina ${machineLabel} eliminada${fromLocality ? ` (estaba en ${fromLocality})` : ""}.`,
+          });
+        }
+      },
 
-      moveMachine: (machineId, localityId) =>
+      moveMachine: (machineId, localityId) => {
+        const machine = machines.find((m) => m.id === machineId);
         setMachines((prev) =>
           prev.map((m) => (m.id === machineId ? { ...m, localityId } : m)),
-        ),
+        );
+        if (machine && machine.localityId !== localityId) {
+          const fromLocality = localityName(machine.localityId);
+          const toLocality = localityName(localityId);
+          const machineLabel = `N° ${machine.machineNumber} (Serie ${machine.serialNumber})`;
+          pushLog({
+            machineLabel,
+            action: "moved",
+            fromLocality,
+            toLocality,
+            message: `Máquina ${machineLabel} movida de ${fromLocality ?? "Sin asignar"} a ${toLocality ?? "Sin asignar"}.`,
+          });
+        }
+      },
     };
-  }, [localities, machines]);
+  }, [localities, machines, logs]);
 
   return <TrackingContext.Provider value={value}>{children}</TrackingContext.Provider>;
 }

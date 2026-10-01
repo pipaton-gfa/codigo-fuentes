@@ -855,6 +855,31 @@
 .tracker-panel-trigger { display: grid; width: 42px; height: 42px; place-items: center; border: 0; border-radius: 12px; background: var(--source-tide); color: #fff; cursor: pointer; transition: background-color 150ms ease; }
 .tracker-panel-trigger:hover { background: var(--source-tide-deep); }
 .tracker-panel-trigger svg { width: 21px; height: 21px; }
+
+/* Botón e historial de movimientos (estilo chat, solo lectura). */
+.tracker-log-wrap { position: relative; }
+.tracker-log-trigger { position: relative; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid var(--source-border); border-radius: 12px; background: #fff; color: var(--source-tide); cursor: pointer; transition: background-color 150ms ease; }
+.tracker-log-trigger:hover { background: var(--source-foam); }
+.tracker-log-trigger svg { width: 20px; height: 20px; }
+.tracker-log-count { position: absolute; top: -6px; right: -6px; display: grid; min-width: 18px; height: 18px; place-items: center; border-radius: 999px; background: var(--source-tide); color: #fff; font-size: 0.65rem; font-weight: 700; padding: 0 4px; }
+.tracker-log-backdrop { position: fixed; inset: 0; z-index: 90; background: transparent; }
+.tracker-log-panel { position: absolute; top: calc(100% + 10px); right: 0; z-index: 95; display: flex; flex-direction: column; width: 340px; max-width: calc(100vw - 32px); max-height: 440px; border: 1px solid var(--source-border); border-radius: 16px; background: #fff; box-shadow: 0 16px 36px rgb(14 40 60 / 20%); overflow: hidden; }
+.tracker-log-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--source-border); background: var(--source-foam); padding: 12px 14px; font-family: var(--font-display); font-size: 0.9rem; font-weight: 600; }
+.tracker-log-header span { display: flex; align-items: center; gap: 8px; }
+.tracker-log-header svg { width: 17px; height: 17px; color: var(--source-tide); }
+.tracker-log-header button { display: grid; place-items: center; width: 26px; height: 26px; border: 0; border-radius: 8px; background: transparent; color: var(--source-muted); cursor: pointer; }
+.tracker-log-header button:hover { background: #fff; }
+.tracker-log-header button svg { width: 16px; height: 16px; color: inherit; }
+.tracker-log-list { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: #f7fbfd; }
+.tracker-log-empty { margin: 20px 6px; color: var(--source-muted); font-size: 0.82rem; text-align: center; }
+.tracker-log-bubble { align-self: center; max-width: 100%; border-radius: 14px; background: #fff; border: 1px solid var(--source-border); padding: 9px 12px; box-shadow: 0 4px 10px rgb(14 40 60 / 6%); }
+.tracker-log-bubble-moved { background: var(--source-foam); }
+.tracker-log-bubble-added { background: #eafaf0; border-color: #cdeedb; }
+.tracker-log-bubble-removed { background: #fdecec; border-color: #f6d2d2; }
+.tracker-log-text { margin: 0; display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; color: var(--source-ink); }
+.tracker-log-route { display: flex; align-items: center; gap: 6px; color: var(--source-muted); font-size: 0.76rem; }
+.tracker-log-route svg { width: 13px; height: 13px; flex-shrink: 0; }
+.tracker-log-time { display: block; margin-top: 4px; color: var(--source-muted); font-size: 0.68rem; text-align: right; }
 .tracker-readonly-notice { display: flex; align-items: center; gap: 8px; margin: 14px 24px 0; border: 1px solid var(--source-border); border-radius: 10px; background: var(--source-foam); color: var(--source-muted); padding: 10px 14px; font-size: 0.8rem; }
 .tracker-readonly-notice svg { width: 16px; height: 16px; flex-shrink: 0; }
 .tracker-board { display: flex; gap: 0; align-items: flex-start; min-height: calc(100svh - 79px); overflow-x: auto; }

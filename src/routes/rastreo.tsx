@@ -1,11 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, LayoutGrid, Lock, Plus, Settings, Trash2, X } from "lucide-react";
-import { type DragEvent, type FormEvent, useMemo, useState } from "react";
+import {
+  ArrowRight,
+  Download,
+  History,
+  LayoutGrid,
+  Lock,
+  Plus,
+  Settings,
+  Trash2,
+  X,
+} from "lucide-react";
+import { type DragEvent, type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   buildMachinesCsv,
   TrackingProvider,
   useTracking,
   type Locality,
+  type LogEntry,
   type Machine,
 } from "@/lib/tracking";
 
@@ -64,9 +75,10 @@ function RastreoRoute() {
 }
 
 function RastreoBoard() {
-  const { localities, machines, moveMachine } = useTracking();
+  const { localities, machines, logs, moveMachine } = useTracking();
   const { unlocked, unlock } = usePanelUnlocked();
   const [panelOpen, setPanelOpen] = useState(false);
+  const [logOpen, setLogOpen] = useState(false);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
   const unassigned = useMemo(() => machines.filter((m) => m.localityId === null), [machines]);
@@ -109,6 +121,19 @@ function RastreoBoard() {
               </>
             )}
           </span>
+          <div className="tracker-log-wrap">
+            <button
+              type="button"
+              className="tracker-log-trigger"
+              onClick={() => setLogOpen((open) => !open)}
+              aria-label="Abrir historial de movimientos"
+              aria-expanded={logOpen}
+            >
+              <History aria-hidden="true" />
+              {logs.length > 0 && <span className="tracker-log-count">{logs.length}</span>}
+            </button>
+            {logOpen && <LogPanel logs={logs} onClose={() => setLogOpen(false)} />}
+          </div>
           <button
             type="button"
             className="tracker-panel-trigger"
@@ -185,6 +210,72 @@ function RastreoBoard() {
         <ControlPanel unlocked={unlocked} onUnlock={unlock} onClose={() => setPanelOpen(false)} />
       )}
     </main>
+  );
+}
+
+function formatLogTimestamp(timestamp: number) {
+  const date = new Date(timestamp);
+  const datePart = date.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" });
+  const timePart = date.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
+  return `${datePart} ${timePart}`;
+}
+
+function LogPanel({ logs, onClose }: { logs: LogEntry[]; onClose: () => void }) {
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // Al abrir o al llegar un movimiento nuevo, ir al final (último mensaje),
+  // como en un chat.
+  useEffect(() => {
+    const node = listRef.current;
+    if (node) node.scrollTop = node.scrollHeight;
+  }, [logs.length]);
+
+  return (
+    <>
+      <div className="tracker-log-backdrop" role="presentation" onClick={onClose} />
+      <div
+        className="tracker-log-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Historial de movimientos"
+      >
+        <div className="tracker-log-header">
+          <span>
+            <History aria-hidden="true" /> Historial de movimientos
+          </span>
+          <button type="button" aria-label="Cerrar historial" onClick={onClose}>
+            <X aria-hidden="true" />
+          </button>
+        </div>
+
+        <div className="tracker-log-list" ref={listRef}>
+          {logs.length === 0 ? (
+            <p className="tracker-log-empty">
+              Todavía no hay movimientos registrados. Cada vez que agregues, muevas o elimines una
+              máquina, aparecerá aquí con fecha y hora.
+            </p>
+          ) : (
+            logs.map((entry) => (
+              <div key={entry.id} className={`tracker-log-bubble tracker-log-bubble-${entry.action}`}>
+                {entry.action === "moved" ? (
+                  <p className="tracker-log-text">
+                    <strong>Máquina {entry.machineLabel}</strong>
+                    <span className="tracker-log-route">
+                      {entry.fromLocality ?? "Sin asignar"}
+                      <ArrowRight aria-hidden="true" />
+                      {entry.toLocality ?? "Sin asignar"}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="tracker-log-text">{entry.message}</p>
+                )}
+                <span className="tracker-log-time">{formatLogTimestamp(entry.timestamp)}</span>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 
