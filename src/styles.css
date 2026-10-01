@@ -665,6 +665,8 @@
 .source-footer-grid > .glass-panel p { width: 100%; }
 .source-footer-grid .source-contact { justify-content: center; }
 .source-footer-grid .source-footer-badge { max-width: 100%; }
+.source-footer-grid > .glass-panel:last-child { align-items: flex-start; text-align: left; }
+.source-footer-grid > .glass-panel:last-child .source-contact { justify-content: flex-start; max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }
 .source-footer h3, .source-footer h4 { margin: 0 0 12px; color: #fff; font-family: var(--font-display); }
 .source-footer h3 { font-size: 1.25rem; }
 .source-footer h4 { font-size: 1.05rem; }
