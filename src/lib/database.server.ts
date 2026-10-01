@@ -1,3 +1,5 @@
+import { env as cloudflareEnv } from "cloudflare:workers";
+
 export type D1DatabaseLike = {
   prepare: (query: string) => {
     bind: (...values: unknown[]) => {
@@ -36,7 +38,10 @@ export function setRuntimeEnvironment(environment: unknown) {
 }
 
 export function getRuntimeEnvironment() {
-  return (globalThis as DatabaseGlobal).__env__ ?? {};
+  return (
+    (globalThis as DatabaseGlobal).__env__ ??
+    (cloudflareEnv as unknown as RuntimeEnvironment)
+  );
 }
 
 export function getRequestCountry() {
@@ -45,7 +50,7 @@ export function getRequestCountry() {
 
 export function getDatabase() {
   const runtime = globalThis as DatabaseGlobal;
-  const database = runtime.__codigoFuentesDb ?? runtime.__env__?.DB;
+  const database = runtime.__codigoFuentesDb ?? getRuntimeEnvironment().DB;
   if (!database) {
     throw new Error("La base D1 no está vinculada al Worker.");
   }
