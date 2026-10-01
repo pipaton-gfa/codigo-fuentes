@@ -1,4 +1,5 @@
 import type { InvoiceData } from "./event-purchases.server";
+import { getRuntimeEnvironment } from "./database.server";
 
 type MailingEnvironment = {
   MAIL_API_URL?: string;
@@ -19,7 +20,10 @@ function escapeHtml(value: string) {
 }
 
 function getMailingEnvironment() {
-  const environment = process.env as MailingEnvironment;
+  const environment = {
+    ...getRuntimeEnvironment(),
+    ...(process.env as MailingEnvironment),
+  } as MailingEnvironment;
   if (!environment.MAIL_API_URL || !environment.MAIL_API_TOKEN) {
     throw new Error("La API de mailing no está configurada.");
   }

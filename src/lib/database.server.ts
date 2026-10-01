@@ -14,7 +14,13 @@ export type D1DatabaseLike = {
 type DatabaseGlobal = typeof globalThis & {
   __codigoFuentesDb?: D1DatabaseLike;
   __codigoFuentesCountry?: string | null;
-  __env__?: { DB?: D1DatabaseLike };
+  __env__?: RuntimeEnvironment;
+};
+
+export type RuntimeEnvironment = {
+  DB?: D1DatabaseLike;
+  MAIL_API_URL?: string;
+  MAIL_API_TOKEN?: string;
 };
 
 export function setDatabase(database: D1DatabaseLike | undefined) {
@@ -23,6 +29,14 @@ export function setDatabase(database: D1DatabaseLike | undefined) {
 
 export function setRequestCountry(country: string | undefined) {
   (globalThis as DatabaseGlobal).__codigoFuentesCountry = country?.toUpperCase() || null;
+}
+
+export function setRuntimeEnvironment(environment: unknown) {
+  (globalThis as DatabaseGlobal).__env__ = environment as RuntimeEnvironment;
+}
+
+export function getRuntimeEnvironment() {
+  return (globalThis as DatabaseGlobal).__env__ ?? {};
 }
 
 export function getRequestCountry() {
