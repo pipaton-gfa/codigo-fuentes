@@ -105,7 +105,7 @@ function ExternalInstagramWidget() {
 
   return (
     <section id="instagram-feed" style={{ padding: "0 1rem 2rem 1rem", maxWidth: "1000px", margin: "0 auto" }}>
-      <div className="glass-panel scroll-reveal" style={{ padding: "1.5rem", overflow: "hidden" }}>
+      <div className="glass-panel dark-ribbon-layer scroll-reveal" style={{ padding: "1.5rem", overflow: "hidden" }}>
         <iframe 
           src="//lightwidget.com/widgets/8ddfd1eccf795c11ab27f31ad7a4f002.html" 
           scrolling="no" 
@@ -199,9 +199,14 @@ function Index() {
 
         .content-layer {
           position: relative;
-          z-index: 1;
+          z-index: auto;
           background: rgba(0, 5, 15, 0.4);
           min-height: 100vh;
+        }
+
+        .dark-ribbon-layer {
+          position: relative;
+          z-index: 6;
         }
 
         .glass-panel {
@@ -308,7 +313,7 @@ function Index() {
           <SiteHeader />
 
           <section id="inicio" className="source-intro" style={{ padding: "4rem 1rem" }}>
-            <div className="glass-panel scroll-reveal" style={{ maxWidth: "800px", margin: "0 auto 3rem auto", textAlign: "center" }}>
+            <div className="glass-panel dark-ribbon-layer scroll-reveal" style={{ maxWidth: "800px", margin: "0 auto 3rem auto", textAlign: "center" }}>
               <h1 className="neon-3d-title">
                 Tu éxito digital, hecho con <span>inteligencia y cariño</span>
               </h1>
@@ -342,7 +347,7 @@ function Index() {
           </section>
 
           <section id="servicios" className="source-services" style={{ padding: "4rem 1rem 2rem 1rem", maxWidth: "1000px", margin: "0 auto" }}>
-            <div className="glass-panel scroll-reveal">
+            <div className="glass-panel dark-ribbon-layer scroll-reveal">
               <div className="source-services-heading" style={{ textAlign: "center", marginBottom: "2rem" }}>
                 <h2 style={{ color: "#ffffff", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}>Nuestros servicios</h2>
                 <p style={{ color: "#b0d4ff" }}>Elige una barra para ver nuestros trabajos.</p>
