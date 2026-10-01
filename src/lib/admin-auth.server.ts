@@ -37,7 +37,7 @@ export async function requireAdmin() {
 export async function requireEventAccess(eventId: string) {
   const user = await getAuthenticatedUser();
   if (!user) throw new Error("Se requiere una sesión autenticada.");
-  if (user.role === "super_admin") return user;
+  if (user.role === "admin" || user.role === "super_admin") return user;
 
   const event = await getDatabase()
     .prepare("SELECT id FROM events WHERE printf('%04d', id) = ?1")

@@ -23,7 +23,7 @@ function IdolPurchasesPage() {
   useEffect(() => {
     getCurrentUser()
       .then(async (user) => {
-        if (!user || (user.role !== "super_admin" && !user.eventIds.includes("0003"))) {
+        if (!user || (user.role === "user" && !user.eventIds.includes("0003"))) {
           navigate({ to: "/admin" });
           return;
         }
@@ -61,7 +61,6 @@ function IdolPurchasesPage() {
                 <th>Código QR</th>
                 <th>Factura</th>
                 <th>Pago</th>
-                <th>Correo</th>
               </tr>
             </thead>
             <tbody>
@@ -92,20 +91,11 @@ function IdolPurchasesPage() {
                     <strong>{formatPrice(purchase.total_clp)}</strong>
                   </td>
                   <td>{purchase.status === "approved" ? "Aprobado" : "Iniciado"}</td>
-                  <td>
-                    {purchase.email_status === "sent"
-                      ? "Enviado"
-                      : purchase.email_status === "failed"
-                        ? "Pendiente de reintento"
-                        : purchase.email_status === "sending"
-                          ? "Enviando"
-                          : "Pendiente"}
-                  </td>
                 </tr>
               ))}
               {purchases.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="admin-purchases-empty">
+                  <td colSpan={5} className="admin-purchases-empty">
                     Todavía no hay compras para este evento.
                   </td>
                 </tr>

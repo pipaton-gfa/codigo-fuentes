@@ -37,7 +37,6 @@ function InvoicePage() {
   const [paymentStatus, setPaymentStatus] = useState<
     "pending" | "verifying" | "approved" | "rejected"
   >("pending");
-  const [emailStatus, setEmailStatus] = useState("");
 
   useEffect(() => {
     if (!order) return;
@@ -46,7 +45,9 @@ function InvoicePage() {
     if (!paymentId) return;
 
     setPaymentStatus("verifying");
-    confirmIdolEventPayment({ data: { paymentId, transactionNumber: order.reference } })
+    confirmIdolEventPayment({
+      data: { paymentId, transactionNumber: order.reference },
+    })
       .then((result) => {
         if (!result.approved) {
           setPaymentStatus(
@@ -57,7 +58,6 @@ function InvoicePage() {
 
         setNumericQrCode(result.qrCode);
         setPaymentStatus("approved");
-        setEmailStatus(result.emailStatus);
         localStorage.setItem(
           "viamarket.order",
           JSON.stringify({ ...order, ticketCode: result.qrCode }),
@@ -170,11 +170,6 @@ function InvoicePage() {
               <p className="mt-3 break-all font-mono text-xs text-slate-500">{numericQrCode}</p>
               <p className="mt-3 text-sm text-slate-600">
                 Presenta este código para validar tu entrada.
-              </p>
-              <p className="mt-3 text-sm text-slate-600">
-                {emailStatus === "sent"
-                  ? `Comprobante y QR enviados a ${order.customer.email}.`
-                  : "Tu pago está aprobado. El correo con el comprobante y QR está pendiente de envío."}
               </p>
             </>
           )}

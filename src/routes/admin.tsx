@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, BarChart3, Database, LogOut, PanelsTopLeft, Ticket } from "lucide-react";
+import { ArrowRight, BarChart3, Database, LogOut, PanelsTopLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getCurrentUser, logoutUser } from "@/lib/users.server";
@@ -19,7 +19,7 @@ function AdminHome() {
   useEffect(() => {
     getCurrentUser()
       .then((user) => {
-        if (!user || (user.role === "user" && !user.eventIds.includes("0003"))) {
+        if (!user || (user.role === "user" && user.eventIds.length === 0)) {
           navigate({ to: "/" });
           return;
         }
@@ -28,8 +28,10 @@ function AdminHome() {
       .catch(() => navigate({ to: "/" }));
   }, [navigate]);
 
-  const canViewIdolPurchases =
-    currentUser?.role === "super_admin" || currentUser?.eventIds.includes("0003") === true;
+  const canViewSalesData =
+    currentUser?.role === "admin" ||
+    currentUser?.role === "super_admin" ||
+    (currentUser?.role === "user" && currentUser.eventIds.length > 0);
   const canManageAdministration = currentUser?.role === "admin" || currentUser?.role === "super_admin";
 
   const logout = async () => {
@@ -81,12 +83,12 @@ function AdminHome() {
             </Link>
               </>
             )}
-            {canViewIdolPurchases && (
-              <Link to="/admin/compras-idols" className="admin-link-card">
-                <Ticket aria-hidden="true" />
+            {canViewSalesData && (
+              <Link to="/admin/datos-ventas" className="admin-link-card">
+                <BarChart3 aria-hidden="true" />
                 <span>
-                  <strong>Compras de idols</strong>
-                  <small>Evento 0003 · facturas y códigos QR.</small>
+                  <strong>Datos de ventas</strong>
+                  <small>Estadísticas de ventas y eventos asignados.</small>
                 </span>
                 <ArrowRight aria-hidden="true" />
               </Link>
