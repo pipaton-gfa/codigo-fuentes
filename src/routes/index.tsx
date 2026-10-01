@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, LayoutTemplate, MonitorSmartphone, Phone, ShoppingCart } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/")({
@@ -32,6 +32,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+// Decorative side ribbons that sit behind the dark content panels.
 function FlowRibbons({ side }: { side: "left" | "right" }) {
   const flip = side === "right";
   return (
@@ -90,7 +91,7 @@ function FlowRibbons({ side }: { side: "left" | "right" }) {
   );
 }
 
-{/* COMPONENTE WIDGET LIGHTWIDGET DE INSTAGRAM */}
+// External social feed kept isolated from the page content.
 function ExternalInstagramWidget() {
   useEffect(() => {
     const script = document.createElement("script");
@@ -120,9 +121,7 @@ function ExternalInstagramWidget() {
 }
 
 function Index() {
-  const [heroTransform, setHeroTransform] = useState("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
-  const [isHoveringHero, setIsHoveringHero] = useState(false);
-
+  // Reveal sections progressively while respecting reduced-motion preferences.
   useEffect(() => {
     const revealElements = document.querySelectorAll<HTMLElement>(".scroll-reveal");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -145,25 +144,26 @@ function Index() {
     return () => observer.disconnect();
   }, []);
 
-  const handleHeroMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - left) / width - 0.5;
-    const y = (e.clientY - top) / height - 0.5;
-    
-    const rotateY = x * 40; 
-    const rotateX = y * -40;
-    setHeroTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`);
-  };
-
-  const handleHeroMouseEnter = () => setIsHoveringHero(true);
-  const handleHeroMouseLeave = () => {
-    setIsHoveringHero(false);
-    setHeroTransform("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
-  };
+  /*
+   * Hero hover effect, intentionally disabled for now.
+   * const [heroTransform, setHeroTransform] = useState(
+   *   "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
+   * );
+   * const [isHoveringHero, setIsHoveringHero] = useState(false);
+   * const handleHeroMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+   *   const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
+   *   const x = (event.clientX - left) / width - 0.5;
+   *   const y = (event.clientY - top) / height - 0.5;
+   *   setHeroTransform(
+   *     `perspective(1000px) rotateX(${y * -40}deg) rotateY(${x * 40}deg) scale(1.1)`,
+   *   );
+   * };
+   */
 
   return (
     <div style={{ width: "100%", minHeight: "100vh", overflowX: "hidden", position: "relative", color: "#f0f8ff" }}>
       <style>{`
+        /* Background and page-level layers. */
         .react-water-background {
           position: fixed;
           top: -10%;
@@ -209,6 +209,7 @@ function Index() {
           z-index: 6;
         }
 
+        /* Shared dark panels. */
         .glass-panel {
           background: rgba(0, 15, 30, 0.6);
           backdrop-filter: blur(12px);
@@ -220,6 +221,7 @@ function Index() {
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
+        /* Scroll reveal motion. */
         .scroll-reveal {
           opacity: 0;
           transform: translateY(40px) scale(0.98);
@@ -235,6 +237,7 @@ function Index() {
         .source-service-list > *:nth-child(2) { transition-delay: 0.2s; }
         .source-service-list > *:nth-child(3) { transition-delay: 0.3s; }
 
+        /* Service cards and hover treatment. */
         .marketing-card {
           background: rgba(0, 25, 45, 0.7);
           border: 1px solid rgba(0, 229, 255, 0.2);
@@ -262,6 +265,7 @@ function Index() {
           left: 150%;
         }
 
+        /* Hero title animation. */
         .neon-3d-title {
           color: #00e5ff !important;
           display: inline-block;
@@ -294,6 +298,7 @@ function Index() {
         }
       `}</style>
 
+      {/* Shared SVG filter used by the animated water background. */}
       <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
         <filter id="water-filter">
           <feTurbulence type="fractalNoise" baseFrequency="0.005 0.01" numOctaves="2" result="noise">
@@ -303,8 +308,8 @@ function Index() {
         </filter>
       </svg>
 
+      {/* Decorative background layer. */}
       <div className="react-water-background" />
-      
       <FlowRibbons side="left" />
       <FlowRibbons side="right" />
 
@@ -312,6 +317,7 @@ function Index() {
         <main className="source-index">
           <SiteHeader />
 
+          {/* Introductory hero and brand image. */}
           <section id="inicio" className="source-intro" style={{ padding: "4rem 1rem" }}>
             <div className="glass-panel dark-ribbon-layer scroll-reveal" style={{ maxWidth: "800px", margin: "0 auto 3rem auto", textAlign: "center" }}>
               <h1 className="neon-3d-title">
@@ -327,12 +333,8 @@ function Index() {
 
             <div 
               className="source-hero-image scroll-reveal"
-              onMouseMove={handleHeroMouseMove}
-              onMouseEnter={handleHeroMouseEnter}
-              onMouseLeave={handleHeroMouseLeave}
+              /* Hero hover handlers intentionally disabled. */
               style={{
-                transform: heroTransform,
-                transition: isHoveringHero ? "transform 0.1s ease-out" : "transform 0.5s ease-out",
                 border: "3px solid rgba(255, 255, 255, 0.8)",
                 boxShadow: "0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.7), 0 0 15px rgba(0, 180, 255, 0.8)",
                 borderRadius: "16px",
@@ -346,6 +348,7 @@ function Index() {
             </div>
           </section>
 
+          {/* Services offered by Landing Fuentes. */}
           <section id="servicios" className="source-services" style={{ padding: "4rem 1rem 2rem 1rem", maxWidth: "1000px", margin: "0 auto" }}>
             <div className="glass-panel dark-ribbon-layer scroll-reveal">
               <div className="source-services-heading" style={{ textAlign: "center", marginBottom: "2rem" }}>
@@ -381,9 +384,10 @@ function Index() {
             </div>
           </section>
 
-          {/* WIDGET DE INSTAGRAM (LIGHTWIDGET) */}
+          {/* Instagram integration. */}
           <ExternalInstagramWidget />
 
+          {/* Contact and legal information. */}
           <footer 
             id="contacto" 
             className="source-footer scroll-reveal"
