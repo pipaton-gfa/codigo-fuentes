@@ -21,8 +21,8 @@ type DatabaseGlobal = typeof globalThis & {
 
 export type RuntimeEnvironment = {
   DB?: D1DatabaseLike;
-  MAIL_API_URL?: string;
-  MAIL_API_TOKEN?: string;
+  PAYMENT_API_URL?: string;
+  PAYMENT_API_TOKEN?: string;
 };
 
 export function setDatabase(database: D1DatabaseLike | undefined) {

@@ -1,8 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { MercadoPagoConfig, Payment } from "mercadopago";
-import { getDatabase } from "./database.server";
+import { getRuntimeEnvironment } from "./database.server";
 import { requireEventAccess } from "./admin-auth.server";
-import { sendPurchaseReceiptEmail } from "./mailing.server";
 
 const IDOL_EVENT_ID = "0003";
 
@@ -37,75 +35,60 @@ type EventPurchaseRow = {
   email_message_id: string | null;
   created_at: string;
 };
+type EventPurchase = Omit<EventPurchaseRow, "invoice_data"> & { invoice: InvoiceData };
 
-function createNumericQrCode() {
-  const randomBytes = crypto.getRandomValues(new Uint8Array(6));
-  const numericValue = randomBytes.reduce((value, byte) => value * 256 + byte, 0);
-  return String(numericValue % 1_000_000_000_000).padStart(12, "0");
+type PaymentApiEnvironment = {
+  PAYMENT_API_URL?: string;
+  PAYMENT_API_TOKEN?: string;
+};
+
+function getPaymentApiEnvironment() {
+  const environment = {
+    ...getRuntimeEnvironment(),
+    ...(process.env as PaymentApiEnvironment),
+  } as PaymentApiEnvironment;
+  if (!environment.PAYMENT_API_URL || !environment.PAYMENT_API_TOKEN) {
+    throw new Error("La API de pagos no está configurada en el servidor.");
+  }
+  return environment as Required<PaymentApiEnvironment>;
 }
 
-async function sendPurchaseEmailOnce(input: {
-  purchaseId: number;
-  purchaseCode: string;
-  customerEmail: string;
-  customerName: string;
-  qrCode: string;
-  invoice: InvoiceData;
-  force?: boolean;
-}) {
-  const database = getDatabase();
-  const claim = await database
-    .prepare(
-      "UPDATE event_purchases SET email_status = 'sending', email_attempted_at = CURRENT_TIMESTAMP, email_error = NULL WHERE id = ?1 AND status = 'approved' AND (email_status IN ('pending', 'failed') OR (?2 = 1 AND email_status = 'sent')) RETURNING id",
-    )
-    .bind(input.purchaseId, input.force ? 1 : 0)
-    .first<{ id: number }>();
-
-  if (!claim) {
-    const current = await database
-      .prepare("SELECT email_status FROM event_purchases WHERE id = ?1")
-      .bind(input.purchaseId)
-      .first<{ email_status: string }>();
-    return current?.email_status ?? "pending";
-  }
-
+async function callPaymentApi<T>(path: string, method: "GET" | "POST", body?: unknown): Promise<T> {
+  const environment = getPaymentApiEnvironment();
+  let response: Response;
   try {
-    const result = await sendPurchaseReceiptEmail({
-      purchaseId: input.purchaseCode,
-      customerEmail: input.customerEmail,
-      customerName: input.customerName,
-      qrCode: input.qrCode,
-      invoice: input.invoice,
+    response = await fetch(`${environment.PAYMENT_API_URL.replace(/\/$/, "")}${path}`, {
+      method,
+      headers: {
+        Authorization: `Bearer ${environment.PAYMENT_API_TOKEN}`,
+        ...(body === undefined ? {} : { "content-type": "application/json" }),
+      },
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
-    await database
-      .prepare(
-        "UPDATE event_purchases SET email_status = 'sent', email_sent_at = CURRENT_TIMESTAMP, email_error = NULL, email_message_id = ?1 WHERE id = ?2",
-      )
-      .bind(result.messageId, input.purchaseId)
-      .run();
-    return "sent";
-  } catch (error) {
-    const safeMessage = (error instanceof Error ? error.message : "Error de envío").slice(0, 300);
-    await database
-      .prepare("UPDATE event_purchases SET email_status = 'failed', email_error = ?1 WHERE id = ?2")
-      .bind(safeMessage, input.purchaseId)
-      .run();
-    return "failed";
+  } catch {
+    throw new Error("No se pudo conectar con la API de pagos.");
   }
+
+  let payload: T;
+  try {
+    payload = (await response.json()) as T;
+  } catch {
+    throw new Error("La API de pagos devolvió una respuesta inválida.");
+  }
+  if (!response.ok) throw new Error("La API de pagos no pudo completar la operación.");
+  return payload;
 }
 
 export const getIdolEventPurchases = createServerFn({ method: "GET" }).handler(async () => {
   await requireEventAccess(IDOL_EVENT_ID);
-  const result = await getDatabase()
-    .prepare(
-      "SELECT id, purchase_id, transaction_number, payment_preference_id, payment_id, qr_code, customer_name, customer_rut, customer_email, invoice_data, total_clp, status, email_status, email_attempted_at, email_sent_at, email_error, email_message_id, created_at FROM event_purchases WHERE event_id = 3 ORDER BY created_at DESC, id DESC",
-    )
-    .all<EventPurchaseRow>();
-
-  return result.results.map(({ invoice_data, ...purchase }) => ({
-    ...purchase,
-    invoice: JSON.parse(invoice_data) as InvoiceData,
-  }));
+  const result = await callPaymentApi<{ ok?: boolean; purchases?: EventPurchase[] }>(
+    "/v1/purchases/idols",
+    "GET",
+  );
+  if (!result.ok || !Array.isArray(result.purchases)) {
+    throw new Error("No se pudieron cargar las compras.");
+  }
+  return result.purchases;
 });
 
 export const resendIdolPurchaseEmail = createServerFn({ method: "POST" })
@@ -115,36 +98,11 @@ export const resendIdolPurchaseEmail = createServerFn({ method: "POST" })
     if (!Number.isInteger(data.purchaseId)) {
       return { ok: false as const, status: "invalid" };
     }
-
-    const purchase = await getDatabase()
-      .prepare(
-        "SELECT id, purchase_id, qr_code, status, customer_name, customer_email, invoice_data FROM event_purchases WHERE event_id = 3 AND id = ?1",
-      )
-      .bind(data.purchaseId)
-      .first<{
-        id: number;
-        purchase_id: string;
-        qr_code: string | null;
-        status: string;
-        customer_name: string;
-        customer_email: string;
-        invoice_data: string;
-      }>();
-
-    if (!purchase || purchase.status !== "approved" || !purchase.qr_code) {
-      return { ok: false as const, status: "not_approved" };
-    }
-
-    const status = await sendPurchaseEmailOnce({
-      purchaseId: purchase.id,
-      purchaseCode: purchase.purchase_id,
-      customerEmail: purchase.customer_email,
-      customerName: purchase.customer_name,
-      qrCode: purchase.qr_code,
-      invoice: JSON.parse(purchase.invoice_data) as InvoiceData,
-      force: true,
-    });
-    return { ok: status === "sent", status };
+    return callPaymentApi<{ ok: boolean; status: string }>(
+      "/v1/purchases/resend-email",
+      "POST",
+      { purchaseId: data.purchaseId },
+    );
   });
 
 export const confirmIdolEventPayment = createServerFn({ method: "POST" })
@@ -157,69 +115,22 @@ export const confirmIdolEventPayment = createServerFn({ method: "POST" })
       return { approved: false as const, status: "invalid" };
     }
 
-    const database = getDatabase();
-    const purchase = await database
-      .prepare(
-        "SELECT id, purchase_id, total_clp, qr_code, status, customer_name, customer_email, invoice_data FROM event_purchases WHERE event_id = 3 AND transaction_number = ?1",
-      )
-      .bind(data.transactionNumber)
-      .first<{
-        id: number;
-        purchase_id: string;
-        total_clp: number;
-        qr_code: string | null;
-        status: string;
-        customer_name: string;
-        customer_email: string;
-        invoice_data: string;
-      }>();
-    if (!purchase) return { approved: false as const, status: "not_found" };
-
-    const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
-    if (!accessToken) throw new Error("MERCADOPAGO_ACCESS_TOKEN no está configurado.");
-
-    let payment;
-    try {
-      payment = await new Payment(new MercadoPagoConfig({ accessToken })).get({
-        id: data.paymentId,
-      });
-    } catch {
-      return { approved: false as const, status: "verification_failed" };
+    const result = await callPaymentApi<{
+      approved?: boolean;
+      status?: string;
+      qrCode?: string | null;
+      emailStatus?: string;
+    }>("/v1/payments/verify", "POST", data);
+    if (!result.approved) {
+      return { approved: false as const, status: result.status ?? "verification_failed" };
     }
-
-    if (
-      payment.status !== "approved" ||
-      payment.external_reference !== data.transactionNumber ||
-      payment.transaction_amount !== purchase.total_clp ||
-      payment.currency_id !== "CLP"
-    ) {
-      return { approved: false as const, status: payment.status ?? "pending" };
+    if (!result.qrCode || !/^\d{12}$/.test(result.qrCode)) {
+      return { approved: false as const, status: "qr_generation_failed" };
     }
-
-    let qrCode = purchase.qr_code;
-    if (!qrCode) {
-      qrCode = createNumericQrCode();
-      await database
-        .prepare(
-          "UPDATE event_purchases SET qr_code = ?1, payment_id = ?2, status = 'approved' WHERE id = ?3 AND qr_code IS NULL",
-        )
-        .bind(qrCode, String(payment.id ?? data.paymentId), purchase.id)
-        .run();
-      const updated = await database
-        .prepare("SELECT qr_code FROM event_purchases WHERE id = ?1")
-        .bind(purchase.id)
-        .first<{ qr_code: string | null }>();
-      qrCode = updated?.qr_code ?? null;
-    }
-
-    if (!qrCode) return { approved: false as const, status: "qr_generation_failed" };
-    const emailStatus = await sendPurchaseEmailOnce({
-      purchaseId: purchase.id,
-      purchaseCode: purchase.purchase_id,
-      customerEmail: purchase.customer_email,
-      customerName: purchase.customer_name,
-      qrCode,
-      invoice: JSON.parse(purchase.invoice_data) as InvoiceData,
-    });
-    return { approved: true as const, status: "approved", qrCode, emailStatus };
+    return {
+      approved: true as const,
+      status: "approved",
+      qrCode: result.qrCode,
+      emailStatus: result.emailStatus ?? "pending",
+    };
   });
