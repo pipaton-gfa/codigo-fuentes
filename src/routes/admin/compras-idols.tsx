@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { PurchaseQrModal } from "@/components/PurchaseQrModal";
 import { getIdolEventPurchases } from "@/lib/event-purchases.server";
 import { getCurrentUser } from "@/lib/users.server";
 import { formatPrice } from "@/lib/products";
@@ -56,6 +57,7 @@ function IdolPurchasesPage() {
           <table className="admin-purchases-table">
             <thead>
               <tr>
+                <th>ID de compra</th>
                 <th>Comprador</th>
                 <th>Transacción</th>
                 <th>Código QR</th>
@@ -66,6 +68,9 @@ function IdolPurchasesPage() {
             <tbody>
               {purchases.map((purchase) => (
                 <tr key={purchase.id}>
+                  <td>
+                    <strong>{purchase.purchase_id}</strong>
+                  </td>
                   <td>
                     <strong>{purchase.customer_name}</strong>
                     <small>RUT {purchase.customer_rut}</small>
@@ -78,7 +83,17 @@ function IdolPurchasesPage() {
                     <small>Preferencia MP {purchase.payment_preference_id}</small>
                   </td>
                   <td className="admin-purchase-qr">
-                    {purchase.qr_code ?? <span>Pendiente de aprobación</span>}
+                    {purchase.status === "approved" && purchase.qr_code ? (
+                      <>
+                        <strong>{purchase.qr_code}</strong>
+                        <PurchaseQrModal
+                          qrCode={purchase.qr_code}
+                          purchaseId={purchase.purchase_id}
+                        />
+                      </>
+                    ) : (
+                      <span>Pendiente de aprobación</span>
+                    )}
                   </td>
                   <td>
                     <ul className="admin-purchase-lines">
@@ -95,7 +110,7 @@ function IdolPurchasesPage() {
               ))}
               {purchases.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="admin-purchases-empty">
+                  <td colSpan={6} className="admin-purchases-empty">
                     Todavía no hay compras para este evento.
                   </td>
                 </tr>

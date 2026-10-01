@@ -731,6 +731,17 @@
 .admin-purchases-table td small { display: block; margin-top: 5px; color: var(--source-muted); overflow-wrap: anywhere; }
 .admin-purchase-qr { font-family: ui-monospace, monospace; font-size: .9rem !important; font-variant-numeric: tabular-nums; }
 .admin-purchase-qr span { color: #8a5a00; font-family: inherit; font-size: .75rem; }
+.admin-purchase-qr strong { display: block; }
+.admin-qr-button, .admin-qr-download { margin-top: 10px; border: 1px solid var(--source-tide); border-radius: 7px; background: var(--source-tide); padding: 7px 10px; color: #fff; cursor: pointer; font-size: .72rem; font-weight: 700; }
+.admin-qr-button:hover, .admin-qr-download:hover { background: var(--source-ink); }
+.admin-qr-download:disabled { cursor: wait; opacity: .55; }
+.admin-qr-backdrop { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; overflow-y: auto; background: rgb(8 29 45 / 55%); padding: 20px; backdrop-filter: blur(8px); }
+.admin-qr-dialog { width: min(100%, 520px); border: 1px solid var(--source-border); border-radius: 12px; background: #fff; padding: 28px; box-shadow: 0 24px 80px rgb(8 29 45 / 24%); text-align: center; }
+.admin-qr-dialog-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; text-align: left; }
+.admin-qr-dialog h2 { margin: 8px 0 0; color: var(--source-ink); font-family: var(--font-display); font-size: 1.65rem; }
+.admin-qr-close { border: 0; background: transparent; padding: 4px 0; color: var(--source-tide); cursor: pointer; font-size: .78rem; font-weight: 700; }
+.admin-qr-image { display: block; width: min(100%, 360px); margin: 24px auto 12px; }
+.admin-qr-number { margin: 0; color: var(--source-ink); font-family: ui-monospace, monospace; font-size: 1.05rem; letter-spacing: .08em; }
 .admin-purchase-lines { display: grid; gap: 4px; margin: 0 0 8px; padding: 0; list-style: none; color: var(--source-muted); }
 .admin-purchases-empty { padding: 32px !important; color: var(--source-muted) !important; text-align: center; }
 .admin-logout { display: inline-flex; align-items: center; gap: 8px; margin-top: 32px; border: 0; background: transparent; padding: 0; color: var(--source-muted); cursor: pointer; font-weight: 700; }

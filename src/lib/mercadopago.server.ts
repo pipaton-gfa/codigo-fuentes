@@ -124,9 +124,9 @@ export const createMercadoPagoPreference = createServerFn({ method: "POST" }).ha
       throw new Error("Mercado Pago no devolvió una URL de checkout.");
     }
 
-    await getDatabase()
+    const purchase = await getDatabase()
       .prepare(
-        "INSERT INTO event_purchases (event_id, transaction_number, payment_preference_id, customer_name, customer_rut, customer_email, invoice_data, total_clp, payment_method, status) VALUES (3, ?1, ?2, ?3, ?4, ?5, ?6, ?7, 'Mercado Pago', 'iniciada')",
+        "INSERT INTO event_purchases (event_id, transaction_number, payment_preference_id, customer_name, customer_rut, customer_email, invoice_data, total_clp, payment_method, status) VALUES (3, ?1, ?2, ?3, ?4, ?5, ?6, ?7, 'Mercado Pago', 'iniciada') RETURNING id",
       )
       .bind(
         transactionNumber,
@@ -137,6 +137,15 @@ export const createMercadoPagoPreference = createServerFn({ method: "POST" }).ha
         JSON.stringify(invoiceData),
         total,
       )
+      .first<{ id: number }>();
+
+    if (!purchase) {
+      throw new Error("No se pudo registrar la compra.");
+    }
+
+    await getDatabase()
+      .prepare("UPDATE event_purchases SET purchase_id = printf('%04d%d', event_id, id) WHERE id = ?1")
+      .bind(purchase.id)
       .run();
 
     return {

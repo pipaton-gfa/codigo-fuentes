@@ -18,6 +18,7 @@ export type InvoiceData = {
 };
 type EventPurchaseRow = {
   id: number;
+  purchase_id: string;
   transaction_number: string;
   payment_preference_id: string;
   payment_id: string | null;
@@ -41,7 +42,7 @@ export const getIdolEventPurchases = createServerFn({ method: "GET" }).handler(a
   await requireEventAccess(IDOL_EVENT_ID);
   const result = await getDatabase()
     .prepare(
-      "SELECT id, transaction_number, payment_preference_id, payment_id, qr_code, customer_name, customer_rut, customer_email, invoice_data, total_clp, status, created_at FROM event_purchases WHERE event_id = 3 ORDER BY created_at DESC, id DESC",
+      "SELECT id, purchase_id, transaction_number, payment_preference_id, payment_id, qr_code, customer_name, customer_rut, customer_email, invoice_data, total_clp, status, created_at FROM event_purchases WHERE event_id = 3 ORDER BY created_at DESC, id DESC",
     )
     .all<EventPurchaseRow>();
 
