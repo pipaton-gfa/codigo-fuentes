@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, LayoutTemplate, MonitorSmartphone, Phone, ShoppingCart } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/")({
@@ -121,6 +121,11 @@ function ExternalInstagramWidget() {
 }
 
 function Index() {
+  const [heroTransform, setHeroTransform] = useState(
+    "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
+  );
+  const [isHoveringHero, setIsHoveringHero] = useState(false);
+
   // Reveal sections progressively while respecting reduced-motion preferences.
   useEffect(() => {
     const revealElements = document.querySelectorAll<HTMLElement>(".scroll-reveal");
@@ -144,21 +149,20 @@ function Index() {
     return () => observer.disconnect();
   }, []);
 
-  /*
-   * Hero hover effect, intentionally disabled for now.
-   * const [heroTransform, setHeroTransform] = useState(
-   *   "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)",
-   * );
-   * const [isHoveringHero, setIsHoveringHero] = useState(false);
-   * const handleHeroMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-   *   const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
-   *   const x = (event.clientX - left) / width - 0.5;
-   *   const y = (event.clientY - top) / height - 0.5;
-   *   setHeroTransform(
-   *     `perspective(1000px) rotateX(${y * -40}deg) rotateY(${x * 40}deg) scale(1.1)`,
-   *   );
-   * };
-   */
+  const handleHeroMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - left) / width - 0.5;
+    const y = (event.clientY - top) / height - 0.5;
+    setHeroTransform(
+      `perspective(1000px) rotateX(${y * -40}deg) rotateY(${x * 40}deg) scale(1.1)`,
+    );
+  };
+
+  const handleHeroMouseEnter = () => setIsHoveringHero(true);
+  const handleHeroMouseLeave = () => {
+    setIsHoveringHero(false);
+    setHeroTransform("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
+  };
 
   return (
     <div style={{ width: "100%", minHeight: "100vh", overflowX: "hidden", position: "relative", color: "#f0f8ff" }}>
@@ -333,8 +337,12 @@ function Index() {
 
             <div 
               className="source-hero-image scroll-reveal"
-              /* Hero hover handlers intentionally disabled. */
+              onMouseMove={handleHeroMouseMove}
+              onMouseEnter={handleHeroMouseEnter}
+              onMouseLeave={handleHeroMouseLeave}
               style={{
+                transform: heroTransform,
+                transition: isHoveringHero ? "transform 0.1s ease-out" : "transform 0.5s ease-out",
                 border: "3px solid rgba(255, 255, 255, 0.8)",
                 boxShadow: "0 20px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.7), 0 0 15px rgba(0, 180, 255, 0.8)",
                 borderRadius: "16px",
