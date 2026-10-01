@@ -51,13 +51,14 @@ async function sendPurchaseEmailOnce(input: {
   customerName: string;
   qrCode: string;
   invoice: InvoiceData;
+  force?: boolean;
 }) {
   const database = getDatabase();
   const claim = await database
     .prepare(
-      "UPDATE event_purchases SET email_status = 'sending', email_attempted_at = CURRENT_TIMESTAMP, email_error = NULL WHERE id = ?1 AND status = 'approved' AND email_status IN ('pending', 'failed') RETURNING id",
+      "UPDATE event_purchases SET email_status = 'sending', email_attempted_at = CURRENT_TIMESTAMP, email_error = NULL WHERE id = ?1 AND status = 'approved' AND (email_status IN ('pending', 'failed') OR (?2 = 1 AND email_status = 'sent')) RETURNING id",
     )
-    .bind(input.purchaseId)
+    .bind(input.purchaseId, input.force ? 1 : 0)
     .first<{ id: number }>();
 
   if (!claim) {
@@ -106,6 +107,45 @@ export const getIdolEventPurchases = createServerFn({ method: "GET" }).handler(a
     invoice: JSON.parse(invoice_data) as InvoiceData,
   }));
 });
+
+export const resendIdolPurchaseEmail = createServerFn({ method: "POST" })
+  .inputValidator((data: { purchaseId: number }) => data)
+  .handler(async ({ data }) => {
+    await requireEventAccess(IDOL_EVENT_ID);
+    if (!Number.isInteger(data.purchaseId)) {
+      return { ok: false as const, status: "invalid" };
+    }
+
+    const purchase = await getDatabase()
+      .prepare(
+        "SELECT id, purchase_id, qr_code, status, customer_name, customer_email, invoice_data FROM event_purchases WHERE event_id = 3 AND id = ?1",
+      )
+      .bind(data.purchaseId)
+      .first<{
+        id: number;
+        purchase_id: string;
+        qr_code: string | null;
+        status: string;
+        customer_name: string;
+        customer_email: string;
+        invoice_data: string;
+      }>();
+
+    if (!purchase || purchase.status !== "approved" || !purchase.qr_code) {
+      return { ok: false as const, status: "not_approved" };
+    }
+
+    const status = await sendPurchaseEmailOnce({
+      purchaseId: purchase.id,
+      purchaseCode: purchase.purchase_id,
+      customerEmail: purchase.customer_email,
+      customerName: purchase.customer_name,
+      qrCode: purchase.qr_code,
+      invoice: JSON.parse(purchase.invoice_data) as InvoiceData,
+      force: true,
+    });
+    return { ok: status === "sent", status };
+  });
 
 export const confirmIdolEventPayment = createServerFn({ method: "POST" })
   .inputValidator((data: { paymentId: string; transactionNumber: string }) => data)

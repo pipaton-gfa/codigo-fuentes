@@ -738,6 +738,9 @@
 .admin-purchase-qr { font-family: ui-monospace, monospace; font-size: .9rem !important; font-variant-numeric: tabular-nums; }
 .admin-purchase-qr span { color: #8a5a00; font-family: inherit; font-size: .75rem; }
 .admin-purchase-qr strong { display: block; }
+.admin-purchase-email { border: 1px solid var(--source-tide); border-radius: 7px; background: transparent; padding: 7px 10px; color: var(--source-tide); cursor: pointer; font-size: .72rem; font-weight: 700; white-space: nowrap; }
+.admin-purchase-email:hover { background: var(--source-foam); }
+.admin-purchase-email:disabled { cursor: wait; opacity: .55; }
 .admin-qr-button, .admin-qr-download { margin-top: 10px; border: 1px solid var(--source-tide); border-radius: 7px; background: var(--source-tide); padding: 7px 10px; color: #fff; cursor: pointer; font-size: .72rem; font-weight: 700; }
 .admin-qr-button:hover, .admin-qr-download:hover { background: var(--source-ink); }
 .admin-qr-download:disabled { cursor: wait; opacity: .55; }

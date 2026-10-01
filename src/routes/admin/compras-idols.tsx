@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { PurchaseQrModal } from "@/components/PurchaseQrModal";
-import { getIdolEventPurchases } from "@/lib/event-purchases.server";
+import { getIdolEventPurchases, resendIdolPurchaseEmail } from "@/lib/event-purchases.server";
 import { getCurrentUser } from "@/lib/users.server";
 import { formatPrice } from "@/lib/products";
 
@@ -20,6 +20,7 @@ function IdolPurchasesPage() {
   const [purchases, setPurchases] = useState<Purchases>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [resendingPurchaseId, setResendingPurchaseId] = useState<number | null>(null);
 
   useEffect(() => {
     getCurrentUser()
@@ -33,6 +34,21 @@ function IdolPurchasesPage() {
       .catch(() => setError("No se pudieron cargar las compras."))
       .finally(() => setLoading(false));
   }, [navigate]);
+
+  const handleResendEmail = async (purchaseId: number) => {
+    setResendingPurchaseId(purchaseId);
+    const result = await resendIdolPurchaseEmail({ data: { purchaseId } });
+    setResendingPurchaseId(null);
+    if (!result.ok) {
+      setError("No se pudo reenviar el correo.");
+      return;
+    }
+    setPurchases((current) =>
+      current.map((purchase) =>
+        purchase.id === purchaseId ? { ...purchase, email_status: "sent" } : purchase,
+      ),
+    );
+  };
 
   return (
     <section className="admin-content admin-purchases-content">
@@ -63,6 +79,7 @@ function IdolPurchasesPage() {
                 <th>Código QR</th>
                 <th>Factura</th>
                 <th>Pago</th>
+                <th>Correo</th>
               </tr>
             </thead>
             <tbody>
@@ -106,11 +123,25 @@ function IdolPurchasesPage() {
                     <strong>{formatPrice(purchase.total_clp)}</strong>
                   </td>
                   <td>{purchase.status === "approved" ? "Aprobado" : "Iniciado"}</td>
+                  <td>
+                    {purchase.status === "approved" && purchase.qr_code ? (
+                      <button
+                        type="button"
+                        className="admin-purchase-email"
+                        disabled={resendingPurchaseId === purchase.id}
+                        onClick={() => handleResendEmail(purchase.id)}
+                      >
+                        {resendingPurchaseId === purchase.id ? "Enviando..." : "Reenviar correo"}
+                      </button>
+                    ) : (
+                      <span>Disponible al aprobar</span>
+                    )}
+                  </td>
                 </tr>
               ))}
               {purchases.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="admin-purchases-empty">
+                  <td colSpan={7} className="admin-purchases-empty">
                     Todavía no hay compras para este evento.
                   </td>
                 </tr>
