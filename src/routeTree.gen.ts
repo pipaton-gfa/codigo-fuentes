@@ -19,8 +19,10 @@ import { Route as LandingPagesRouteImport } from './routes/landing-pages'
 import { Route as MmdEternalDreamRouteImport } from './routes/mmd-eternal-dream'
 import { Route as MultipaginasRouteImport } from './routes/multipaginas'
 import { Route as QuioscosRouteImport } from './routes/quioscos'
+import { Route as RastreoRouteImport } from './routes/rastreo'
 import { Route as ValidarRouteImport } from './routes/validar'
 import { Route as AdminComprasIdolsRouteImport } from './routes/admin/compras-idols'
+import { Route as AdminDatosVentasRouteImport } from './routes/admin/datos-ventas'
 import { Route as AdminEstadisticasRouteImport } from './routes/admin/estadisticas'
 import { Route as AdminPaginasRouteImport } from './routes/admin/paginas'
 import { Route as AdminUsuariosRouteImport } from './routes/admin/usuarios'
@@ -76,6 +78,11 @@ const QuioscosRoute = QuioscosRouteImport.update({
   path: '/quioscos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RastreoRoute = RastreoRouteImport.update({
+  id: '/rastreo',
+  path: '/rastreo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ValidarRoute = ValidarRouteImport.update({
   id: '/validar',
   path: '/validar',
@@ -84,6 +91,11 @@ const ValidarRoute = ValidarRouteImport.update({
 const AdminComprasIdolsRoute = AdminComprasIdolsRouteImport.update({
   id: '/compras-idols',
   path: '/compras-idols',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDatosVentasRoute = AdminDatosVentasRouteImport.update({
+  id: '/datos-ventas',
+  path: '/datos-ventas',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEstadisticasRoute = AdminEstadisticasRouteImport.update({
@@ -118,8 +130,10 @@ export interface FileRoutesByFullPath {
   '/mmd-eternal-dream': typeof MmdEternalDreamRoute
   '/multipaginas': typeof MultipaginasRoute
   '/quioscos': typeof QuioscosRoute
+  '/rastreo': typeof RastreoRoute
   '/validar': typeof ValidarRoute
   '/admin/compras-idols': typeof AdminComprasIdolsRoute
+  '/admin/datos-ventas': typeof AdminDatosVentasRoute
   '/admin/estadisticas': typeof AdminEstadisticasRoute
   '/admin/paginas': typeof AdminPaginasRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -136,8 +150,10 @@ export interface FileRoutesByTo {
   '/mmd-eternal-dream': typeof MmdEternalDreamRoute
   '/multipaginas': typeof MultipaginasRoute
   '/quioscos': typeof QuioscosRoute
+  '/rastreo': typeof RastreoRoute
   '/validar': typeof ValidarRoute
   '/admin/compras-idols': typeof AdminComprasIdolsRoute
+  '/admin/datos-ventas': typeof AdminDatosVentasRoute
   '/admin/estadisticas': typeof AdminEstadisticasRoute
   '/admin/paginas': typeof AdminPaginasRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -155,8 +171,10 @@ export interface FileRoutesById {
   '/mmd-eternal-dream': typeof MmdEternalDreamRoute
   '/multipaginas': typeof MultipaginasRoute
   '/quioscos': typeof QuioscosRoute
+  '/rastreo': typeof RastreoRoute
   '/validar': typeof ValidarRoute
   '/admin/compras-idols': typeof AdminComprasIdolsRoute
+  '/admin/datos-ventas': typeof AdminDatosVentasRoute
   '/admin/estadisticas': typeof AdminEstadisticasRoute
   '/admin/paginas': typeof AdminPaginasRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -175,8 +193,10 @@ export interface FileRouteTypes {
     | '/mmd-eternal-dream'
     | '/multipaginas'
     | '/quioscos'
+    | '/rastreo'
     | '/validar'
     | '/admin/compras-idols'
+    | '/admin/datos-ventas'
     | '/admin/estadisticas'
     | '/admin/paginas'
     | '/admin/usuarios'
@@ -193,8 +213,10 @@ export interface FileRouteTypes {
     | '/mmd-eternal-dream'
     | '/multipaginas'
     | '/quioscos'
+    | '/rastreo'
     | '/validar'
     | '/admin/compras-idols'
+    | '/admin/datos-ventas'
     | '/admin/estadisticas'
     | '/admin/paginas'
     | '/admin/usuarios'
@@ -211,8 +233,10 @@ export interface FileRouteTypes {
     | '/mmd-eternal-dream'
     | '/multipaginas'
     | '/quioscos'
+    | '/rastreo'
     | '/validar'
     | '/admin/compras-idols'
+    | '/admin/datos-ventas'
     | '/admin/estadisticas'
     | '/admin/paginas'
     | '/admin/usuarios'
@@ -230,6 +254,7 @@ export interface RootRouteChildren {
   MmdEternalDreamRoute: typeof MmdEternalDreamRoute
   MultipaginasRoute: typeof MultipaginasRoute
   QuioscosRoute: typeof QuioscosRoute
+  RastreoRoute: typeof RastreoRoute
   ValidarRoute: typeof ValidarRoute
   ProductoProductIdRoute: typeof ProductoProductIdRoute
 }
@@ -306,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuioscosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rastreo': {
+      id: '/rastreo'
+      path: '/rastreo'
+      fullPath: '/rastreo'
+      preLoaderRoute: typeof RastreoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/validar': {
       id: '/validar'
       path: '/validar'
@@ -318,6 +350,13 @@ declare module '@tanstack/react-router' {
       path: '/compras-idols'
       fullPath: '/admin/compras-idols'
       preLoaderRoute: typeof AdminComprasIdolsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/datos-ventas': {
+      id: '/admin/datos-ventas'
+      path: '/datos-ventas'
+      fullPath: '/admin/datos-ventas'
+      preLoaderRoute: typeof AdminDatosVentasRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/estadisticas': {
@@ -353,6 +392,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminComprasIdolsRoute: typeof AdminComprasIdolsRoute
+  AdminDatosVentasRoute: typeof AdminDatosVentasRoute
   AdminEstadisticasRoute: typeof AdminEstadisticasRoute
   AdminPaginasRoute: typeof AdminPaginasRoute
   AdminUsuariosRoute: typeof AdminUsuariosRoute
@@ -360,6 +400,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminComprasIdolsRoute: AdminComprasIdolsRoute,
+  AdminDatosVentasRoute: AdminDatosVentasRoute,
   AdminEstadisticasRoute: AdminEstadisticasRoute,
   AdminPaginasRoute: AdminPaginasRoute,
   AdminUsuariosRoute: AdminUsuariosRoute,
@@ -378,6 +419,7 @@ const rootRouteChildren: RootRouteChildren = {
   MmdEternalDreamRoute: MmdEternalDreamRoute,
   MultipaginasRoute: MultipaginasRoute,
   QuioscosRoute: QuioscosRoute,
+  RastreoRoute: RastreoRoute,
   ValidarRoute: ValidarRoute,
   ProductoProductIdRoute: ProductoProductIdRoute,
 }

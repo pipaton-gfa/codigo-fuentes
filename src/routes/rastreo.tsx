@@ -1,0 +1,404 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { Download, LayoutGrid, Lock, Plus, Settings, Trash2, X } from "lucide-react";
+import { type DragEvent, type FormEvent, useMemo, useState } from "react";
+import {
+  buildMachinesCsv,
+  TrackingProvider,
+  useTracking,
+  type Locality,
+  type Machine,
+} from "@/lib/tracking";
+
+export const Route = createFileRoute("/rastreo")({
+  head: () => ({ meta: [{ title: "Sistema de rastreo - Landing Fuentes" }] }),
+  component: RastreoRoute,
+});
+
+// Contraseña fija del panel de control (solo protege agregar/editar/exportar;
+// el tablero de arrastre queda visible para quien tenga el enlace directo).
+const PANEL_PASSWORD = "mecl123";
+const PANEL_SESSION_KEY = "tracking.panelUnlocked";
+
+const UNASSIGNED_ID = "__sin_asignar__";
+
+function RastreoRoute() {
+  return (
+    <TrackingProvider>
+      <RastreoBoard />
+    </TrackingProvider>
+  );
+}
+
+function RastreoBoard() {
+  const { localities, machines, moveMachine } = useTracking();
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
+
+  const unassigned = useMemo(() => machines.filter((m) => m.localityId === null), [machines]);
+
+  const columns = useMemo(
+    () => [
+      ...(unassigned.length > 0 ? [{ id: UNASSIGNED_ID, name: "Sin asignar" } as Locality] : []),
+      ...localities,
+    ],
+    [unassigned, localities],
+  );
+
+  const machinesByColumn = (columnId: string) =>
+    machines.filter((m) => (columnId === UNASSIGNED_ID ? m.localityId === null : m.localityId === columnId));
+
+  const handleDrop = (event: DragEvent<HTMLElement>, columnId: string) => {
+    event.preventDefault();
+    setDragOverColumn(null);
+    const machineId = event.dataTransfer.getData("text/plain");
+    if (!machineId) return;
+    moveMachine(machineId, columnId === UNASSIGNED_ID ? null : columnId);
+  };
+
+  return (
+    <main className="tracker-shell">
+      <header className="tracker-header">
+        <h1>Sistema de rastreo</h1>
+        <button
+          type="button"
+          className="tracker-panel-trigger"
+          onClick={() => setPanelOpen(true)}
+          aria-label="Abrir panel de control"
+        >
+          <Settings aria-hidden="true" />
+        </button>
+      </header>
+
+      {columns.length === 0 ? (
+        <p className="tracker-empty">
+          Todavía no hay localidades ni máquinas. Abre el panel de control para agregar la
+          primera.
+        </p>
+      ) : (
+        <div className="tracker-board">
+          {columns.map((column) => (
+            <section
+              key={column.id}
+              className={`tracker-column${dragOverColumn === column.id ? " is-drag-over" : ""}`}
+              onDragOver={(event) => {
+                event.preventDefault();
+                setDragOverColumn(column.id);
+              }}
+              onDragLeave={() => setDragOverColumn((current) => (current === column.id ? null : current))}
+              onDrop={(event) => handleDrop(event, column.id)}
+            >
+              <h2>{column.name}</h2>
+              <div className="tracker-column-body">
+                {machinesByColumn(column.id).map((machine) => (
+                  <article
+                    key={machine.id}
+                    className="tracker-card"
+                    draggable
+                    onDragStart={(event) => {
+                      event.dataTransfer.setData("text/plain", machine.id);
+                      event.dataTransfer.effectAllowed = "move";
+                    }}
+                  >
+                    <LayoutGrid aria-hidden="true" />
+                    <strong>N° {machine.machineNumber}</strong>
+                    <span>Serie {machine.serialNumber}</span>
+                    <span>Comercio {machine.commerceNumber}</span>
+                  </article>
+                ))}
+                {machinesByColumn(column.id).length === 0 && (
+                  <p className="tracker-column-empty">Arrastra una máquina aquí</p>
+                )}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
+
+      {panelOpen && <ControlPanel onClose={() => setPanelOpen(false)} />}
+    </main>
+  );
+}
+
+function ControlPanel({ onClose }: { onClose: () => void }) {
+  const isUnlocked = () => {
+    try {
+      return sessionStorage.getItem(PANEL_SESSION_KEY) === "1";
+    } catch {
+      return false;
+    }
+  };
+
+  const [unlocked, setUnlocked] = useState(isUnlocked);
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+
+  const submitPassword = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (password === PANEL_PASSWORD) {
+      setAuthError("");
+      setUnlocked(true);
+      try {
+        sessionStorage.setItem(PANEL_SESSION_KEY, "1");
+      } catch {
+        /* Ignorar */
+      }
+      return;
+    }
+    setAuthError("Contraseña incorrecta.");
+  };
+
+  return (
+    <div className="tracker-panel-backdrop" role="presentation" onMouseDown={onClose}>
+      <div
+        className="tracker-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tracker-panel-title"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <button type="button" className="tracker-panel-close" aria-label="Cerrar panel" onClick={onClose}>
+          <X aria-hidden="true" />
+        </button>
+
+        {unlocked ? (
+          <ControlPanelContent />
+        ) : (
+          <div className="tracker-login">
+            <span className="source-kicker">ACCESO PRIVADO</span>
+            <h2 id="tracker-panel-title">
+              <Lock aria-hidden="true" /> Panel de control
+            </h2>
+            <p>Ingresa la contraseña para agregar máquinas, localidades y exportar los datos.</p>
+            <form onSubmit={submitPassword}>
+              <label htmlFor="tracker-password">Contraseña</label>
+              <input
+                id="tracker-password"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                autoComplete="current-password"
+                autoFocus
+                required
+              />
+              {authError && (
+                <p className="source-login-error" role="alert">
+                  {authError}
+                </p>
+              )}
+              <button type="submit" className="source-login-submit">
+                Entrar
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ControlPanelContent() {
+  const { localities, machines, addLocality, removeLocality, addMachine, removeMachine } =
+    useTracking();
+
+  const [localityName, setLocalityName] = useState("");
+  const [localityError, setLocalityError] = useState("");
+
+  const [serialNumber, setSerialNumber] = useState("");
+  const [machineNumber, setMachineNumber] = useState("");
+  const [commerceNumber, setCommerceNumber] = useState("");
+  const [machineLocalityId, setMachineLocalityId] = useState("");
+  const [machineError, setMachineError] = useState("");
+
+  const submitLocality = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const result = addLocality(localityName);
+    if (!result.ok) {
+      setLocalityError(result.message);
+      return;
+    }
+    setLocalityError("");
+    setLocalityName("");
+  };
+
+  const submitMachine = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const result = addMachine({
+      serialNumber,
+      machineNumber,
+      commerceNumber,
+      localityId: machineLocalityId || null,
+    });
+    if (!result.ok) {
+      setMachineError(result.message);
+      return;
+    }
+    setMachineError("");
+    setSerialNumber("");
+    setMachineNumber("");
+    setCommerceNumber("");
+  };
+
+  const localityName_ = (id: string | null) =>
+    id ? (localities.find((l) => l.id === id)?.name ?? "Desconocida") : "Sin asignar";
+
+  const downloadCsv = () => {
+    const csv = buildMachinesCsv(machines, localities);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "maquinas-rastreo.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="tracker-panel-content">
+      <span className="source-kicker">PANEL PRIVADO</span>
+      <h2 id="tracker-panel-title">Panel de control</h2>
+
+      <div className="tracker-panel-grid">
+        <section className="tracker-panel-box">
+          <h3>Agregar localidad</h3>
+          <form className="tracker-form" onSubmit={submitLocality}>
+            <label htmlFor="locality-name">Nombre</label>
+            <input
+              id="locality-name"
+              value={localityName}
+              onChange={(event) => setLocalityName(event.target.value)}
+              placeholder="Ej: Bodega"
+              required
+            />
+            {localityError && (
+              <p className="source-login-error" role="alert">
+                {localityError}
+              </p>
+            )}
+            <button type="submit">
+              <Plus aria-hidden="true" /> Agregar localidad
+            </button>
+          </form>
+        </section>
+
+        <section className="tracker-panel-box">
+          <h3>Agregar máquina</h3>
+          <form className="tracker-form" onSubmit={submitMachine}>
+            <label htmlFor="machine-serial">Número de serie</label>
+            <input
+              id="machine-serial"
+              value={serialNumber}
+              onChange={(event) => setSerialNumber(event.target.value)}
+              required
+            />
+            <label htmlFor="machine-number">Número de máquina</label>
+            <input
+              id="machine-number"
+              value={machineNumber}
+              onChange={(event) => setMachineNumber(event.target.value)}
+              required
+            />
+            <label htmlFor="machine-commerce">Número de comercio</label>
+            <input
+              id="machine-commerce"
+              value={commerceNumber}
+              onChange={(event) => setCommerceNumber(event.target.value)}
+              required
+            />
+            <label htmlFor="machine-locality">Localidad</label>
+            <select
+              id="machine-locality"
+              value={machineLocalityId}
+              onChange={(event) => setMachineLocalityId(event.target.value)}
+            >
+              <option value="">Sin asignar</option>
+              {localities.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
+                </option>
+              ))}
+            </select>
+            {machineError && (
+              <p className="source-login-error" role="alert">
+                {machineError}
+              </p>
+            )}
+            <button type="submit">
+              <Plus aria-hidden="true" /> Agregar máquina
+            </button>
+          </form>
+        </section>
+      </div>
+
+      <section className="tracker-panel-box tracker-panel-box-wide">
+        <div className="tracker-table-heading">
+          <h3>Máquinas registradas ({machines.length})</h3>
+          <button type="button" className="tracker-download" onClick={downloadCsv}>
+            <Download aria-hidden="true" /> Descargar Excel (CSV)
+          </button>
+        </div>
+
+        {machines.length === 0 ? (
+          <p className="tracker-column-empty">Aún no hay máquinas registradas.</p>
+        ) : (
+          <div className="tracker-table-wrap">
+            <table className="tracker-table">
+              <thead>
+                <tr>
+                  <th>N° de máquina</th>
+                  <th>N° de serie</th>
+                  <th>N° de comercio</th>
+                  <th>Localidad</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {machines.map((machine: Machine) => (
+                  <tr key={machine.id}>
+                    <td>{machine.machineNumber}</td>
+                    <td>{machine.serialNumber}</td>
+                    <td>{machine.commerceNumber}</td>
+                    <td>{localityName_(machine.localityId)}</td>
+                    <td>
+                      <button
+                        type="button"
+                        aria-label="Eliminar máquina"
+                        onClick={() => removeMachine(machine.id)}
+                      >
+                        <Trash2 aria-hidden="true" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {localities.length > 0 && (
+        <section className="tracker-panel-box tracker-panel-box-wide">
+          <h3>Localidades ({localities.length})</h3>
+          <ul className="tracker-locality-list">
+            {localities.map((locality) => (
+              <li key={locality.id}>
+                <span>{locality.name}</span>
+                <button
+                  type="button"
+                  aria-label={`Eliminar ${locality.name}`}
+                  onClick={() => {
+                    const result = removeLocality(locality.id);
+                    if (!result.ok) window.alert(result.message);
+                  }}
+                >
+                  <Trash2 aria-hidden="true" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  );
+}
