@@ -33,6 +33,7 @@ async function hashPassword(password: string) {
 export const loginUser = createServerFn({ method: "POST" })
   .inputValidator((data: LoginInput) => data)
   .handler(async ({ data }) => {
+    try {
     const username = data.username.trim();
     const user = await getDatabase()
       .prepare("SELECT id, username, password_hash, role FROM users WHERE username = ?1")
@@ -60,6 +61,10 @@ export const loginUser = createServerFn({ method: "POST" })
     });
 
     return { ok: true as const, user: { id: user.id, username: user.username, role: user.role } };
+    } catch (error) {
+      console.error("loginUser failed", error);
+      return { ok: false as const, message: "No se pudo conectar con la base de datos." };
+    }
   });
 
 export const getCurrentUser = createServerFn({ method: "GET" }).handler(async () => {
