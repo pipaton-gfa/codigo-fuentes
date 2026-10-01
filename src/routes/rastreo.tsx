@@ -14,12 +14,46 @@ export const Route = createFileRoute("/rastreo")({
   component: RastreoRoute,
 });
 
-// Contraseña fija del panel de control (solo protege agregar/editar/exportar;
-// el tablero de arrastre queda visible para quien tenga el enlace directo).
+// Contraseña fija del panel de control. Protege agregar/editar/exportar y
+// también mover máquinas entre localidades: sin contraseña, el tablero es
+// de solo lectura (arrastrar y soltar queda deshabilitado).
 const PANEL_PASSWORD = "mecl123";
 const PANEL_SESSION_KEY = "tracking.panelUnlocked";
 
 const UNASSIGNED_ID = "__sin_asignar__";
+
+// Ordena por número de máquina de menor a mayor. Si ambos valores son
+// numéricos se comparan como números (para que "2" quede antes que "10");
+// si no, se usa orden alfabético como respaldo.
+function compareMachineNumbers(a: string, b: string) {
+  const numA = Number(a);
+  const numB = Number(b);
+  if (!Number.isNaN(numA) && !Number.isNaN(numB)) return numA - numB;
+  return a.localeCompare(b, "es", { numeric: true, sensitivity: "base" });
+}
+
+function readUnlockedFromSession() {
+  try {
+    return sessionStorage.getItem(PANEL_SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function usePanelUnlocked() {
+  const [unlocked, setUnlocked] = useState(readUnlockedFromSession);
+
+  const unlock = () => {
+    setUnlocked(true);
+    try {
+      sessionStorage.setItem(PANEL_SESSION_KEY, "1");
+    } catch {
+      /* Ignorar */
+    }
+  };
+
+  return { unlocked, unlock };
+}
 
 function RastreoRoute() {
   return (
@@ -31,6 +65,7 @@ function RastreoRoute() {
 
 function RastreoBoard() {
   const { localities, machines, moveMachine } = useTracking();
+  const { unlocked, unlock } = usePanelUnlocked();
   const [panelOpen, setPanelOpen] = useState(false);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
@@ -45,9 +80,12 @@ function RastreoBoard() {
   );
 
   const machinesByColumn = (columnId: string) =>
-    machines.filter((m) => (columnId === UNASSIGNED_ID ? m.localityId === null : m.localityId === columnId));
+    machines
+      .filter((m) => (columnId === UNASSIGNED_ID ? m.localityId === null : m.localityId === columnId))
+      .sort((a, b) => compareMachineNumbers(a.machineNumber, b.machineNumber));
 
   const handleDrop = (event: DragEvent<HTMLElement>, columnId: string) => {
+    if (!unlocked) return;
     event.preventDefault();
     setDragOverColumn(null);
     const machineId = event.dataTransfer.getData("text/plain");
@@ -59,15 +97,35 @@ function RastreoBoard() {
     <main className="tracker-shell">
       <header className="tracker-header">
         <h1>Sistema de rastreo</h1>
-        <button
-          type="button"
-          className="tracker-panel-trigger"
-          onClick={() => setPanelOpen(true)}
-          aria-label="Abrir panel de control"
-        >
-          <Settings aria-hidden="true" />
-        </button>
+        <div className="tracker-header-actions">
+          <span className={`tracker-mode-badge${unlocked ? " is-unlocked" : ""}`}>
+            {unlocked ? (
+              <>
+                <LayoutGrid aria-hidden="true" /> Edición habilitada
+              </>
+            ) : (
+              <>
+                <Lock aria-hidden="true" /> Solo lectura
+              </>
+            )}
+          </span>
+          <button
+            type="button"
+            className="tracker-panel-trigger"
+            onClick={() => setPanelOpen(true)}
+            aria-label="Abrir panel de control"
+          >
+            <Settings aria-hidden="true" />
+          </button>
+        </div>
       </header>
+
+      {!unlocked && (
+        <p className="tracker-readonly-notice">
+          <Lock aria-hidden="true" /> Estás viendo el tablero en modo solo lectura. Ingresa la
+          contraseña en el panel de control para poder mover, agregar o editar máquinas.
+        </p>
+      )}
 
       {columns.length === 0 ? (
         <p className="tracker-empty">
@@ -81,6 +139,7 @@ function RastreoBoard() {
               key={column.id}
               className={`tracker-column${dragOverColumn === column.id ? " is-drag-over" : ""}`}
               onDragOver={(event) => {
+                if (!unlocked) return;
                 event.preventDefault();
                 setDragOverColumn(column.id);
               }}
@@ -92,13 +151,19 @@ function RastreoBoard() {
                 {machinesByColumn(column.id).map((machine) => (
                   <article
                     key={machine.id}
-                    className="tracker-card"
-                    draggable
+                    className={`tracker-card${unlocked ? "" : " is-locked"}`}
+                    draggable={unlocked}
+                    title={unlocked ? undefined : "Inicia sesión en el panel de control para mover esta máquina"}
                     onDragStart={(event) => {
+                      if (!unlocked) {
+                        event.preventDefault();
+                        return;
+                      }
                       event.dataTransfer.setData("text/plain", machine.id);
                       event.dataTransfer.effectAllowed = "move";
                     }}
                   >
+                    {!unlocked && <Lock aria-hidden="true" className="tracker-card-lock" />}
                     <LayoutGrid aria-hidden="true" />
                     <strong>N° {machine.machineNumber}</strong>
                     <span>Serie {machine.serialNumber}</span>
@@ -106,7 +171,9 @@ function RastreoBoard() {
                   </article>
                 ))}
                 {machinesByColumn(column.id).length === 0 && (
-                  <p className="tracker-column-empty">Arrastra una máquina aquí</p>
+                  <p className="tracker-column-empty">
+                    {unlocked ? "Arrastra una máquina aquí" : "Sin máquinas en esta localidad"}
+                  </p>
                 )}
               </div>
             </section>
@@ -114,21 +181,22 @@ function RastreoBoard() {
         </div>
       )}
 
-      {panelOpen && <ControlPanel onClose={() => setPanelOpen(false)} />}
+      {panelOpen && (
+        <ControlPanel unlocked={unlocked} onUnlock={unlock} onClose={() => setPanelOpen(false)} />
+      )}
     </main>
   );
 }
 
-function ControlPanel({ onClose }: { onClose: () => void }) {
-  const isUnlocked = () => {
-    try {
-      return sessionStorage.getItem(PANEL_SESSION_KEY) === "1";
-    } catch {
-      return false;
-    }
-  };
-
-  const [unlocked, setUnlocked] = useState(isUnlocked);
+function ControlPanel({
+  unlocked,
+  onUnlock,
+  onClose,
+}: {
+  unlocked: boolean;
+  onUnlock: () => void;
+  onClose: () => void;
+}) {
   const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState("");
 
@@ -136,12 +204,7 @@ function ControlPanel({ onClose }: { onClose: () => void }) {
     event.preventDefault();
     if (password === PANEL_PASSWORD) {
       setAuthError("");
-      setUnlocked(true);
-      try {
-        sessionStorage.setItem(PANEL_SESSION_KEY, "1");
-      } catch {
-        /* Ignorar */
-      }
+      onUnlock();
       return;
     }
     setAuthError("Contraseña incorrecta.");
