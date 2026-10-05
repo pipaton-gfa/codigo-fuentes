@@ -1,11 +1,11 @@
-import ikunoRina from "../assets/ikuno-rina.png";
-import donggeuran from "../assets/donggeuran.png";
-import niinaHayashi from "../assets/niina-hayashi.png";
-import omoriMaho from "../assets/omori-maho.png";
-import waniwani from "../assets/waniwani.png";
+import pan from "../assets/pan.jpg";
+import jamon from "../assets/jamon.jpg";
+import queso from "../assets/queso.jpg";
+import mantequilla from "../assets/mantequilla.jpg";
+import jugo from "../assets/jugo.png";
 
 export const TOKEN_VALUE_CLP = 5000;
-export const WANIWANI_TOKEN_VALUE_CLP = 50;
+export const JUICE_TOKEN_VALUE_CLP = 50;
 
 export type Product = {
   id: string;
@@ -19,47 +19,47 @@ export type Product = {
 
 export const products: Product[] = [
   {
-    id: "ikuno-rina",
-    name: "Ikuno Rina",
+    id: "pan",
+    name: "Pan",
     tagline: "",
     price: 8.9,
-    image: ikunoRina,
+    image: pan,
     description: "",
     details: [],
   },
   {
-    id: "donggeuran",
-    name: "Donggeuran",
+    id: "jamon",
+    name: "Jamón",
     tagline: "",
     price: 1.5,
-    image: donggeuran,
+    image: jamon,
     description: "",
     details: [],
   },
   {
-    id: "niina-hayashi",
-    name: "Niina Hayashi",
+    id: "queso",
+    name: "Queso",
     tagline: "",
     price: 49,
-    image: niinaHayashi,
+    image: queso,
     description: "",
     details: [],
   },
   {
-    id: "omori-maho",
-    name: "Omori Maho",
+    id: "mantequilla",
+    name: "Mantequilla",
     tagline: "",
     price: 6,
-    image: omoriMaho,
+    image: mantequilla,
     description: "",
     details: [],
   },
   {
-    id: "waniwani",
-    name: "Waniwani",
+    id: "jugo",
+    name: "Jugo",
     tagline: "",
     price: 3,
-    image: waniwani,
+    image: jugo,
     description: "",
     details: [],
   },
@@ -68,7 +68,7 @@ export const products: Product[] = [
 export const getProduct = (id: string) => products.find((p) => p.id === id);
 
 export const getTokenValue = (product: Pick<Product, "id">) =>
-  product.id === "waniwani" ? WANIWANI_TOKEN_VALUE_CLP : TOKEN_VALUE_CLP;
+  product.id === "jugo" || product.id === "waniwani" ? JUICE_TOKEN_VALUE_CLP : TOKEN_VALUE_CLP;
 
 export const formatPrice = (value: number) =>
   new Intl.NumberFormat("es-CL", {
