@@ -44,10 +44,10 @@ function ProductDetail() {
         <div className="reference-event-grid">
           <img className="reference-event-image" src={product.image} alt={product.name} />
           <div className="reference-event-info">
-            <span className="reference-label">01 / EVENTO DESTACADO</span>
-            <h1>Dona dinero<br />a tu idol favorita</h1>
+            <span className="reference-label">01 / comidita</span>
+            <h1>lo que mas te gusta<br />¡mas rico que nunca!</h1>
             <p className="event-price">1 token · {formatPrice(getTokenValue(product))}</p>
-            <p>{product.description || "Apoya directamente a tu idol favorita y ayúdala a seguir creando momentos inolvidables."}</p>
+            <p>{product.description || "mmmm que comida mas rica"}</p>
             <div className="reference-event-quantity">
               <button type="button" aria-label="Quitar un token" onClick={() => { setQuantity((q) => Math.max(0, q - 1)); setError(""); }}>−</button>
               <span>{quantity}</span>
@@ -55,10 +55,10 @@ function ProductDetail() {
               <small>{formatPrice(getTokenValue(product) * quantity)}</small>
             </div>
             <button type="button" className="reference-event-add" onClick={() => {
-              if (quantity <= 0) { setError("Agrega al menos un token para continuar."); return; }
+              if (quantity <= 0) { setError("Agrega al menos un producto para continuar."); return; }
               add(product.id, quantity); setAddedQuantity((current) => current + quantity); setQuantity(0); setError("");
             }}>Agregar al carrito</button>
-            {addedQuantity > 0 ? <p className="reference-event-success">Agregaste {addedQuantity} token{addedQuantity === 1 ? "" : "s"} al carrito.</p> : null}
+            {addedQuantity > 0 ? <p className="reference-event-success">Agregaste {addedQuantity} productos{addedQuantity === 1 ? "" : "s"} al carrito.</p> : null}
             {error ? <p className="reference-event-success">{error}</p> : null}
           </div>
         </div>
