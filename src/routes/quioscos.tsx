@@ -26,7 +26,7 @@ function Kiosks() {
           <span className="portfolio-project-leading">
             <ShoppingCart aria-hidden="true" /> {EVENTS[2].id}
           </span>
-          <strong>{EVENTS[2].name}</strong>
+          <strong>Ejemplo de carrito con pasarela de pago</strong>
           <ArrowUpRight aria-hidden="true" />
         </a>
       </nav>
