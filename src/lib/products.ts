@@ -20,7 +20,7 @@ export type Product = {
 export const products: Product[] = [
   {
     id: "ikuno-rina",
-    name: "ikuno rina",
+    name: "Ikuno Rina",
     tagline: "",
     price: 8.9,
     image: ikunoRina,
@@ -47,7 +47,7 @@ export const products: Product[] = [
   },
   {
     id: "omori-maho",
-    name: "omori maho",
+    name: "Omori Maho",
     tagline: "",
     price: 6,
     image: omoriMaho,
@@ -56,7 +56,7 @@ export const products: Product[] = [
   },
   {
     id: "waniwani",
-    name: "waniwani",
+    name: "Waniwani",
     tagline: "",
     price: 3,
     image: waniwani,
