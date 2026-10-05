@@ -13,7 +13,7 @@ function Kiosks() {
     <main className="portfolio-shell portfolio-submenu">
       <SiteHeader />
       <section className="portfolio-submenu-heading">
-        <span className="portfolio-kicker">02 / SERVICIOS</span>
+        <span className="portfolio-kicker"></span>
         <h1>
           quioscos con
           <br />
