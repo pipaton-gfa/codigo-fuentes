@@ -24,9 +24,9 @@ function IdolsPage() {
         <div className="idols-heading">
           <div>
             <span className="reference-label">01 / OTROS</span>
-            <h1>Elige a tu<br /><em>idol favorita</em></h1>
+            <h1>Elige tu<br /><em>servicio</em></h1>
           </div>
-          <p>Entrega tokens y apoya<br />su camino con nosotros.</p>
+          <p>elije lo que mas te gusta!<br />*************</p>
         </div>
 
         <div className="idols-grid">
