@@ -44,7 +44,7 @@ function IdolsPage() {
               <div className="idol-card-copy">
                 <strong>{product.name}</strong>
                 <span>1 token · {formatPrice(getTokenValue(product))}</span>
-                <b>Apoyar →</b>
+                <b>comprar</b>
               </div>
             </Link>
           ))}
