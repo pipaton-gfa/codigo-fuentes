@@ -19,6 +19,11 @@ export const EVENTS = [
     name: "More More Dream · Eternal Dream",
     href: "/mmd-eternal-dream?evento=0004",
   },
+  {
+    id: "0005",
+    name: "Star Fairy Nino",
+    href: "/star-fairy-nino?evento=0005",
+  },
 ] as const;
 
 export type EventId = (typeof EVENTS)[number]["id"];

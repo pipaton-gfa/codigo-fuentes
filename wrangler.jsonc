@@ -9,6 +9,7 @@
   },
   "assets": {
     "binding": "ASSETS",
+    "run_worker_first": ["/star-fairy-nino"],
     "directory": ".output/public"
   },
   "d1_databases": [

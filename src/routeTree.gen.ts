@@ -20,6 +20,7 @@ import { Route as MmdEternalDreamRouteImport } from './routes/mmd-eternal-dream'
 import { Route as MultipaginasRouteImport } from './routes/multipaginas'
 import { Route as QuioscosRouteImport } from './routes/quioscos'
 import { Route as RastreoRouteImport } from './routes/rastreo'
+import { Route as StarFairyNinoRouteImport } from './routes/star-fairy-nino'
 import { Route as ValidarRouteImport } from './routes/validar'
 import { Route as AdminComprasIdolsRouteImport } from './routes/admin/compras-idols'
 import { Route as AdminDatosVentasRouteImport } from './routes/admin/datos-ventas'
@@ -83,6 +84,11 @@ const RastreoRoute = RastreoRouteImport.update({
   path: '/rastreo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StarFairyNinoRoute = StarFairyNinoRouteImport.update({
+  id: '/star-fairy-nino',
+  path: '/star-fairy-nino',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ValidarRoute = ValidarRouteImport.update({
   id: '/validar',
   path: '/validar',
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/multipaginas': typeof MultipaginasRoute
   '/quioscos': typeof QuioscosRoute
   '/rastreo': typeof RastreoRoute
+  '/star-fairy-nino': typeof StarFairyNinoRoute
   '/validar': typeof ValidarRoute
   '/admin/compras-idols': typeof AdminComprasIdolsRoute
   '/admin/datos-ventas': typeof AdminDatosVentasRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/multipaginas': typeof MultipaginasRoute
   '/quioscos': typeof QuioscosRoute
   '/rastreo': typeof RastreoRoute
+  '/star-fairy-nino': typeof StarFairyNinoRoute
   '/validar': typeof ValidarRoute
   '/admin/compras-idols': typeof AdminComprasIdolsRoute
   '/admin/datos-ventas': typeof AdminDatosVentasRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/multipaginas': typeof MultipaginasRoute
   '/quioscos': typeof QuioscosRoute
   '/rastreo': typeof RastreoRoute
+  '/star-fairy-nino': typeof StarFairyNinoRoute
   '/validar': typeof ValidarRoute
   '/admin/compras-idols': typeof AdminComprasIdolsRoute
   '/admin/datos-ventas': typeof AdminDatosVentasRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/multipaginas'
     | '/quioscos'
     | '/rastreo'
+    | '/star-fairy-nino'
     | '/validar'
     | '/admin/compras-idols'
     | '/admin/datos-ventas'
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/multipaginas'
     | '/quioscos'
     | '/rastreo'
+    | '/star-fairy-nino'
     | '/validar'
     | '/admin/compras-idols'
     | '/admin/datos-ventas'
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | '/multipaginas'
     | '/quioscos'
     | '/rastreo'
+    | '/star-fairy-nino'
     | '/validar'
     | '/admin/compras-idols'
     | '/admin/datos-ventas'
@@ -255,6 +267,7 @@ export interface RootRouteChildren {
   MultipaginasRoute: typeof MultipaginasRoute
   QuioscosRoute: typeof QuioscosRoute
   RastreoRoute: typeof RastreoRoute
+  StarFairyNinoRoute: typeof StarFairyNinoRoute
   ValidarRoute: typeof ValidarRoute
   ProductoProductIdRoute: typeof ProductoProductIdRoute
 }
@@ -336,6 +349,13 @@ declare module '@tanstack/react-router' {
       path: '/rastreo'
       fullPath: '/rastreo'
       preLoaderRoute: typeof RastreoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/star-fairy-nino': {
+      id: '/star-fairy-nino'
+      path: '/star-fairy-nino'
+      fullPath: '/star-fairy-nino'
+      preLoaderRoute: typeof StarFairyNinoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/validar': {
@@ -420,6 +440,7 @@ const rootRouteChildren: RootRouteChildren = {
   MultipaginasRoute: MultipaginasRoute,
   QuioscosRoute: QuioscosRoute,
   RastreoRoute: RastreoRoute,
+  StarFairyNinoRoute: StarFairyNinoRoute,
   ValidarRoute: ValidarRoute,
   ProductoProductIdRoute: ProductoProductIdRoute,
 }

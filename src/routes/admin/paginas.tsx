@@ -27,6 +27,11 @@ const pages = [
     description: "Landing del evento Last Chapter.",
   },
   {
+    path: "/star-fairy-nino",
+    label: "Star Fairy Nino",
+    description: "Landing del evento 0005.",
+  },
+  {
     path: "/idols",
     label: "Donar dinero a idols",
     description: "Catálogo de productos y donaciones.",
